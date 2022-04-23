@@ -56,3 +56,11 @@ class User(db.Model):
             return email_to_check.lower()
         else:
             raise EmailFormatError
+
+    @validates("name")
+    def normalize_name(self, key, name_to_be_normalized: str):
+        return name_to_be_normalized.title()
+
+    @validates("username")
+    def normalize_username(self, key, username_to_be_normalized: str):
+        return username_to_be_normalized.lower()
