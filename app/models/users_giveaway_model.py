@@ -1,4 +1,3 @@
-from email.policy import default
 from app.configs.database import db
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
