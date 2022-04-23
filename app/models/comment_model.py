@@ -6,7 +6,7 @@ from app.configs.database import db
 
 
 @dataclass
-class Model_comment(db.Model):
+class Comment(db.Model):
     
     comment_id: str
     comment: str
