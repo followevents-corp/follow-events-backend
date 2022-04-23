@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from uuid import uuid4
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, String, DATETIME , ForeignKey
 from app.configs.database import db
 
@@ -17,9 +18,9 @@ class Comment(db.Model):
     
     now = datetime.utcnow()
     
-    id = Column(String, primary_key=True, default=uuid4())
+    id = Column(UUID(as_uuid = True), primary_key=True, default=uuid4())
     comment = Column(String(255), nullable=False)
     created_at = Column(DATETIME, default=now)
-    user_id = Column(String, ForeignKey('user.id'), nullable=False)
-    event_id = Column(String, ForeignKey('event.id'), nullable=False)
+    user_id = Column(UUID(as_uuid = True), ForeignKey('user.id'), nullable=False)
+    event_id = Column(UUID(as_uuid = True), ForeignKey('event.id'), nullable=False)
 
