@@ -3,9 +3,9 @@ from uuid import uuid4
 
 from sqlalchemy import Column, String
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import validates
 
 from app.configs.database import db
-from sqlalchemy.orm import validates
 
 
 @dataclass
