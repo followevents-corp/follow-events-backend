@@ -39,7 +39,7 @@ class User(db.Model):
 
     @property
     def password(self):
-        raise AttributeError("Não é possível acessar o atributo password")
+        raise AttributeError("Password cannot be accessed")
 
     @password.setter
     def password(self, password_to_hash):
