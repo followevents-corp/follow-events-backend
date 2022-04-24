@@ -9,3 +9,4 @@ def init_app(app: Flask):
     app.db = db
 
     from app.models.user_model import User
+    from app.models.schedule_table import schedule_table
