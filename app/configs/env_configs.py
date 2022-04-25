@@ -12,3 +12,4 @@ def init_app(app: Flask):
         getenv("SQLALCHEMY_TRACK_MODIFICATIONS")
     )
     app.config["JSON_SORT_KEYS"] = bool(getenv("JSON_SORT_KEYS"))
+    app.config["MAX_CONTENT_LENGTH"] = 1024 * 1024 * 10
