@@ -1,9 +1,10 @@
-import boto3
-import os
 import logging
+import os
 import re
-from botocore.exceptions import ClientError
 from uuid import uuid4
+
+import boto3
+from botocore.exceptions import ClientError
 
 
 class AWS_S3:

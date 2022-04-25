@@ -1,12 +1,16 @@
-from flask import Flask
-from sqlalchemy import Column, ForeignKey, String, Integer, DateTime, CheckConstraint
-from datetime import datetime
-from app.configs.database import db
 from dataclasses import dataclass
-from sqlalchemy.dialects.postgresql import UUID
+from datetime import datetime
 from uuid import uuid4
-from app.services.aws_s3 import AWS_S3
+
+from flask import Flask
+from sqlalchemy import (CheckConstraint, Column, DateTime, ForeignKey, Integer,
+                        String)
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import validates
+
+from app.configs.database import db
+from app.services.aws_s3 import AWS_S3
+
 
 @dataclass
 class Events(db.Model):
