@@ -13,3 +13,4 @@ def init_app(app: Flask):
     )
     app.config["JWT_SECRET_KEY"] = getenv("SECRET_KEY")
     app.config["JSON_SORT_KEYS"] = bool(getenv("JSON_SORT_KEYS"))
+    app.config["MAX_CONTENT_LENGTH"] = 1024 * 1024 * 10
