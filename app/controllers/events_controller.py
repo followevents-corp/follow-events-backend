@@ -1,8 +1,8 @@
-from http import HTTPStatus
+# from http import HTTPStatus
 
-from flask import current_app, jsonify, request
+# from flask import current_app, jsonify, request
 
-from app.models.events_model import Events
+# from app.models.events_model import Events
 
 # def create_events():
 #     files = request.files

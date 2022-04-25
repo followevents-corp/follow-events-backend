@@ -4,12 +4,11 @@ from uuid import uuid4
 
 from sqlalchemy import Boolean, Column, String
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import backref, relationship, validates
+from sqlalchemy.orm import validates
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.configs.database import db
 from app.exceptions.user_exceptions import EmailFormatError
-from app.models.schedule_model import schedule_table
 
 
 @dataclass
