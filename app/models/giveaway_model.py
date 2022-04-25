@@ -1,0 +1,30 @@
+from dataclasses import dataclass
+from uuid import uuid4
+
+from app.configs.database import db
+from sqlalchemy import Boolean, Column, String, DateTime, ForeignKey
+from sqlalchemy.dialects.postgresql import UUID
+from datetime import datetime as dt
+
+
+@dataclass
+class Giveaway(db.Model):
+    id: str
+    name: str
+    description: str
+    award: str
+    award_picture: str
+    active: bool
+    created_at: str
+    events_id: str
+
+    __tablename__ = "giveaway"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
+    name = Column(String(50), nullable=False)
+    description = Column(String(255), nullable=False)
+    award = Column(String(50), nullable=False)
+    award_picture = Column(String)
+    active = Column(Boolean, nullable=False)
+    created_at = Column(DateTime, default=dt.utcnow())
+    events_id = Column(UUID(as_uuid=True), ForeignKey("events.id", ondelete="CASCADE"), nullable=False)
