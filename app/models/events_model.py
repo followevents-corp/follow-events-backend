@@ -15,7 +15,6 @@ class Events(db.Model):
     event_date: str
     type_banner: str
     link_banner: str
-    quantity_users: int
     created_at: str
     creator_id: str
 
@@ -26,9 +25,8 @@ class Events(db.Model):
     event_date = Column(String, nullable = False)
     type_banner = Column(String, nullable = False)
     link_banner = Column(String)
-    quantity_users = Column(Integer, default = 0)
     created_at = Column(DateTime, default = datetime.utcnow())
-    creator_id = Column(String, ForeignKey("user.id"), nullable = False)
+    creator_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable = False)
 
     @validates("name")
     def validate_name(self, key, name_to_normalize):
