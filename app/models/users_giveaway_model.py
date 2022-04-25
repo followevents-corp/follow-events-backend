@@ -4,6 +4,7 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from app.configs.database import db
 
+
 users_giveaway = db.Table(
     "users_giveaway",
     db.Column("id", UUID(as_uuid=True), default=uuid4(), primary_key=True),
