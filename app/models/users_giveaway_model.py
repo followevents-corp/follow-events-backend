@@ -18,4 +18,3 @@ class UsersGiveaway(db.Model):
         ForeignKey("giveaway.id", ondelete="CASCADE"),
         nullable=False,
     )
-   
