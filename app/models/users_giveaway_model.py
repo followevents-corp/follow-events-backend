@@ -1,10 +1,20 @@
 from uuid import uuid4
 
+from sqlalchemy import Column, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 
 from app.configs.database import db
 
-users_giveaway = db.Table('users_giveaway',
-    db.Column('id', UUID(as_uuid = True), default=uuid4(), primary_key=True),
-    db.Column('user_id', UUID(as_uuid = True), db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False),
-    db.Column('giveaway_id', UUID(as_uuid = True), db.ForeignKey('giveaway.id', ondelete='CASCADE'), nullable=False)
+
+class UsersGiveaway(db.Model):
+    __tablename__ = "users_giveaway"
+
+    id = Column(UUID(as_uuid=True), default=uuid4(), primary_key=True)
+    user_id = Column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
+    giveaway_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("giveaway.id", ondelete="CASCADE"),
+        nullable=False,
+    )
