@@ -10,15 +10,13 @@ users_giveaway = db.Table(
     db.Column(
         "user_id",
         UUID(as_uuid=True),
-        db.ForeignKey("users.id"),
-        ondelete="CASCADE",
+        db.ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
     ),
     db.Column(
         "giveaway_id",
         UUID(as_uuid=True),
-        db.ForeignKey("giveaway.id"),
-        ondelete="CASCADE",
+        db.ForeignKey("giveaway.id", ondelete="CASCADE"),
         nullable=False,
     ),
 )

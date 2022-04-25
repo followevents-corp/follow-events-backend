@@ -41,4 +41,4 @@ def check_keys_type(data: dict, keys_type: dict):
 
     for key, value in data.items():
         if type(value) is not keys_type[key]:
-            raise AttributeTypeError(key, keys_type[key])
+            raise AttributeTypeError(data, keys_type)

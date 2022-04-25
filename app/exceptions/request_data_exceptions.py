@@ -5,22 +5,23 @@ class MissingAttributeError(Exception):
 
 
 class AttributeTypeError(Exception):
-    def __init__(self, key, type, status_code=400):
-        if type is str:
-            self.type = "string"
-        elif type is int:
-            self.type = "integer"
-        elif type is float:
-            self.type = "decimal"
-        elif type is bool:
-            self.type = "boolean"
-        elif type is list:
-            self.type = "list"
-        else:
-            self.type = "update types"
+    name_types = {
+        str: "string",
+        int: "integer",
+        float: "decimal",
+        bool: "boolean",
+        list: "list",
+    }
 
-        self.message = f"{key} must be a {self.type}"
+    def __init__(self, data, types, status_code=400):
+        self.response = {"error": self.verify_keys(data, types)}
         self.status_code = status_code
 
+    def verify_keys(self, data, types):
+        output = {
+            key: f"must be a {self.name_types[types[key]]}"
+            for key, value in data.items()
+            if type(value) is not types[key]
+        }
 
-from app.exceptions.request_data_exceptions import AttributeTypeError
+        return output
