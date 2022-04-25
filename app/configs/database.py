@@ -7,3 +7,6 @@ db = SQLAlchemy()
 def init_app(app: Flask):
     db.init_app(app)
     app.db = db
+
+    from app.models.schedule_table import schedule_table
+    from app.models.user_model import User
