@@ -1,10 +1,11 @@
 from dataclasses import dataclass
+from datetime import datetime as dt
 from uuid import uuid4
 
-from app.configs.database import db
-from sqlalchemy import Boolean, Column, String, DateTime, ForeignKey
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
-from datetime import datetime as dt
+
+from app.configs.database import db
 
 
 @dataclass
@@ -27,4 +28,6 @@ class Giveaway(db.Model):
     award_picture = Column(String)
     active = Column(Boolean, nullable=False)
     created_at = Column(DateTime, default=dt.utcnow())
-    events_id = Column(UUID(as_uuid=True), ForeignKey("events.id", ondelete="CASCADE"), nullable=False)
+    events_id = Column(
+        UUID(as_uuid=True), ForeignKey("events.id", ondelete="CASCADE"), nullable=False
+    )

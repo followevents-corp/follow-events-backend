@@ -9,7 +9,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.configs.database import db
 from app.exceptions.user_exceptions import EmailFormatError
-from app.models.schedule_table import schedule_table
+from app.models.schedule_model import schedule_table
 
 
 @dataclass
@@ -20,8 +20,6 @@ class User(db.Model):
     email: str
     profile_picture: str
     creator: bool
-    # schedule: str
-    # events: str
 
     __tablename__ = "users"
 
@@ -32,10 +30,6 @@ class User(db.Model):
     hash_password = Column(String(50))
     profile_picture = Column(String)
     creator = Column(Boolean, default=False)
-
-    schedule = relationship("EventModel", secondary=schedule_table)
-
-    events = relationship("EventModel", backref=backref("creator", uselist=False))
 
     @property
     def password(self):
