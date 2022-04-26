@@ -16,9 +16,11 @@ from app.services.aws_s3 import AWS_S3
 class Events(db.Model):
     id: str
     name: str
+    description: str
     event_date: str
     type_banner: str
     link_banner: str
+    event_link: str
     created_at: str
     creator_id: str
 
@@ -26,9 +28,11 @@ class Events(db.Model):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     name = Column(String(50), unique = True, nullable = False)
+    description = Column(String(255))
     event_date = Column(String, nullable = False)
     type_banner = Column(String, nullable = False)
     link_banner = Column(String)
+    event_link = Column(String, nullable = False)
     created_at = Column(DateTime, default = datetime.utcnow())
     creator_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable = False)
 
