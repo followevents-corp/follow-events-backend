@@ -1,3 +1,5 @@
+import uuid
+
 class MissingAttributeError(Exception):
     def __init__(self, missing_keys: list, status_code=400):
         self.response = {"missing_keys": missing_keys}
@@ -11,6 +13,7 @@ class AttributeTypeError(Exception):
         float: "decimal",
         bool: "boolean",
         list: "list",
+        uuid.UUID: "uuid"
     }
 
     def __init__(self, data, types, status_code=400):
