@@ -26,7 +26,7 @@ class User(db.Model):
     username = Column(String(30), nullable=False, unique=True)
     name = Column(String(100), nullable=False)
     email = Column(String(255), nullable=False, unique=True)
-    hash_password = Column(String(50))
+    hash_password = Column(String(255))
     profile_picture = Column(String)
     creator = Column(Boolean, default=False)
 
