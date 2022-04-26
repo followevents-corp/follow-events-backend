@@ -3,8 +3,11 @@ from app.exceptions.request_data_exceptions import AttributeTypeError, MissingAt
 from app.models.comment_model import Comment
 from app.services.verify_values import incoming_values
 from flask import jsonify, request
-
+from app.configs.database import db
 from app.services.general_services import check_keys, check_keys_type, save_changes
+from sqlalchemy.orm import Query
+from app.models.events_model import Events
+from sqlalchemy.orm.session import Session
 
 
 def create_comment(event_id: str):
@@ -12,7 +15,7 @@ def create_comment(event_id: str):
     verified_values = incoming_values(comment_data)
     if verified_values:
         return jsonify(verified_values), HTTPStatus.BAD_REQUEST
-    
+
     try:
         verified_key = check_keys(comment_data, ['user_id', 'comment'])
         check_keys_type(verified_key, {'user_id': str, 'comment': str})
@@ -33,8 +36,17 @@ def create_comment(event_id: str):
     }), HTTPStatus.CREATED
 
 
-def get_comment(comment_id: str, event_id: str):
-    pass
+def get_comment(event_id: str):
+    session: Session = db.session
+    all_comments: Query = (
+        session.query(Comment)
+        .select_from(Events)
+        .join(Comment)
+        .filter(Events.id == event_id)
+        .all()
+    )
+
+    return jsonify(all_comments), HTTPStatus.OK
 
 
 def update_comment(comment_id: str, event_id: str):
