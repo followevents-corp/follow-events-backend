@@ -1,6 +1,6 @@
 from app.exceptions.request_data_exceptions import (AttributeTypeError,
                                                     MissingAttributeError)
-
+from app.configs.database import db
 
 def check_keys(data: dict, mandatory_keys: list):
     """
@@ -42,3 +42,10 @@ def check_keys_type(data: dict, keys_type: dict):
     for key, value in data.items():
         if type(value) is not keys_type[key]:
             raise AttributeTypeError(data, keys_type)
+
+
+session = db.session
+
+def save_changes(data):
+    session.add(data)
+    session.commit()
