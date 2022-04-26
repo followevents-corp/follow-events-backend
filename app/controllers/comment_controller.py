@@ -1,5 +1,6 @@
 from http import HTTPStatus
 from app.exceptions.request_data_exceptions import AttributeTypeError, MissingAttributeError
+from app.exceptions.verify_values import incoming_values
 from app.models.comment_model import Comment
 from flask import jsonify, request
 
@@ -8,6 +9,10 @@ from app.services.general_services import check_keys, check_keys_type, save_chan
 
 def create_comment(event_id: str):
     comment_data = request.get_json()
+    verified_values = incoming_values(comment_data)
+    if verified_values:
+        return jsonify(verified_values), HTTPStatus.BAD_REQUEST
+    
     try:
         verified_key = check_keys(comment_data, ['user_id', 'comment'])
         check_keys_type(verified_key, {'user_id': str, 'comment': str})
