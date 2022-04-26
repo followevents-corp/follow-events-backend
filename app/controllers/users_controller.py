@@ -2,9 +2,11 @@ from http import HTTPStatus
 from flask import jsonify, request
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError, DataError
+from app.exceptions.request_data_exceptions import AttributeTypeError, MissingAttributeError
 from app.exceptions.user_exceptions import EmailFormatError
 from app.configs.database import db
 from app.models.user_model import User
+from app.services.general_services import check_keys, check_keys_type
 from app.services.verify_values import incoming_values
 
 session: Session = db.session
@@ -16,13 +18,23 @@ def create_user():
 
     if empty_values:
         return empty_values, HTTPStatus.BAD_REQUEST
+    
+    valid_keys = ['username', 'name', 'email', 'password']
+    try:
+        new_data = check_keys(data, valid_keys)
+    except MissingAttributeError as m:
+        return m.response, HTTPStatus.BAD_REQUEST
+    
+    keys_types = {'username': str, 'name': str, 'email': str, 'password': str}
+    try:
+        check_keys_type(new_data, keys_types)
+    except AttributeTypeError:
+        return {'error': 'All the incoming values must be a str (string) type.'}
 
     try:
-        new_user = User(**data)
-    except TypeError as e:
-        return {'error': f'{e}'}, HTTPStatus.BAD_REQUEST
+        new_user = User(**new_data)
     except EmailFormatError:
-        return {'error': f'Email format not acceptable: {data["email"]}, try ex.: your_mail@your_provider.com'}, HTTPStatus.BAD_REQUEST
+        return {'error': f'Email format not acceptable: {new_data["email"]}, try ex.: your_mail@your_provider.com'}, HTTPStatus.BAD_REQUEST
 
     try:
         session.add(new_user)
