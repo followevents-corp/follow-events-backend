@@ -1,7 +1,7 @@
 from app.controllers import giveaway_controller
 from flask import Blueprint
 
-bp = Blueprint("giveaway", __name__, url_defaults="/events/<event_id>/giveaway")
+bp = Blueprint("giveaway", __name__, url_prefix="/events/<event_id>/giveaway")
 
 bp.post("")(giveaway_controller.create_giveaway)
 bp.get("")(giveaway_controller.get_giveaway)
