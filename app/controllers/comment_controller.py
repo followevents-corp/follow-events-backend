@@ -1,17 +1,9 @@
 from http import HTTPStatus
 from app.exceptions.request_data_exceptions import AttributeTypeError, MissingAttributeError
 from app.models.comment_model import Comment
-from app.configs.database import db
 from flask import jsonify, request
 
-from app.services.general_services import check_keys, check_keys_type
-
-session = db.session
-
-
-def save_changes(new_comment):
-    session.add(new_comment)
-    session.commit()
+from app.services.general_services import check_keys, check_keys_type, save_changes
 
 
 def create_comment(event_id: str):
@@ -25,7 +17,7 @@ def create_comment(event_id: str):
     except AttributeTypeError as e:
         return e.response, e.status_code
 
-    verified_key["event_id"] = event_id 
+    verified_key["event_id"] = event_id
     new_comment = Comment(**verified_key)
 
     save_changes(new_comment)
