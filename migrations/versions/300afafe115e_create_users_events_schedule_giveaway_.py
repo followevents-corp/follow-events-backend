@@ -1,8 +1,8 @@
 """create users, events, schedule, giveaway, users_giveaway, comments, categories and events_categories models
 
-Revision ID: c98bb6e15389
+Revision ID: 300afafe115e
 Revises: 
-Create Date: 2022-04-25 20:50:43.978822
+Create Date: 2022-04-25 20:58:22.078020
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = 'c98bb6e15389'
+revision = '300afafe115e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -51,7 +51,7 @@ def upgrade():
     op.create_table('comments',
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('comment', sa.String(length=255), nullable=False),
-    sa.Column('created_at', sa.DATETIME(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('event_id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.ForeignKeyConstraint(['event_id'], ['events.id'], ondelete='CASCADE'),
