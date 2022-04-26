@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from app.exceptions.request_data_exceptions import AttributeTypeError, MissingAttributeError
-from app.exceptions.verify_values import incoming_values
 from app.models.comment_model import Comment
+from app.services.verify_values import incoming_values
 from flask import jsonify, request
 
 from app.services.general_services import check_keys, check_keys_type, save_changes
