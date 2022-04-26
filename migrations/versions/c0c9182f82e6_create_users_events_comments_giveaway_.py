@@ -1,8 +1,8 @@
-"""create users, events, schedule, giveaway, users_giveaway, comments, categories and events_categories models
+"""create users, events, comments, giveaway schedule, users_giveaway, categories and events_categories tables
 
-Revision ID: 300afafe115e
+Revision ID: c0c9182f82e6
 Revises: 
-Create Date: 2022-04-25 20:58:22.078020
+Create Date: 2022-04-26 20:10:20.405476
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '300afafe115e'
+revision = 'c0c9182f82e6'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -29,7 +29,7 @@ def upgrade():
     sa.Column('username', sa.String(length=30), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=False),
     sa.Column('email', sa.String(length=255), nullable=False),
-    sa.Column('hash_password', sa.String(length=50), nullable=True),
+    sa.Column('hash_password', sa.String(length=255), nullable=True),
     sa.Column('profile_picture', sa.String(), nullable=True),
     sa.Column('creator', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
@@ -39,9 +39,11 @@ def upgrade():
     op.create_table('events',
     sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('name', sa.String(length=50), nullable=False),
+    sa.Column('description', sa.String(length=255), nullable=True),
     sa.Column('event_date', sa.String(), nullable=False),
     sa.Column('type_banner', sa.String(), nullable=False),
     sa.Column('link_banner', sa.String(), nullable=True),
+    sa.Column('event_link', sa.String(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('creator_id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.ForeignKeyConstraint(['creator_id'], ['users.id'], ondelete='CASCADE'),
