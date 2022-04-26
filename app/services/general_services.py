@@ -44,8 +44,7 @@ def check_keys_type(data: dict, keys_type: dict):
             raise AttributeTypeError(data, keys_type)
 
 
-session = db.session
-
 def save_changes(data):
+    session = db.session
     session.add(data)
     session.commit()
