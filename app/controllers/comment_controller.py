@@ -14,7 +14,7 @@ def save_changes(new_comment):
     session.commit()
 
 
-def create_comment():
+def create_comment(event_id: str):
     comment_data = request.get_json()
     try:
         verified_key = check_keys(comment_data, ['user_id', 'comment'])
@@ -25,6 +25,7 @@ def create_comment():
     except AttributeTypeError as e:
         return e.response, e.status_code
 
+    verified_key["event_id"] = event_id 
     new_comment = Comment(**verified_key)
 
     save_changes(new_comment)
