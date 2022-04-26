@@ -3,8 +3,7 @@ from datetime import datetime
 from uuid import uuid4
 
 from flask import Flask
-from sqlalchemy import (CheckConstraint, Column, DateTime, ForeignKey, Integer,
-                        String)
+from sqlalchemy import CheckConstraint, Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import validates
 
@@ -27,14 +26,16 @@ class Events(db.Model):
     __tablename__ = "events"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    name = Column(String(50), unique = True, nullable = False)
+    name = Column(String(50), unique=True, nullable=False)
     description = Column(String(255))
-    event_date = Column(String, nullable = False)
-    type_banner = Column(String, nullable = False)
+    event_date = Column(String, nullable=False)
+    type_banner = Column(String, nullable=False)
     link_banner = Column(String)
-    event_link = Column(String, nullable = False)
-    created_at = Column(DateTime, default = datetime.utcnow())
-    creator_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable = False)
+    event_link = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow())
+    creator_id = Column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+    )
 
     @validates("name")
     def validate_name(self, key, name_to_normalize):
@@ -57,4 +58,4 @@ class Events(db.Model):
             self.type_banner = response[1]
         else:
             raise TypeError
-            #colocar um erro personalizado!
+            # colocar um erro personalizado!
