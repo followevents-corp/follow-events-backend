@@ -6,6 +6,10 @@ from sqlalchemy.orm.session import Session
 
 from app.configs.database import db
 from app.models.events_model import Events
+
+from app.exceptions.invalid_id_exception import InvalidIdError
+from app.services.invalid_id_services import check_id_validation
+
 from app.services.events_services import get_additonal_information_of_event
 
 # def create_events():
@@ -37,8 +41,23 @@ def get_events():
     return jsonify(serialized_events), HTTPStatus.OK
 
 
+
 def get_by_id_event(events_id):
-    pass
+    try:
+        check_id_validation(events_id, Events)
+    except InvalidIdError as err:
+        return err.response, err.status_code
+
+    session: Session = db.session
+
+    event = session.query(Events).filter_by(id=events_id).first()
+
+    serialized_event = asdict(event)
+
+    result = get_additonal_information_of_event(serialized_event)
+
+    return jsonify(result), HTTPStatus.OK
+
 
 
 def update_event(events_id):
