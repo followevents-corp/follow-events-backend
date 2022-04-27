@@ -18,7 +18,7 @@ def create_comment(event_id: str):
     verified_values = incoming_values(comment_data)
     if verified_values:
         return jsonify(verified_values), HTTPStatus.BAD_REQUEST
-    
+
     try:
         check_id_validation(event_id)
         verified_key = check_keys(comment_data, ['user_id', 'comment'])
@@ -43,12 +43,12 @@ def create_comment(event_id: str):
 
 
 def get_comment(event_id: str):
-    
+
     try:
         check_id_validation(event_id, Events)
     except InvalidIdError as e:
         return e.response, e.status_code
-    
+
     session: Session = db.session
     all_comments: Query = (
         session.query(Comment)
@@ -65,5 +65,14 @@ def update_comment(comment_id: str, event_id: str):
     pass
 
 
-def delete_comment(comment_id: str, event_id: str):
-    pass
+def delete_comment(comment_id: str):
+    try:
+        check_id_validation(comment_id, Comment)
+    except InvalidIdError as e:
+        return e.response, e.status_code
+    
+    comment = Comment.query.filter_by(id=comment_id).first()
+
+    db.session.delete(comment)
+    db.session.commit()
+    return "", HTTPStatus.NO_CONTENT
