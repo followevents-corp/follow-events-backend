@@ -11,7 +11,9 @@ class UsersGiveaway(db.Model):
 
     id = Column(UUID(as_uuid=True), default=uuid4(), primary_key=True)
     user_id = Column(
-        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
     )
     giveaway_id = Column(
         UUID(as_uuid=True),

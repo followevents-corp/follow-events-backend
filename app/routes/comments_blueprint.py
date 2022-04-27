@@ -1,5 +1,5 @@
 from flask import Blueprint
-from app.controllers import comment_controller 
+from app.controllers import comment_controller
 
 bp = Blueprint('comments', __name__, url_prefix='/events')
 

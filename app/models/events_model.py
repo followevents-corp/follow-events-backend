@@ -33,7 +33,9 @@ class Events(db.Model):
     event_link = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     creator_id = Column(
-        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
     )
 
     @validates("name")

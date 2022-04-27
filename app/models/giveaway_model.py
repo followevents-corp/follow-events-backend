@@ -29,5 +29,7 @@ class Giveaway(db.Model):
     active = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime, default=dt.utcnow)
     event_id = Column(
-        UUID(as_uuid=True), ForeignKey("events.id", ondelete="CASCADE"), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey("events.id", ondelete="CASCADE"),
+        nullable=False,
     )

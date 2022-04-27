@@ -15,7 +15,9 @@ def create_categories(categories_names: list):
         if type(category) is not str or not category:
             raise CategoryTypeError(categories_names)
 
-        created_category = session.query(Categories).filter_by(name=category).first()
+        created_category = (
+            session.query(Categories).filter_by(name=category).first()
+        )
 
         if not created_category:
             categories_to_add.append(Categories(name=category))
