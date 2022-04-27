@@ -2,7 +2,7 @@ def create_giveaway():
     pass
 
 
-def get_giveaway(giveaway_id):
+def get_giveaway():
     pass
 
 
