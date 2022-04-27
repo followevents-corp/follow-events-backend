@@ -29,7 +29,17 @@ def create_event():
 
 
 def get_events():
-    pass
+    session: Session = db.session
+
+    events = session.query(Events).all()
+
+    serialized_events = [asdict(event) for event in events]
+
+    for event in serialized_events:
+        event = get_additonal_information_of_event(event)
+
+    return jsonify(serialized_events), HTTPStatus.OK
+
 
 
 def get_by_id_event(events_id):
@@ -47,6 +57,7 @@ def get_by_id_event(events_id):
     result = get_additonal_information_of_event(serialized_event)
 
     return jsonify(result), HTTPStatus.OK
+
 
 
 def update_event(events_id):
