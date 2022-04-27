@@ -32,7 +32,7 @@ def create_user():
     keys_types = {"username": str, "name": str, "email": str, "password": str}
     try:
         check_keys_type(new_data, keys_types)
-    except AttributeTypeError:
+    except AttributeTypeError as e:
         return e.response ,HTTPStatus.BAD_REQUEST
 
     try:
