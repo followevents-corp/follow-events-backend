@@ -9,7 +9,7 @@ from app.configs.database import db
 class UsersGiveaway(db.Model):
     __tablename__ = "users_giveaway"
 
-    id = Column(UUID(as_uuid=True), default=uuid4(), primary_key=True)
+    id = Column(UUID(as_uuid=True), default=uuid4, primary_key=True)
     user_id = Column(
         UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
@@ -18,4 +18,3 @@ class UsersGiveaway(db.Model):
         ForeignKey("giveaway.id", ondelete="CASCADE"),
         nullable=False,
     )
-   
