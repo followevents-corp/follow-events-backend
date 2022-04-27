@@ -26,8 +26,8 @@ class Giveaway(db.Model):
     description = Column(String(255), nullable=False)
     award = Column(String(50), nullable=False)
     award_picture = Column(String)
-    active = Column(Boolean, nullable=False)
-    created_at = Column(DateTime, default=dt.utcnow())
+    active = Column(Boolean, nullable=False, default=True)
+    created_at = Column(DateTime, default=dt.utcnow)
     event_id = Column(
         UUID(as_uuid=True),
         ForeignKey("events.id", ondelete="CASCADE"),
