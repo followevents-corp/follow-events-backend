@@ -1,5 +1,4 @@
 from http import HTTPStatus
-
 from app.configs.database import db
 from app.models.events_model import Events
 from app.models.giveaway_model import Giveaway
