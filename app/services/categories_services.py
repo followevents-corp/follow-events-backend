@@ -12,7 +12,7 @@ def create_categories(categories_names: list):
 
     for category in categories_names:
 
-        if type(category) is not str:
+        if type(category) is not str or not category:
             raise CategoryTypeError(categories_names)
 
         created_category = session.query(Categories).filter_by(name=category).first()
