@@ -33,9 +33,7 @@ def create_user():
     try:
         check_keys_type(new_data, keys_types)
     except AttributeTypeError:
-        return {
-            "error": "All the incoming values must be a str (string) type."
-        }
+        return e.response ,HTTPStatus.BAD_REQUEST
 
     try:
         new_user = User(**new_data)

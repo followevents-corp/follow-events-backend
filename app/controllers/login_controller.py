@@ -16,16 +16,11 @@ def login_user():
 
     try:
         check_keys_type(new_data, {"email": str, "password": str})
-    except AttributeTypeError:
-        return {
-            "error": "All the incoming values must be a str (string) type."
-        }, HTTPStatus.BAD_REQUEST
+    except AttributeTypeError as e:
+        return e.response ,HTTPStatus.BAD_REQUEST
 
     found_user = User.query.filter_by(email=new_data["email"]).first()
-    if not found_user:
-        return {"error": "Invalid email or password."}, HTTPStatus.NOT_FOUND
-
-    if not found_user.check_password(new_data["password"]):
+    if not found_user or not found_user.check_password(new_data["password"]):
         return {"error": "Invalid email or password."}, HTTPStatus.NOT_FOUND
 
     access_token = create_access_token(identity=found_user.username)
