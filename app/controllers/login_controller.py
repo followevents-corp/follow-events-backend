@@ -25,7 +25,7 @@ def login_user():
 
     access_token = create_access_token(identity=found_user.username)
     schedule_url = url_for('schedule.get_schedule', user_id=found_user.id)
-    events_url = url_for('events.get_by_user_id', user_id=found_user.id)
+    events_url = url_for('events.get_event_by_id', user_id=found_user.id)
 
     return {
         "id": found_user.id,
