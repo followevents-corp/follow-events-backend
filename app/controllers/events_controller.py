@@ -1,18 +1,14 @@
 from dataclasses import asdict
 from http import HTTPStatus
-from pprint import pprint
 
 from flask import jsonify, request, url_for
-
-from app.configs.database import db
-
 from sqlalchemy.orm.session import Session
 
-from app.models.events_model import Events
+from app.configs.database import db
 from app.models.categories_events_model import EventsCategories
 from app.models.categories_model import Categories
+from app.models.events_model import Events
 from app.models.schedule_model import Schedule
-from app.models.giveaway_model import Giveaway
 
 # def create_events():
 #     files = request.files
@@ -53,7 +49,6 @@ def get_events():
         event["quantity_users"] = (
             session.query(Schedule).filter(event["id"] == Schedule.event_id).count()
         )
-
         event["categories"] = [category.name for category in categories_class]
         comment_url = url_for("comments.get_comment", event_id=event["id"])
         giveaway_url = url_for("giveaway.get_giveaway", event_id=event["id"])
