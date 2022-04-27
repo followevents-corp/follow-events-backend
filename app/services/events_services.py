@@ -11,7 +11,7 @@ from app.models.schedule_model import Schedule
 def get_additonal_information_of_event(data: dict) -> dict:
     """
     Args:
-        data (dict): corpo da requisição
+        data (dict): dicionário de evento
 
     Returns:
         dict: um dicionário da model Events adiconando a quantidade de usuários
@@ -25,8 +25,6 @@ def get_additonal_information_of_event(data: dict) -> dict:
         .select_from(EventsCategories)
         .join(Events)
         .join(Categories)
-        .filter(data["id"] == EventsCategories.event_id)
-        .filter(Categories.id == EventsCategories.category_id)
         .filter(Events.id == data["id"])
         .all()
     )
