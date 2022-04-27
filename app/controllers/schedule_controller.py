@@ -35,11 +35,15 @@ def create_schedule(user_id):
     event_id = new_data.get("event_id")
 
     existing_schedule = (
-        session.query(Schedule).filter_by(user_id=user_id, event_id=event_id).first()
+        session.query(Schedule)
+        .filter_by(user_id=user_id, event_id=event_id)
+        .first()
     )
 
     if existing_schedule:
-        return {"error": "Event already added to user's schedule"}, HTTPStatus.CONFLICT
+        return {
+            "error": "Event already added to user's schedule"
+        }, HTTPStatus.CONFLICT
 
     new_data.update({"user_id": user_id})
     new_schedule = Schedule(**new_data)

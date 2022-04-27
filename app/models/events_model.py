@@ -3,7 +3,14 @@ from datetime import datetime
 from uuid import uuid4
 
 from flask import Flask
-from sqlalchemy import CheckConstraint, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import (
+    CheckConstraint,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import validates
 
@@ -34,7 +41,9 @@ class Events(db.Model):
     event_link = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow())
     creator_id = Column(
-        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
     )
 
     @validates("name")

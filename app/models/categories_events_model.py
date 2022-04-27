@@ -12,7 +12,11 @@ class EventsCategories(db.Model):
     __tablename__ = "events_categories"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    event_id = Column(UUID(as_uuid=True), ForeignKey("events.id", ondelete="CASCADE"), nullable=False)
+    event_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("events.id", ondelete="CASCADE"),
+        nullable=False,
+    )
     category_id = Column(
         UUID(as_uuid=True),
         ForeignKey("categories.id", ondelete="CASCADE"),

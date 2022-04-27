@@ -6,7 +6,11 @@ from app.services.invalid_id_services import check_id_validation
 from app.services.verify_values import incoming_values
 from flask import jsonify, request
 from app.configs.database import db
-from app.services.general_services import check_keys, check_keys_type, save_changes
+from app.services.general_services import (
+    check_keys,
+    check_keys_type,
+    save_changes,
+)
 from sqlalchemy.orm import Query
 from app.models.events_model import Events
 from sqlalchemy.orm.session import Session
@@ -36,10 +40,15 @@ def create_comment(event_id: str):
 
     save_changes(new_comment)
 
-    return jsonify({
-        "user_id": new_comment.user_id,
-        "comment": new_comment.comment,
-    }), HTTPStatus.CREATED
+    return (
+        jsonify(
+            {
+                "user_id": new_comment.user_id,
+                "comment": new_comment.comment,
+            }
+        ),
+        HTTPStatus.CREATED,
+    )
 
 
 def get_comment(event_id: str):

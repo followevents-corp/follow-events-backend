@@ -19,14 +19,18 @@
 def create_event():
     pass
 
+
 def get_events():
     pass
+
 
 def get_by_id_event(events_id):
     pass
 
+
 def update_event(events_id):
     pass
+
 
 def del_event(events_id):
     pass
