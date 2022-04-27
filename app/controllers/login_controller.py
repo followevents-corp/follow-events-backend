@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from flask import request
+from flask import request, url_for
 from flask_jwt_extended import (create_access_token)
 from app.models.user_model import User
 from app.services.general_services import check_keys, check_keys_type
@@ -24,6 +24,8 @@ def login_user():
         return {"error": "Invalid email or password."}, HTTPStatus.NOT_FOUND
 
     access_token = create_access_token(identity=found_user.username)
+    schedule_url = url_for('schedule.get_schedule', user_id=found_user.id)
+    events_url = url_for('events.get_by_user_id', user_id=found_user.id)
 
     return {
         "id": found_user.id,
@@ -32,7 +34,7 @@ def login_user():
         "email": found_user.email,
         "profile_picture": found_user.profile_picture,
         "creator": found_user.creator,
-        "schedule": f"basURL/users/{found_user.id}/schedule",
-        "events": f"basURL/events/{found_user.id}",
+        "schedule": f"{request.host_url[:-1]}{schedule_url}",
+        "events": f"{request.host_url[:-1]}{events_url}",
         "access_token": access_token,
     }, HTTPStatus.OK
