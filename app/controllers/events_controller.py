@@ -1,14 +1,12 @@
 from dataclasses import asdict
 from http import HTTPStatus
 
-from flask import jsonify, request, url_for
+from flask import jsonify
 from sqlalchemy.orm.session import Session
 
 from app.configs.database import db
-from app.models.categories_events_model import EventsCategories
-from app.models.categories_model import Categories
 from app.models.events_model import Events
-from app.models.schedule_model import Schedule
+from app.services.events_services import get_additonal_information_of_event
 
 # def create_events():
 #     files = request.files
@@ -33,27 +31,8 @@ def get_events():
 
     serialized_events = [asdict(event) for event in events]
 
-    url_base = request.host_url[:-1]
-
     for event in serialized_events:
-        categories_class = (
-            session.query(Categories)
-            .select_from(EventsCategories)
-            .join(Events)
-            .join(Categories)
-            .filter(event["id"] == EventsCategories.event_id)
-            .filter(Categories.id == EventsCategories.category_id)
-            .all()
-        )
-
-        event["quantity_users"] = (
-            session.query(Schedule).filter(event["id"] == Schedule.event_id).count()
-        )
-        event["categories"] = [category.name for category in categories_class]
-        comment_url = url_for("comments.get_comment", event_id=event["id"])
-        giveaway_url = url_for("giveaway.get_giveaway", event_id=event["id"])
-        event["comments"] = f"{url_base}{comment_url}"
-        event["giveaway"] = f"{url_base}{giveaway_url}"
+        event = get_additonal_information_of_event(event)
 
     return jsonify(serialized_events), HTTPStatus.OK
 
