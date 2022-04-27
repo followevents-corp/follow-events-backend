@@ -8,6 +8,7 @@ from app.exceptions.request_data_exceptions import (
     AttributeTypeError,
     MissingAttributeError,
 )
+from app.models.events_model import Events
 from app.models.schedule_model import Schedule
 from app.services.general_services import check_keys, check_keys_type
 from app.services.verify_values import incoming_values
@@ -53,8 +54,14 @@ def create_schedule(user_id):
     )
 
 
-def get_schedule():
-    pass
+def get_schedule(user_id):
+    session: Session = db.session
+    # tratar erro caso user_id não exista
+    scheduled_events = session.query(Events).select_from(Events).join(Schedule).filter(Schedule.user_id==user_id).all()
+    # tratar scheduled_events para retornar formato adequado
+
+    return jsonify(scheduled_events), HTTPStatus.OK
+
 
 
 def delete_schedule(event_id):
