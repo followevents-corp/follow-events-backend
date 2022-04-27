@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
 from uuid import uuid4
-
 from flask import Flask
 from sqlalchemy import (
     CheckConstraint,
@@ -39,7 +38,7 @@ class Events(db.Model):
     type_banner = Column(String, nullable=False)
     link_banner = Column(String)
     event_link = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow())
+    created_at = Column(DateTime, default=datetime.utcnow)
     creator_id = Column(
         UUID(as_uuid=True),
         ForeignKey("users.id", ondelete="CASCADE"),
