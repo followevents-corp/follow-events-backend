@@ -51,7 +51,7 @@ def create_giveaway(event_id: str):
         return {"Error": f"Event {event.name} already happened"}, HTTPStatus.BAD_REQUEST
 
     verified_key["event_id"] = event_id
-    
+
     new_giveaway = Giveaway(**verified_key)
 
     save_changes(new_giveaway)
@@ -59,8 +59,18 @@ def create_giveaway(event_id: str):
     return jsonify(new_giveaway), HTTPStatus.CREATED
 
 
-def get_giveaway(giveaway_id):
-    pass
+def get_giveaway(event_id: str):
+    session: Session = db.session
+
+    giveaways: Query = (
+        session.query(Giveaway)
+        .select_from(Events)
+        .join(Giveaway)
+        .filter(Events.id == event_id)
+        .all()
+    )
+
+    return jsonify(giveaways), HTTPStatus.OK
 
 
 def update_giveaway(giveaway_id):
