@@ -35,7 +35,7 @@ def create_giveaway(event_id: str):
     except AttributeTypeError as e:
         return e.response, e.status_code
 
-    verified_key["events_id"] = event_id
+    verified_key["event_id"] = event_id
     new_giveaway = Giveaway(**verified_key)
 
     save_changes(new_giveaway)
