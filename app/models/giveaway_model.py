@@ -17,7 +17,7 @@ class Giveaway(db.Model):
     award_picture: str
     active: bool
     created_at: str
-    events_id: str
+    event_id: str
 
     __tablename__ = "giveaway"
 
@@ -26,8 +26,8 @@ class Giveaway(db.Model):
     description = Column(String(255), nullable=False)
     award = Column(String(50), nullable=False)
     award_picture = Column(String)
-    active = Column(Boolean, nullable=False)
+    active = Column(Boolean, nullable=False, default=True)
     created_at = Column(DateTime, default=dt.utcnow())
-    events_id = Column(
+    event_id = Column(
         UUID(as_uuid=True), ForeignKey("events.id", ondelete="CASCADE"), nullable=False
     )
