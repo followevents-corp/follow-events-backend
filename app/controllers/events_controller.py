@@ -42,7 +42,6 @@ def get_events():
 
 
 
-
 def get_by_id_event(events_id):
     try:
         check_id_validation(events_id, Events)
@@ -58,7 +57,6 @@ def get_by_id_event(events_id):
     result = get_additonal_information_of_event(serialized_event)
 
     return jsonify(result), HTTPStatus.OK
-
 
 
 
