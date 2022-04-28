@@ -9,7 +9,14 @@ from app.exceptions.request_data_exceptions import (
 )
 from app.models.events_model import Events
 from app.models.giveaway_model import Giveaway
-from app.services.general_services import check_id_validation, check_keys, check_keys_type, incoming_values, save_changes
+from app.services.general_services import (
+    check_id_validation,
+    check_keys,
+    check_keys_type,
+    incoming_values,
+    remove_unnecessary_keys,
+    save_changes,
+)
 from flask import jsonify, request
 from sqlalchemy.orm import Query
 from sqlalchemy.orm.session import Session
@@ -43,8 +50,7 @@ def create_giveaway(event_id: str):
 
     session: Session = db.session
     event: Query = (
-        session.query(Events).select_from(
-            Events).filter(Events.id == event_id).first()
+        session.query(Events).select_from(Events).filter(Events.id == event_id).first()
     )
 
     evt_date = dt.strptime(event.event_date, "%a, %d %b %Y %H:%M:%S %Z")
@@ -99,7 +105,9 @@ def update_giveaway(giveaway_id, event_id):
             "active": bool,
         }
 
-        verified_key = check_keys(data, valid_keys)
+        verified_key = remove_unnecessary_keys(data, valid_keys)[0]
+        if not verified_key:
+            return {"error": "No data to update"}, HTTPStatus.BAD_REQUEST
 
         check_keys_type(verified_key, valid_key_types)
 
@@ -118,15 +126,7 @@ def update_giveaway(giveaway_id, event_id):
         .first()
     )
 
-    updated_giveaway = {
-        "name": data["name"],
-        "description": data["description"],
-        "award": data["award"],
-        "award_picture": data["award_picture"],
-        "active": data["active"],
-    }
-
-    for key, value in updated_giveaway.items():
+    for key, value in verified_key.items():
         setattr(giveaway, key, value)
 
     session.add(giveaway)
