@@ -6,13 +6,14 @@ from flask import jsonify, request
 from sqlalchemy.orm.session import Session
 
 from app.configs.database import db
+from app.exceptions.request_data_exceptions import AttributeTypeError, MissingAttributeError
+from app.exceptions.user_exceptions import NotLoggedUser
 from app.models.events_model import Events
 from app.models.user_model import User
 
 from app.exceptions.invalid_id_exception import InvalidIdError
-
+from app.services.general_services import check_id_validation, check_if_the_user_owner, check_keys, check_keys_type, remove_unnecessary_keys, save_changes
 from app.services.events_services import get_additonal_information_of_event
-from app.services.general_services import check_id_validation
 
 # def create_events():
 #     files = request.files
@@ -48,6 +49,8 @@ def get_event_by_id(user_id):
         check_id_validation(user_id, User)
     except InvalidIdError as err:
         return err.response, err.status_code
+    except AttributeTypeError as e:
+        return e.response, e.status_code
 
     session: Session = db.session
 
@@ -63,31 +66,55 @@ def get_event_by_id(user_id):
     return jsonify(result), HTTPStatus.OK
 
 
+# {
+#   "name": "Live jogando control - parte 2",
+#   "event_date": "Sun Apr 03 2022 19:10:40 GMT-0300 (Brasilia Standard Time)",
+#   "description": "Aqui entra a descrição",
+# 	"event_link": "https://www.youtube.com/watch?v=Vi9qS7429FQ",
+# 	"categories": ["games", "live"],
+# 	"creator_id":
+# }
+
+
+
+
+
 def update_event(event_id):
+    keys = ["name", "description", "event_link", "categories"]
+    values = {"name": str, "description": str,
+              "event_link": str, "categories": list}
+
     try:
+        data = remove_unnecessary_keys(json.loads(request.form["file"]), keys)[0]
+        if not data:
+            return {"error": "No data to update"}, HTTPStatus.BAD_REQUEST
         check_id_validation(event_id, Events)
+        check_if_the_user_owner(Events, event_id)
+        check_keys_type(data, values)
     except InvalidIdError as err:
         return err.response, err.status_code
-
-    keys = ["name", "description", "event_date", "event_link", "creator_id"]
-    files = request.files
-
-    file = files["file"]
-    data = json.loads(request.form["data"])
-
+    except AttributeTypeError as e:
+        return e.response, e.status_code
+    except NotLoggedUser as e:
+        return e.response, e.status_code
+    except MissingAttributeError as e:
+        return e.response, e.status_code
+    
     session: Session = db.session
 
     event = session.query(Events).filter_by(id=event_id).first()
 
-    serialized_event = [asdict(current) for current in event]
-
-    for event in serialized_event:
-        event = get_additonal_information_of_event(event)
+    serialized_event = asdict(event)
 
     for key, value in data.items():
-        setattr(data, key, value)
+        setattr(event, key, value)
 
-    return jsonify(), HTTPStatus.OK
+    save_changes(event)
+   
+
+    event = get_additonal_information_of_event(serialized_event)
+
+    return jsonify(event), HTTPStatus.OK
 
 
 def delete_event(event_id):
