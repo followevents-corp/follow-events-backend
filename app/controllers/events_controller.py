@@ -44,13 +44,16 @@ def get_events():
 
 def get_event_by_id(user_id):
     try:
-        check_id_validation(user_id, Events)
+        check_id_validation(user_id, User)
     except InvalidIdError as err:
         return err.response, err.status_code
 
     session: Session = db.session
 
     event = session.query(Events).filter_by(creator_id=user_id).first()
+
+    if not event:
+        return {"error": "Event not found"}, HTTPStatus.NOT_FOUND
 
     serialized_event = asdict(event)
 
