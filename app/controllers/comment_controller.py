@@ -1,12 +1,14 @@
 from http import HTTPStatus
 from app.exceptions.invalid_id_exception import InvalidIdError
 from app.exceptions.request_data_exceptions import AttributeTypeError, MissingAttributeError
+from app.exceptions.user_exceptions import NotLoggedUser
 from app.models.comment_model import Comment
 from app.models.user_model import User
 from flask import jsonify, request
 from app.configs.database import db
 from app.services.general_services import (
     check_id_validation,
+    check_if_the_user_owner,
     check_keys,
     check_keys_type,
     incoming_values,
@@ -15,8 +17,10 @@ from app.services.general_services import (
 from sqlalchemy.orm import Query
 from app.models.events_model import Events
 from sqlalchemy.orm.session import Session
+from flask_jwt_extended import jwt_required
 
 
+@jwt_required()
 def create_comment(event_id: str):
     comment_data = request.get_json()
 
@@ -76,10 +80,11 @@ def get_comment(event_id: str):
     return jsonify(response), HTTPStatus.OK
 
 
+@jwt_required()
 def update_comment(comment_id: str):
     data = request.get_json()
-
     try:
+        check_if_the_user_owner(Comment, comment_id)
         check_id_validation(comment_id, Comment)
         verified_key = check_keys(data, ['comment'])
         check_keys_type(verified_key, {'comment': str})
@@ -89,6 +94,8 @@ def update_comment(comment_id: str):
     except AttributeTypeError as e:
         return e.response, e.status_code
     except InvalidIdError as e:
+        return e.response, e.status_code
+    except NotLoggedUser as e:
         return e.response, e.status_code
 
     comment = Comment.query.filter_by(id=comment_id).first()
@@ -110,14 +117,19 @@ def update_comment(comment_id: str):
     }), HTTPStatus.OK
 
 
+@jwt_required()
 def delete_comment(comment_id: str):
     try:
         check_id_validation(comment_id, Comment)
+        check_if_the_user_owner(Comment, comment_id)
     except InvalidIdError as e:
         return e.response, e.status_code
-
+    except NotLoggedUser as e:
+        return e.response, e.status_code
+    
     comment = Comment.query.filter_by(id=comment_id).first()
 
     db.session.delete(comment)
     db.session.commit()
     return "", HTTPStatus.NO_CONTENT
+
