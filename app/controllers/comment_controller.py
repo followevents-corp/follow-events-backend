@@ -3,13 +3,13 @@ from app.exceptions.invalid_id_exception import InvalidIdError
 from app.exceptions.request_data_exceptions import AttributeTypeError, MissingAttributeError
 from app.models.comment_model import Comment
 from app.models.user_model import User
-from app.services.invalid_id_services import check_id_validation
-from app.services.verify_values import incoming_values
 from flask import jsonify, request
 from app.configs.database import db
 from app.services.general_services import (
+    check_id_validation,
     check_keys,
     check_keys_type,
+    incoming_values,
     save_changes,
 )
 from sqlalchemy.orm import Query
@@ -78,7 +78,7 @@ def get_comment(event_id: str):
 
 def update_comment(comment_id: str):
     data = request.get_json()
-    
+
     try:
         check_id_validation(comment_id, Comment)
         verified_key = check_keys(data, ['comment'])

@@ -1,4 +1,3 @@
-from asyncio import events
 from app.configs.database import db
 from app.exceptions.request_data_exceptions import (AttributeTypeError,
                                                     MissingAttributeError)
