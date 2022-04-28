@@ -1,8 +1,13 @@
-# from http import HTTPStatus
+from http import HTTPStatus
+from pprint import pprint
+import json
 
-# from flask import current_app, jsonify, request
+from flask import current_app, jsonify, request
 
-# from app.models.events_model import Events
+from app.models.events_model import Events
+from app.services.verify_values import incoming_values
+from app.services.general_services import check_keys, save_changes
+from app.services.categories_services import create_categories
 
 # def create_events():
 #     files = request.files
@@ -17,7 +22,26 @@
 
 
 def create_event():
-    pass
+    keys = ["name", "description", "event_date", "event_link","creator_id"]
+    files = request.files
+
+    file = files["file"]
+    data = json.loads(request.form["data"])
+
+    categories = data["categories"]
+    create_categories(categories)
+
+    data.pop("categories")
+
+    new_data = check_keys(data, keys)
+    verify_values = incoming_values(data)
+
+    if verify_values:
+        return jsonify(verify_values), HTTPStatus.BAD_REQUEST
+
+    event = Events(**data,  link = file)
+    # save_changes(event)
+    return jsonify(event), HTTPStatus.CREATED
 
 def get_events():
     pass

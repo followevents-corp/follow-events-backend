@@ -44,10 +44,10 @@ class Events(db.Model):
     @property
     def create_at(self):
         raise AttributeError("Can't access create_at value")
-
+    
     @property
     def link(self):
-        raise AttributeError("Can't access link value")
+        raise AttributeError("Can't access create_at value")
 
     @link.setter
     def link(self, link_to_verify):
