@@ -1,7 +1,8 @@
 from dataclasses import asdict
 from http import HTTPStatus
+import json
 
-from flask import jsonify
+from flask import jsonify, request
 from sqlalchemy.orm.session import Session
 
 from app.configs.database import db
@@ -63,7 +64,30 @@ def get_event_by_id(user_id):
 
 
 def update_event(event_id):
-    pass
+    try:
+        check_id_validation(event_id, Events)
+    except InvalidIdError as err:
+        return err.response, err.status_code
+
+    keys = ["name", "description", "event_date", "event_link", "creator_id"]
+    files = request.files
+
+    file = files["file"]
+    data = json.loads(request.form["data"])
+
+    session: Session = db.session
+
+    event = session.query(Events).filter_by(id=event_id).first()
+
+    serialized_event = [asdict(current) for current in event]
+
+    for event in serialized_event:
+        event = get_additonal_information_of_event(event)
+
+    for key, value in data.items():
+        setattr(data, key, value)
+
+    return jsonify(), HTTPStatus.OK
 
 
 def delete_event(event_id):
@@ -79,4 +103,4 @@ def delete_event(event_id):
     session.delete(event)
     session.commit()
 
-    return '', HTTPStatus.NO_CONTENT
+    return "", HTTPStatus.NO_CONTENT
