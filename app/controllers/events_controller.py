@@ -66,19 +66,6 @@ def get_event_by_id(user_id):
     return jsonify(result), HTTPStatus.OK
 
 
-# {
-#   "name": "Live jogando control - parte 2",
-#   "event_date": "Sun Apr 03 2022 19:10:40 GMT-0300 (Brasilia Standard Time)",
-#   "description": "Aqui entra a descrição",
-# 	"event_link": "https://www.youtube.com/watch?v=Vi9qS7429FQ",
-# 	"categories": ["games", "live"],
-# 	"creator_id":
-# }
-
-
-
-
-
 def update_event(event_id):
     keys = ["name", "description", "event_link", "categories"]
     values = {"name": str, "description": str,
