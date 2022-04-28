@@ -1,5 +1,5 @@
 from http import HTTPStatus
-from flask import jsonify, request
+from flask import jsonify, request, url_for
 from sqlalchemy.orm import Query
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import IntegrityError, DataError
@@ -11,8 +11,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.exceptions.user_exceptions import EmailFormatError
 from app.configs.database import db
 from app.models.user_model import User
-from app.services.general_services import check_keys, check_keys_type
-from app.services.verify_values import incoming_values
+from app.services.general_services import check_keys, check_keys_type, incoming_values
+
 
 session: Session = db.session
 
@@ -82,10 +82,22 @@ def get_user(user_id):
     if not user:
         return {'error': 'Id not found in database.'}, HTTPStatus.NOT_FOUND
 
-    if user.username != current_user:
+    if user.id != current_user:
         return {'error': 'Unauthorized.'}, HTTPStatus.UNAUTHORIZED
+    
+    schedule_url = url_for("schedule.get_schedule", user_id=user.id)
+    events_url = url_for("user.get_event_by_id", user_id=user.id)
 
-    return jsonify(user), HTTPStatus.OK
+    return {
+        "id": user.id,
+        "name": user.name,
+        "username": user.username,
+        "email": user.email,
+        "profile_picture": user.profile_picture,
+        "creator": user.creator,
+        "schedule": f"{request.host_url[:-1]}{schedule_url}",
+        "events": f"{request.host_url[:-1]}{events_url}",
+    }, HTTPStatus.OK
 
 
 def update_user(user_id):
