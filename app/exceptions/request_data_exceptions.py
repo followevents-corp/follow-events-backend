@@ -25,3 +25,10 @@ class AttributeTypeError(Exception):
         }
 
         return output
+
+
+class FileTypeError(Exception):
+    def __init__(self, message="Invalid file", status_code=400):
+        self.message = message
+        self.response = {"error": self.message}
+        self.status_code = status_code
