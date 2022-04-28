@@ -157,8 +157,8 @@ def update_user(user_id: str):
         'email': user.email,
         'profile_picture': user.profile_picture,
         'creator': user.creator,
-        'schedule': schedule_url,
-        'events': events_url
+        'schedule': f'{request.host_url[:-1]}{schedule_url}',
+        'events': f'{request.host_url[:-1]}{events_url}'
     }, HTTPStatus.OK
 
 
