@@ -44,7 +44,7 @@ def get_events():
 
 def get_event_by_id(user_id):
     try:
-        check_id_validation(user_id, User)
+        check_id_validation(user_id, Events)
     except InvalidIdError as err:
         return err.response, err.status_code
 
