@@ -162,5 +162,24 @@ def update_user(user_id: str):
     }, HTTPStatus.OK
 
 
-def delete_user(user_id):
-    pass
+@jwt_required()
+def delete_user(user_id: str):
+    current_user = get_jwt_identity()
+
+    user: Query = (
+        session.query(User)
+        .select_from(User)
+        .filter(User.id == user_id)
+        .first()
+    )
+
+    if not user:
+        return {'error': 'Id not found in database.'}, HTTPStatus.NOT_FOUND
+    
+    if str(user.id) != current_user:
+        return {'error': 'Unauthorized.'}, HTTPStatus.BAD_REQUEST
+    
+    session.delete(user)
+    session.commit()
+
+    return '', HTTPStatus.NO_CONTENT
