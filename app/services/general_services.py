@@ -1,6 +1,13 @@
+from asyncio import events
 from app.configs.database import db
 from app.exceptions.request_data_exceptions import (AttributeTypeError,
                                                     MissingAttributeError)
+from app.exceptions.user_exceptions import NotLoggedUser
+from app.models.events_model import Events
+from app.models.user_model import User
+from app.models.giveaway_model import Giveaway
+from sqlalchemy.orm.session import Session
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 def remove_unnecessary_keys(data: dict, necessary_keys: list):
@@ -23,8 +30,6 @@ def remove_unnecessary_keys(data: dict, necessary_keys: list):
             new_data.pop(key)
 
     return (new_data, not_used_keys)
-
-
 
 
 def check_keys(data: dict, mandatory_keys: list):
@@ -67,3 +72,22 @@ def save_changes(data):
     session = db.session
     session.add(data)
     session.commit()
+
+
+@jwt_required()
+def check_if_the_user_owner(model, id_to_check=""):
+    user_id = get_jwt_identity()
+    session: Session = db.session
+    if model is Events:
+        search = session.query(model).filter_by(creator_id=user_id).first()
+    elif model is User:
+        search = session.query(model).filter_by(id=user_id).first()
+    elif model is Giveaway:
+        search = session.query(model).select_from(Events).join(
+            Giveaway).filter(Events.creator_id == user_id, Giveaway.id == id_to_check).first()
+    else:
+        search = session.query(model).filter_by(
+            user_id=user_id, id=id_to_check).first()
+
+    if not search:
+        raise NotLoggedUser
