@@ -1,11 +1,13 @@
 from http import HTTPStatus
 from flask import jsonify, request
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Query
+from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import IntegrityError, DataError
 from app.exceptions.request_data_exceptions import (
     AttributeTypeError,
     MissingAttributeError,
 )
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.exceptions.user_exceptions import EmailFormatError
 from app.configs.database import db
 from app.models.user_model import User
@@ -65,9 +67,25 @@ def create_user():
 
     return jsonify(new_user), HTTPStatus.CREATED
 
-
+@jwt_required()
 def get_user(user_id):
-    pass
+
+    current_user = get_jwt_identity()
+    
+    user: Query = (
+        session.query(User)
+        .select_from(User)
+        .filter(User.id == user_id)
+        .first()
+    )
+
+    if not user:
+        return {'error': 'Id not found in database.'}, HTTPStatus.NOT_FOUND
+
+    if user.username != current_user:
+        return {'error': 'Unauthorized.'}, HTTPStatus.UNAUTHORIZED
+
+    return jsonify(user), HTTPStatus.OK
 
 
 def update_user(user_id):
