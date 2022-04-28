@@ -76,4 +76,4 @@ def delete_event(event_id):
     session.delete(event)
     session.commit()
 
-    return {"message": "Event deleted."}, HTTPStatus.OK
+    return '', HTTPStatus.NO_CONTENT
