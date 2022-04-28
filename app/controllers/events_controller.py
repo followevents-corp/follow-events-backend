@@ -1,7 +1,7 @@
 from dataclasses import asdict
 from http import HTTPStatus
 
-from flask import jsonify, session
+from flask import jsonify
 from sqlalchemy.orm.session import Session
 
 from app.configs.database import db
