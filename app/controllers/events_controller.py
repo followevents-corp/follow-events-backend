@@ -5,13 +5,15 @@ from flask import jsonify
 from sqlalchemy.orm.session import Session
 
 from app.configs.database import db
+from app.exceptions.user_exceptions import NotLoggedUser
 from app.models.events_model import Events
 from app.models.user_model import User
 
 from app.exceptions.invalid_id_exception import InvalidIdError
 
 from app.services.events_services import get_additonal_information_of_event
-from app.services.general_services import check_id_validation
+from app.services.general_services import check_id_validation, check_if_the_user_owner
+from flask_jwt_extended import jwt_required
 
 # def create_events():
 #     files = request.files
@@ -65,13 +67,15 @@ def get_event_by_id(user_id):
 def update_event(event_id):
     pass
 
-
+@jwt_required()
 def delete_event(event_id):
     try:
+        check_if_the_user_owner(Events, event_id)
         check_id_validation(event_id, Events)
     except InvalidIdError as err:
         return err.response, err.status_code
-
+    except NotLoggedUser as err:
+        return err.response, err.status_code
     session: Session = db.session
 
     event = session.query(Events).filter_by(id=event_id).first()
