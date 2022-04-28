@@ -8,6 +8,7 @@ from app.models.user_model import User
 from app.models.giveaway_model import Giveaway
 from sqlalchemy.orm.session import Session
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.exceptions.invalid_id_exception import InvalidIdError
 
 
 def remove_unnecessary_keys(data: dict, necessary_keys: list):
@@ -91,3 +92,23 @@ def check_if_the_user_owner(model, id_to_check=""):
 
     if not search:
         raise NotLoggedUser
+
+
+def check_id_validation(id: str, model: db.Model = None):
+    if len(id) != 36:
+        raise InvalidIdError(
+            message={"error": f"The id {id} is not valid."}, status_code=400
+        )
+
+    if model:
+        search = model.query.filter_by(id=id).first()
+        if not search:
+            raise InvalidIdError(
+                message={"error": f"The id {id} is not in database."})
+
+
+def incoming_values(data):
+    values_data = [value for value in data.values()]
+
+    if "" in values_data:
+        return {"error": "Incoming value is empty."}
