@@ -9,12 +9,13 @@ from app.exceptions.request_data_exceptions import (
 )
 from app.models.events_model import Events
 from app.models.giveaway_model import Giveaway
-from app.services.general_services import check_id_validation, check_keys, check_keys_type, incoming_values, save_changes
+from app.services.general_services import check_id_validation, check_if_the_user_owner, check_keys, check_keys_type, incoming_values, save_changes
 from flask import jsonify, request
 from sqlalchemy.orm import Query
 from sqlalchemy.orm.session import Session
+from flask_jwt_extended import jwt_required
 
-
+@jwt_required()
 def create_giveaway(event_id: str):
     data = request.get_json()
     verified_values = incoming_values(data)
@@ -134,11 +135,12 @@ def update_giveaway(giveaway_id, event_id):
 
     return jsonify(giveaway), HTTPStatus.OK
 
-
+@jwt_required()
 def delete_giveaway(event_id, giveaway_id):
     session: Session = db.session
 
     try:
+        check_if_the_user_owner(Giveaway, giveaway_id)
         check_id_validation(giveaway_id, Giveaway)
     except InvalidIdError as e:
         return e.response, e.status_code
