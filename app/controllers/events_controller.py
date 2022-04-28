@@ -1,7 +1,7 @@
 from dataclasses import asdict
 from http import HTTPStatus
 
-from flask import jsonify
+from flask import jsonify, session
 from sqlalchemy.orm.session import Session
 
 from app.configs.database import db
@@ -59,9 +59,21 @@ def get_event_by_id(user_id):
     return jsonify(result), HTTPStatus.OK
 
 
-def update_event(events_id):
+def update_event(event_id):
     pass
 
 
-def del_event(events_id):
-    pass
+def delete_event(event_id):
+    try:
+        check_id_validation(event_id, Events)
+    except InvalidIdError as err:
+        return err.response, err.status_code
+
+    session: Session = db.session
+
+    event = session.query(Events).filter_by(id=event_id).first()
+
+    session.delete(event)
+    session.commit()
+
+    return {"message": "Event deleted."}, HTTPStatus.OK
