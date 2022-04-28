@@ -9,9 +9,7 @@ from app.exceptions.request_data_exceptions import (
 )
 from app.models.events_model import Events
 from app.models.giveaway_model import Giveaway
-from app.services.general_services import check_keys, check_keys_type, save_changes
-from app.services.invalid_id_services import check_id_validation
-from app.services.verify_values import incoming_values
+from app.services.general_services import check_id_validation, check_keys, check_keys_type, incoming_values, save_changes
 from flask import jsonify, request
 from sqlalchemy.orm import Query
 from sqlalchemy.orm.session import Session
@@ -45,7 +43,8 @@ def create_giveaway(event_id: str):
 
     session: Session = db.session
     event: Query = (
-        session.query(Events).select_from(Events).filter(Events.id == event_id).first()
+        session.query(Events).select_from(
+            Events).filter(Events.id == event_id).first()
     )
 
     evt_date = dt.strptime(event.event_date, "%a, %d %b %Y %H:%M:%S %Z")

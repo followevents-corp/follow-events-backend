@@ -11,8 +11,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.exceptions.user_exceptions import EmailFormatError
 from app.configs.database import db
 from app.models.user_model import User
-from app.services.general_services import check_keys, check_keys_type
-from app.services.verify_values import incoming_values
+from app.services.general_services import check_keys, check_keys_type, incoming_values
+
 
 session: Session = db.session
 
