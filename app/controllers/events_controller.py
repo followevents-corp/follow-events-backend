@@ -9,9 +9,9 @@ from app.models.events_model import Events
 from app.models.user_model import User
 
 from app.exceptions.invalid_id_exception import InvalidIdError
-from app.services.invalid_id_services import check_id_validation
 
 from app.services.events_services import get_additonal_information_of_event
+from app.services.general_services import check_id_validation
 
 # def create_events():
 #     files = request.files

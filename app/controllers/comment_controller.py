@@ -4,14 +4,14 @@ from app.exceptions.request_data_exceptions import AttributeTypeError, MissingAt
 from app.exceptions.user_exceptions import NotLoggedUser
 from app.models.comment_model import Comment
 from app.models.user_model import User
-from app.services.invalid_id_services import check_id_validation
-from app.services.verify_values import incoming_values
 from flask import jsonify, request
 from app.configs.database import db
 from app.services.general_services import (
+    check_id_validation,
     check_if_the_user_owner,
     check_keys,
     check_keys_type,
+    incoming_values,
     save_changes,
 )
 from sqlalchemy.orm import Query
