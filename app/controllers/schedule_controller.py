@@ -17,8 +17,7 @@ from app.models.schedule_model import Schedule
 from app.models.user_model import User
 from app.services.events_services import get_additonal_information_of_event
 from app.services.general_services import check_id_validation, check_if_the_user_owner, check_keys, check_keys_type, incoming_values
-from flask_jwt_extended import jwt_required
-from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 @jwt_required()
