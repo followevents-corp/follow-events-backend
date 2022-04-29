@@ -12,6 +12,7 @@ from app.models.giveaway_model import Giveaway
 
 from app.services.general_services import (
     check_id_validation,
+    check_if_the_user_owner,
     check_keys,
     check_keys_type,
     incoming_values,
@@ -82,10 +83,11 @@ def get_giveaway(event_id: str):
 
     return jsonify(giveaways), HTTPStatus.OK
 
-
+@jwt_required()
 def update_giveaway(giveaway_id, event_id):
 
     try:
+        check_if_the_user_owner(Giveaway, giveaway_id)
         check_id_validation(giveaway_id, Giveaway)
     except InvalidIdError as e:
         return e.response, e.status_code
