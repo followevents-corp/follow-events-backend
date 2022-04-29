@@ -90,7 +90,7 @@ def get_user(user_id: str):
         return {"error": "Unauthorized."}, HTTPStatus.UNAUTHORIZED
 
     schedule_url = url_for("schedule.get_schedule", user_id=user.id)
-    events_url = url_for("user.get_event_by_id", user_id=user.id)
+    events_url = url_for("events.get_event_by_id", user_id=user.id)
 
     return {
         "id": user.id,
