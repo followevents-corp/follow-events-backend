@@ -26,6 +26,8 @@ from app.services.events_services import get_additonal_information_of_event, lin
 from app.services.general_services import check_id_validation, check_if_the_user_owner
 from flask_jwt_extended import jwt_required
 
+
+@jwt_required()
 def create_event():
     try:
         dict = {"name": str, "description": str, "event_date": str, "event_link": str, "creator_id": str, "categories": list}
@@ -100,11 +102,11 @@ def get_event_by_id(user_id):
 
     return jsonify(result), HTTPStatus.OK
 
-
+@jwt_required()
 def update_event(event_id):
     pass
 
-@jwt_required()
+
 def delete_event(event_id):
     try:
         check_if_the_user_owner(Events, event_id)
