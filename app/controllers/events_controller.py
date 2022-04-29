@@ -20,16 +20,17 @@ from app.services.general_services import (check_id_validation,
                                            remove_unnecessary_keys,
                                            save_changes)
 from flask import jsonify, request
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.orm.session import Session
 from werkzeug.datastructures import FileStorage
 
 
 @jwt_required()
 def create_event():
+    current_user = get_jwt_identity()
     try:
         dict = {"name": str, "description": str, "event_date": str,
-                "event_link": str, "creator_id": str, "categories": list}
+                "event_link": str, "categories": list}
 
         files = request.files
         file = files["file"]
@@ -48,6 +49,8 @@ def create_event():
             return jsonify(verify_values), HTTPStatus.BAD_REQUEST
 
         create_categories(categories)
+
+        new_data['creator_id'] = current_user
 
         event = Events(**new_data,  link=file)
         save_changes(event)
