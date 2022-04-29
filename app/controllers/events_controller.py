@@ -1,5 +1,6 @@
 import json
 from dataclasses import asdict
+from datetime import datetime as dt
 from http import HTTPStatus
 
 from app.configs.database import db
@@ -21,6 +22,8 @@ from app.services.general_services import (check_id_validation,
                                            save_changes)
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required
+from psycopg2.errors import ForeignKeyViolation
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.session import Session
 from werkzeug.datastructures import FileStorage
 
@@ -28,8 +31,14 @@ from werkzeug.datastructures import FileStorage
 @jwt_required()
 def create_event():
     try:
-        dict = {"name": str, "description": str, "event_date": str,
-                "event_link": str, "creator_id": str, "categories": list}
+        dict = {
+            "name": str,
+            "description": str,
+            "event_date": str,
+            "event_link": str,
+            "creator_id": str,
+            "categories": list,
+        }
 
         files = request.files
         file = files["file"]
@@ -37,6 +46,7 @@ def create_event():
 
         new_data = check_keys(data, [*dict.keys()])
         check_keys_type(new_data, dict, file)
+        dt.strptime(new_data["event_date"], "%a, %d %b %Y %H:%M:%S %Z")
 
         categories = new_data["categories"]
 
@@ -49,7 +59,7 @@ def create_event():
 
         create_categories(categories)
 
-        event = Events(**new_data,  link=file)
+        event = Events(**new_data, link=file)
         save_changes(event)
 
         link_categories_to_event(categories, event)
@@ -64,6 +74,14 @@ def create_event():
         return e.response, e.status_code
     except CategoryTypeError as e:
         return e.response, e.status_code
+    except ValueError:
+        return {
+            "error": "format date must be ex: 'Fri, 13 May 2022 15:21:41 GMT'"
+        }, HTTPStatus.BAD_REQUEST
+    except IntegrityError as e:
+        if type(e.orig) is ForeignKeyViolation:
+            return {"error": "Unauthorized"}, HTTPStatus.UNAUTHORIZED
+
     return jsonify(new_event), HTTPStatus.CREATED
 
 
@@ -104,12 +122,20 @@ def get_event_by_id(user_id):
 
 @jwt_required()
 def update_event(event_id):
-    values = {"name": str, "description": str, "event_date": str,
-              "event_link": str, "creator_id": str, "categories": list, "link": FileStorage}
+    values = {
+        "name": str,
+        "description": str,
+        "event_date": str,
+        "event_link": str,
+        "creator_id": str,
+        "categories": list,
+        "link": FileStorage,
+    }
 
     try:
-        data = remove_unnecessary_keys(json.loads(
-            request.form["data"]), [*values.keys()])[0]
+        data = remove_unnecessary_keys(
+            json.loads(request.form["data"]), [*values.keys()]
+        )[0]
         file = request.files["file"]
         categories = data["categories"]
         create_categories(categories)
