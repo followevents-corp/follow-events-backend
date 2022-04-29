@@ -21,17 +21,30 @@ from app.services.general_services import (check_id_validation,
                                            check_keys_type, incoming_values,
                                            remove_unnecessary_keys,
                                            save_changes)
+from sqlalchemy.orm import Query
 from flask import jsonify, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.orm.session import Session
 from werkzeug.datastructures import FileStorage
 from psycopg2.errors import ForeignKeyViolation
 from sqlalchemy.exc import IntegrityError
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 @jwt_required()
 def create_event():
+    session: Session = db.session
+    
     current_user = get_jwt_identity()
+    
+    user: Query = (
+            session.query(User)
+            .select_from(User)
+            .filter(User.id == current_user)
+            .first()
+        )
+
+    if user.creator == False:
+        return {'error': 'Must be a content creator, to create a event.'}, HTTPStatus.UNAUTHORIZED
 
     try:
         dict = {"name": str, "description": str, "event_date": str,
