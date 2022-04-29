@@ -25,7 +25,7 @@ class Events(db.Model):
     __tablename__ = "events"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    name = Column(String(50), unique=True, nullable=False)
+    name = Column(String(50), nullable=False)
     description = Column(String(255))
     event_date = Column(String, nullable=False)
     type_banner = Column(String, nullable=False)
