@@ -13,7 +13,9 @@ def categories_cli():
         session: Session = db.session
         categories = ["games", "music", "live", "talks", "e-sports"]
 
-        default_categories = [Categories(name=category) for category in categories]
+        default_categories = [
+            Categories(name=category) for category in categories
+        ]
 
         session.add_all(default_categories)
         session.commit()
