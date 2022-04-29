@@ -13,7 +13,7 @@ class AWS_S3:
 
     @classmethod
     def upload_file(cls, file_name):
-        s3_client = boto3.client("s3")
+        s3_client = boto3.client("s3", aws_secret_access_key=os.environ["AWS_SECRET_ACCESS_KEY"] , aws_access_key_id=os.environ["AWS_ACCESS_KEY_ID"])
         try:
             id = uuid4()
             type_banner = file_name.content_type.split("/")
