@@ -2,7 +2,7 @@ from flask import Blueprint
 
 from app.controllers import events_controller
 
-bp = Blueprint("user", __name__, url_prefix="/events")
+bp = Blueprint("events", __name__, url_prefix="/events")
 
 bp.get("")(events_controller.get_events)
 bp.get("/<user_id>")(events_controller.get_event_by_id)
