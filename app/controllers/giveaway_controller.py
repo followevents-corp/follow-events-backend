@@ -36,7 +36,7 @@ def create_giveaway(event_id: str):
 
     try:
         valid_keys = ["name", "description", "award", "award_picture"]
-
+        check_id_validation(event_id, Events)
         valid_key_types = {
             "name": str,
             "description": str,
@@ -51,6 +51,8 @@ def create_giveaway(event_id: str):
     except MissingAttributeError as e:
         return e.response, e.status_code
     except AttributeTypeError as e:
+        return e.response, e.status_code
+    except InvalidIdError as e:
         return e.response, e.status_code
 
     session: Session = db.session
