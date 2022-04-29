@@ -18,14 +18,18 @@ class Comment(db.Model):
     created_at: str
     user_id: str
 
-    now = datetime.utcnow()
+    now = datetime.utcnow
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4())
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     comment = Column(String(255), nullable=False)
     created_at = Column(DateTime, default=now)
     user_id = Column(
-        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
     )
     event_id = Column(
-        UUID(as_uuid=True), ForeignKey("events.id", ondelete="CASCADE"), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey("events.id", ondelete="CASCADE"),
+        nullable=False,
     )

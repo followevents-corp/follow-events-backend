@@ -2,8 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from uuid import uuid4
 
-from flask import Flask
-from sqlalchemy import CheckConstraint, Column, DateTime, ForeignKey, Integer, String
+from sqlalchemy import Column, DateTime, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import validates
 
@@ -32,9 +31,11 @@ class Events(db.Model):
     type_banner = Column(String, nullable=False)
     link_banner = Column(String)
     event_link = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow())
+    created_at = Column(DateTime, default=datetime.utcnow)
     creator_id = Column(
-        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
     )
 
     @validates("name")
@@ -54,8 +55,5 @@ class Events(db.Model):
         object_name = self.name
         response = AWS_S3.upload_file(link_to_verify)
         self.link_banner = response[0]
-        if response[1] in ["video", "image"]:
-            self.type_banner = response[1]
-        else:
-            raise TypeError
-            # colocar um erro personalizado!
+        self.type_banner = response[1]
+
