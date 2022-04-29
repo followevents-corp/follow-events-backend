@@ -1,15 +1,17 @@
 from http import HTTPStatus
+
 from flask import jsonify, request, url_for
+from flask_jwt_extended import get_jwt_identity, jwt_required
+from sqlalchemy.exc import DataError, IntegrityError
 from sqlalchemy.orm import Query
 from sqlalchemy.orm.session import Session
-from sqlalchemy.exc import IntegrityError, DataError
+
+from app.configs.database import db
 from app.exceptions.request_data_exceptions import (
     AttributeTypeError,
     MissingAttributeError,
 )
-from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.exceptions.user_exceptions import EmailFormatError
-from app.configs.database import db
 from app.models.user_model import User
 from app.services.general_services import check_keys, check_keys_type
 from app.services.verify_values import incoming_values
@@ -35,7 +37,7 @@ def create_user():
     try:
         check_keys_type(new_data, keys_types)
     except AttributeTypeError as e:
-        return e.response ,HTTPStatus.BAD_REQUEST
+        return e.response, HTTPStatus.BAD_REQUEST
 
     try:
         new_user = User(**new_data)
@@ -67,26 +69,24 @@ def create_user():
 
     return jsonify(new_user), HTTPStatus.CREATED
 
+
 @jwt_required()
 def get_user(user_id):
 
     current_user = get_jwt_identity()
-    
+
     user: Query = (
-        session.query(User)
-        .select_from(User)
-        .filter(User.id == user_id)
-        .first()
+        session.query(User).select_from(User).filter(User.id == user_id).first()
     )
 
     if not user:
-        return {'error': 'Id not found in database.'}, HTTPStatus.NOT_FOUND
+        return {"error": "Id not found in database."}, HTTPStatus.NOT_FOUND
 
     if user.id != current_user:
-        return {'error': 'Unauthorized.'}, HTTPStatus.UNAUTHORIZED
-    
+        return {"error": "Unauthorized."}, HTTPStatus.UNAUTHORIZED
+
     schedule_url = url_for("schedule.get_schedule", user_id=user.id)
-    events_url = url_for("user.get_event_by_id", user_id=user.id)
+    events_url = url_for("events.get_event_by_id", user_id=user.id)
 
     return {
         "id": user.id,
