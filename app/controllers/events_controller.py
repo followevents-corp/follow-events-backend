@@ -1,6 +1,8 @@
 import json
 from dataclasses import asdict
 from http import HTTPStatus
+from datetime import datetime as dt
+
 
 from app.configs.database import db
 from app.exceptions.category_exceptions import CategoryTypeError
@@ -23,11 +25,14 @@ from flask import jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.orm.session import Session
 from werkzeug.datastructures import FileStorage
+from psycopg2.errors import ForeignKeyViolation
+from sqlalchemy.exc import IntegrityError
 
 
 @jwt_required()
 def create_event():
     current_user = get_jwt_identity()
+
     try:
         dict = {"name": str, "description": str, "event_date": str,
                 "event_link": str, "categories": list}
@@ -38,6 +43,7 @@ def create_event():
 
         new_data = check_keys(data, [*dict.keys()])
         check_keys_type(new_data, dict, file)
+        dt.strptime(new_data["event_date"], "%a, %d %b %Y %H:%M:%S %Z")
 
         categories = new_data["categories"]
 
@@ -49,7 +55,7 @@ def create_event():
             return jsonify(verify_values), HTTPStatus.BAD_REQUEST
 
         create_categories(categories)
-
+        
         new_data['creator_id'] = current_user
 
         event = Events(**new_data,  link=file)
@@ -67,6 +73,12 @@ def create_event():
         return e.response, e.status_code
     except CategoryTypeError as e:
         return e.response, e.status_code
+    except ValueError:
+        return {"error": "format date must be ex: 'Fri, 13 May 2022 15:21:41 GMT'"}, HTTPStatus.BAD_REQUEST
+    except IntegrityError as e:
+        if type(e.orig) is ForeignKeyViolation:
+            return {"error": "Unauthorized"}, HTTPStatus.UNAUTHORIZED
+
     return jsonify(new_event), HTTPStatus.CREATED
 
 
