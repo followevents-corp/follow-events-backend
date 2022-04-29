@@ -17,19 +17,19 @@ from app.services.general_services import (
 from sqlalchemy.orm import Query
 from app.models.events_model import Events
 from sqlalchemy.orm.session import Session
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 @jwt_required()
 def create_comment(event_id: str):
     comment_data = request.get_json()
-
+    comment_data["user_id"] = get_jwt_identity()
     verified_values = incoming_values(comment_data)
     if verified_values:
         return jsonify(verified_values), HTTPStatus.BAD_REQUEST
 
     try:
-        check_id_validation(event_id)
+        check_id_validation(event_id, Events)
         verified_key = check_keys(comment_data, ['user_id', 'comment'])
         check_keys_type(verified_key, {'user_id': str, 'comment': str})
 
@@ -48,8 +48,7 @@ def create_comment(event_id: str):
     return (
         jsonify(
             {
-                "user_id": new_comment.user_id,
-                "comment": new_comment.comment,
+                "comment": new_comment.comment
             }
         ),
         HTTPStatus.CREATED,
