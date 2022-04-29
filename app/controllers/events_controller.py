@@ -67,6 +67,7 @@ def create_event():
     return jsonify(new_event), HTTPStatus.CREATED
 
 
+
 def get_events():
     session: Session = db.session
 
