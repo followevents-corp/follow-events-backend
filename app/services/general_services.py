@@ -71,9 +71,8 @@ def check_keys_type(data: dict, keys_type: dict, file=None):
             raise FileTypeError
         else:
             file_type = file.content_type.split("/")[0]
-            if file_type != "image" or file_type != "video":
+            if file_type not in ["image", "video"]:
                 raise FileTypeError(message="Only image and video files are supported")
-
 
     for key, value in data.items():
         if type(value) is not keys_type[key]:

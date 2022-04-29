@@ -1,34 +1,71 @@
-from dataclasses import asdict
 from http import HTTPStatus
+from pprint import pprint
+import json
 
-from flask import jsonify
+from flask import jsonify, request
+from app.exceptions.category_exceptions import CategoryTypeError
+from app.exceptions.request_data_exceptions import AttributeTypeError, FileTypeError, MissingAttributeError
+
+from app.models.events_model import Events
+from app.models.user_model import User
+from app.models.categories_model import Categories
+from app.models.categories_events_model import EventsCategories
+from app.services.general_services import check_keys, check_keys_type, incoming_values, save_changes
+from app.services.categories_services import create_categories
+from dataclasses import asdict
+
 from sqlalchemy.orm.session import Session
 
 from app.configs.database import db
 from app.exceptions.user_exceptions import NotLoggedUser
-from app.models.events_model import Events
-from app.models.user_model import User
+
 
 from app.exceptions.invalid_id_exception import InvalidIdError
 
-from app.services.events_services import get_additonal_information_of_event
+from app.services.events_services import get_additonal_information_of_event, link_categories_to_event
 from app.services.general_services import check_id_validation, check_if_the_user_owner
 from flask_jwt_extended import jwt_required
 
-# def create_events():
-#     files = request.files
-
-#     for obj in files:
-#         if obj == "file":
-#             event = Events(name = "EVENtooosssteste", event_date = "01/12/2023", link = files[obj])
-#             current_app.db.session.add(event)
-#             current_app.db.session.commit()
-#         return jsonify(event), HTTPStatus.CREATED
-#     return {},HTTPStatus.OK
-
-
 def create_event():
-    pass
+    try:
+        dict = {"name": str, "description": str, "event_date": str, "event_link": str, "creator_id": str, "categories": list}
+
+        files = request.files
+        file = files["file"]
+        data = json.loads(request.form["data"])
+
+        new_data = check_keys(data, [*dict.keys()])
+        check_keys_type(new_data, dict, file)
+
+        categories = new_data["categories"]
+
+        new_data.pop("categories")
+    
+        
+        verify_values = incoming_values(new_data)
+
+        if verify_values:
+            return jsonify(verify_values), HTTPStatus.BAD_REQUEST
+
+        create_categories(categories)
+
+        event = Events(**new_data,  link = file)
+        save_changes(event)
+  
+        link_categories_to_event(categories, event)
+
+        new_event = get_additonal_information_of_event(asdict(event))
+
+    except FileTypeError as e:
+        return e.response, e.status_code
+    except MissingAttributeError as e:
+        return e.response, e.status_code
+    except AttributeTypeError as e:
+        return e.response, e.status_code
+    except CategoryTypeError as e:
+        return e.response, e.status_code
+    return jsonify(new_event), HTTPStatus.CREATED
+
 
 
 def get_events():

@@ -6,6 +6,7 @@ from app.models.categories_events_model import EventsCategories
 from app.models.categories_model import Categories
 from app.models.events_model import Events
 from app.models.schedule_model import Schedule
+from app.services.general_services import save_changes
 
 
 def get_additonal_information_of_event(data: dict) -> dict:
@@ -45,3 +46,10 @@ def get_additonal_information_of_event(data: dict) -> dict:
     data.update({"giveaway": f"{request.host_url[:-1]}{giveaway_url}"})
 
     return data
+
+
+def link_categories_to_event(categories: list, event: Events):
+    for category in categories:
+        category_uuid = db.session.query(Categories).filter_by(name=category.title()).first().id
+        events_category = EventsCategories(event_id = event.id, category_id = category_uuid)
+        save_changes(events_category)
