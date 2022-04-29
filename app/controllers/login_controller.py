@@ -30,7 +30,7 @@ def login_user():
     if not found_user or not found_user.check_password(new_data["password"]):
         return {"error": "Invalid email or password."}, HTTPStatus.NOT_FOUND
 
-    access_token = create_access_token(identity=found_user.id, timedelta=timedelta(hours=1))
+    access_token = create_access_token(identity=found_user.id, expires_delta=timedelta(hours=1))
     schedule_url = url_for("schedule.get_schedule", user_id=found_user.id)
     events_url = url_for("events.get_event_by_id", user_id=found_user.id)
 

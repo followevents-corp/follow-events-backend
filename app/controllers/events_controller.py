@@ -33,15 +33,15 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 @jwt_required()
 def create_event():
     session: Session = db.session
-    
+
     current_user = get_jwt_identity()
-    
+
     user: Query = (
-            session.query(User)
-            .select_from(User)
-            .filter(User.id == current_user)
-            .first()
-        )
+        session.query(User)
+        .select_from(User)
+        .filter(User.id == current_user)
+        .first()
+    )
 
     if user.creator == False:
         return {'error': 'Must be a content creator, to create a event.'}, HTTPStatus.UNAUTHORIZED
@@ -68,7 +68,7 @@ def create_event():
             return jsonify(verify_values), HTTPStatus.BAD_REQUEST
 
         create_categories(categories)
-        
+
         new_data['creator_id'] = current_user
 
         event = Events(**new_data,  link=file)
@@ -136,21 +136,26 @@ def update_event(event_id):
               "event_link": str, "creator_id": str, "categories": list, "link": FileStorage}
 
     try:
-        data = remove_unnecessary_keys(json.loads(
-            request.form["data"]), [*values.keys()])[0]
-        file = request.files["file"]
-        categories = data["categories"]
-        create_categories(categories)
+        data = {}
+        if request.form.get("data"):
+            data = remove_unnecessary_keys(json.loads(
+                request.form["data"]), [*values.keys()])[0]
 
-        if file:
+            check_if_the_user_owner(Events, event_id)
+            check_id_validation(event_id, Events)
+            check_keys_type(data, values)
+
+        if request.files.get("file"):
+            file = request.files["file"]
             data["link"] = file
+            
+        categories = []
+        if data.get("categories"):
+            categories = data["categories"]
+            create_categories(data["categories"])
 
-        if not data:
+        if not data or not file:
             return {"error": "No data to update"}, HTTPStatus.BAD_REQUEST
-
-        check_id_validation(event_id, Events)
-        check_if_the_user_owner(Events, event_id)
-        check_keys_type(data, values)
 
     except InvalidIdError as err:
         return err.response, err.status_code
@@ -167,15 +172,16 @@ def update_event(event_id):
 
     event = session.query(Events).filter_by(id=event_id).first()
 
-    link_categories_to_event(categories, event)
+    if categories:
+        link_categories_to_event(categories, event)
 
-    serialized_event = asdict(event)
 
     for key, value in data.items():
         setattr(event, key, value)
 
     save_changes(event)
 
+    serialized_event = asdict(event)
     event = get_additonal_information_of_event(serialized_event)
 
     return jsonify(event), HTTPStatus.OK
