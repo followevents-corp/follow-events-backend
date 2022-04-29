@@ -11,20 +11,31 @@ from app.exceptions.request_data_exceptions import (
     AttributeTypeError,
     MissingAttributeError,
 )
+from app.exceptions.user_exceptions import NotLoggedUser
 from app.models.events_model import Events
 from app.models.schedule_model import Schedule
 from app.models.user_model import User
 from app.services.events_services import get_additonal_information_of_event
-from app.services.general_services import check_id_validation, check_keys, check_keys_type, incoming_values
+from app.services.general_services import check_id_validation, check_if_the_user_owner, check_keys, check_keys_type, incoming_values
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
+@jwt_required()
 def create_schedule(user_id):
+    key = {'event_id': str}
     data = request.get_json()
-
     try:
+        verified_key = check_keys(data, ["event_id"])
         check_id_validation(user_id, User)
+        check_keys_type(verified_key, key)
         check_id_validation(data["event_id"], Events)
+        if not get_jwt_identity() == user_id:
+            return {"error": "You are not the owner of this account"}, HTTPStatus.UNAUTHORIZED
     except InvalidIdError as e:
+        return e.response, e.status_code
+    except MissingAttributeError as e:
+        return e.response, e.status_code
+    except AttributeTypeError as e:
         return e.response, e.status_code
 
     session: Session = db.session
@@ -65,11 +76,13 @@ def create_schedule(user_id):
     )
 
 
+@jwt_required()
 def get_schedule(user_id):
     session: Session = db.session
-
     try:
-        check_id_validation(user_id, User)
+        check_id_validation(user_id, Schedule)
+        if not get_jwt_identity() == user_id:
+            return {"error": "You are not the owner of this account"}, HTTPStatus.UNAUTHORIZED
     except InvalidIdError as e:
         return e.response, e.status_code
 
@@ -89,13 +102,8 @@ def get_schedule(user_id):
     return jsonify(scheduled_events), HTTPStatus.OK
 
 
+@jwt_required()
 def delete_schedule(user_id, event_id):
-    try:
-        check_id_validation(user_id, User)
-        check_id_validation(event_id, Events)
-    except InvalidIdError as e:
-        return e.response, e.status_code
-
     session: Session = db.session
 
     schedule_to_delete = (
@@ -105,6 +113,15 @@ def delete_schedule(user_id, event_id):
 
     if not schedule_to_delete:
         return {"error": "Schedule not found"}, HTTPStatus.NOT_FOUND
+
+    try:
+        check_id_validation(user_id, User)
+        check_id_validation(event_id, Events)
+        check_if_the_user_owner(Schedule, event_id)
+    except InvalidIdError as e:
+        return e.response, e.status_code
+    except NotLoggedUser as e:
+        return e.response, e.status_code
 
     session.delete(schedule_to_delete)
     session.commit()
