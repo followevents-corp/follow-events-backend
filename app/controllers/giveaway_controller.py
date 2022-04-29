@@ -7,6 +7,7 @@ from app.exceptions.request_data_exceptions import (
     AttributeTypeError,
     MissingAttributeError,
 )
+from app.exceptions.user_exceptions import NotLoggedUser
 from app.models.events_model import Events
 from app.models.giveaway_model import Giveaway
 
@@ -144,11 +145,12 @@ def delete_giveaway(event_id, giveaway_id):
     session: Session = db.session
 
     try:
-        check_if_the_user_owner(Giveaway, giveaway_id)
         check_id_validation(giveaway_id, Giveaway)
+        check_if_the_user_owner(Giveaway, giveaway_id)
     except InvalidIdError as e:
         return e.response, e.status_code
-
+    except NotLoggedUser as e:
+        return e.response, e.status_code
     del_giveaway: Query = (
         session.query(Giveaway)
         .select_from(Events)
