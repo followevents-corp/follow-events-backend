@@ -15,9 +15,7 @@ from app.models.events_model import Events
 from app.models.schedule_model import Schedule
 from app.models.user_model import User
 from app.services.events_services import get_additonal_information_of_event
-from app.services.general_services import check_keys, check_keys_type
-from app.services.invalid_id_services import check_id_validation
-from app.services.verify_values import incoming_values
+from app.services.general_services import check_id_validation, check_keys, check_keys_type, incoming_values
 
 
 def create_schedule(user_id):
@@ -48,7 +46,8 @@ def create_schedule(user_id):
     event_id = new_data.get("event_id")
 
     existing_schedule = (
-        session.query(Schedule).filter_by(user_id=user_id, event_id=event_id).first()
+        session.query(Schedule).filter_by(
+            user_id=user_id, event_id=event_id).first()
     )
 
     if existing_schedule:
@@ -100,7 +99,8 @@ def delete_schedule(user_id, event_id):
     session: Session = db.session
 
     schedule_to_delete = (
-        session.query(Schedule).filter_by(user_id=user_id, event_id=event_id).first()
+        session.query(Schedule).filter_by(
+            user_id=user_id, event_id=event_id).first()
     )
 
     if not schedule_to_delete:

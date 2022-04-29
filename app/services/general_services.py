@@ -1,6 +1,16 @@
+from flask_jwt_extended import get_jwt_identity, jwt_required
+from sqlalchemy.orm.session import Session
+from werkzeug.datastructures import FileStorage
+
 from app.configs.database import db
+from app.exceptions.invalid_id_exception import InvalidIdError
 from app.exceptions.request_data_exceptions import (AttributeTypeError,
+                                                    FileTypeError,
                                                     MissingAttributeError)
+from app.exceptions.user_exceptions import NotLoggedUser
+from app.models.events_model import Events
+from app.models.giveaway_model import Giveaway
+from app.models.user_model import User
 
 
 def remove_unnecessary_keys(data: dict, necessary_keys: list):
@@ -25,8 +35,6 @@ def remove_unnecessary_keys(data: dict, necessary_keys: list):
     return (new_data, not_used_keys)
 
 
-
-
 def check_keys(data: dict, mandatory_keys: list):
     """
     Args:
@@ -47,16 +55,25 @@ def check_keys(data: dict, mandatory_keys: list):
     return new_data
 
 
-def check_keys_type(data: dict, keys_type: dict):
+def check_keys_type(data: dict, keys_type: dict, file=None):
     """
 
     Args:
         data (dict): corpo da requisição
         keys_type (dict): dicionário contendo os atributos da requisição como chaves e seus respectivos tipos
+        file (optional): arquivo enviado pelo multipart form
 
     Raises:
         AttributeTypeError: erro levantado caso algum atributo não seja do tipo que deveria
     """
+    if file:
+        if type(file) is not FileStorage:
+            raise FileTypeError
+        else:
+            file_type = file.content_type.split("/")[0]
+            if file_type != "image" or file_type != "video":
+                raise FileTypeError(message="Only image and video files are supported")
+
 
     for key, value in data.items():
         if type(value) is not keys_type[key]:
@@ -67,3 +84,45 @@ def save_changes(data):
     session = db.session
     session.add(data)
     session.commit()
+
+
+@jwt_required()
+def check_if_the_user_owner(model, id_to_check=""):
+    user_id = get_jwt_identity()
+    session: Session = db.session
+    if model is Events:
+        search = session.query(model).filter_by(creator_id=user_id).first()
+    elif model is User:
+        search = session.query(model).filter_by(id=user_id).first()
+    elif model is Giveaway:
+        search = (
+            session.query(model)
+            .select_from(Events)
+            .join(Giveaway)
+            .filter(Events.creator_id == user_id, Giveaway.id == id_to_check)
+            .first()
+        )
+    else:
+        search = session.query(model).filter_by(user_id=user_id, id=id_to_check).first()
+
+    if not search:
+        raise NotLoggedUser
+
+
+def check_id_validation(id: str, model: db.Model = None):
+    if len(id) != 36:
+        raise InvalidIdError(
+            message={"error": f"The id {id} is not valid."}, status_code=400
+        )
+
+    if model:
+        search = model.query.filter_by(id=id).first()
+        if not search:
+            raise InvalidIdError(message={"error": f"The id {id} is not in database."})
+
+
+def incoming_values(data):
+    values_data = [value for value in data.values()]
+
+    if "" in values_data:
+        return {"error": "Incoming value is empty."}
