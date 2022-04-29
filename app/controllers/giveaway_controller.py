@@ -145,12 +145,10 @@ def delete_giveaway(event_id, giveaway_id):
     session: Session = db.session
 
     try:
-        check_id_validation(giveaway_id, Giveaway)
-        check_if_the_user_owner(Giveaway, giveaway_id)
-    except InvalidIdError as e:
-        return e.response, e.status_code
+        check_if_the_user_owner(Events, giveaway_id)
     except NotLoggedUser as e:
         return e.response, e.status_code
+    
     del_giveaway: Query = (
         session.query(Giveaway)
         .select_from(Events)
@@ -158,7 +156,9 @@ def delete_giveaway(event_id, giveaway_id):
         .filter(Events.id == event_id, Giveaway.id == giveaway_id)
         .first()
     )
-
+    if not del_giveaway:
+        return {"error": "Giveaway not found"}, HTTPStatus.NOT_FOUND
+    
     session.delete(del_giveaway)
     session.commit()
 
