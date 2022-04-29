@@ -45,18 +45,15 @@ class Events(db.Model):
     @property
     def create_at(self):
         raise AttributeError("Can't access create_at value")
-
+    
     @property
     def link(self):
-        raise AttributeError("Can't access link value")
+        raise AttributeError("Can't access create_at value")
 
     @link.setter
     def link(self, link_to_verify):
         object_name = self.name
         response = AWS_S3.upload_file(link_to_verify)
         self.link_banner = response[0]
-        if response[1] in ["video", "image"]:
-            self.type_banner = response[1]
-        else:
-            raise TypeError
-            # colocar um erro personalizado!
+        self.type_banner = response[1]
+
