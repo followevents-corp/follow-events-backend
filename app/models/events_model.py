@@ -7,6 +7,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import validates
 
 from app.configs.database import db
+from app.exceptions.request_data_exceptions import InvalidLink
 from app.services.aws_s3 import AWS_S3
 
 
@@ -42,6 +43,15 @@ class Events(db.Model):
     def validate_name(self, key, name_to_normalize):
         return name_to_normalize.strip().title()
 
+    @validates("event_link")
+    def validate_event_link(self, key, event_link_to_verify):
+        keys = ["twitch", "booyah", "facebook", "youtube", "mixer", "linkedin", "rumble", "youtu.be"]
+        verify = [key for key in keys if key in event_link_to_verify.lower()]
+
+        if not verify:
+            raise InvalidLink
+        return event_link_to_verify
+
     @property
     def create_at(self):
         raise AttributeError("Can't access create_at value")
@@ -56,4 +66,3 @@ class Events(db.Model):
         response = AWS_S3.upload_file(link_to_verify)
         self.link_banner = response[0]
         self.type_banner = response[1]
-
