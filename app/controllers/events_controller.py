@@ -8,7 +8,7 @@ from app.configs.database import db
 from app.exceptions.category_exceptions import CategoryTypeError
 from app.exceptions.invalid_id_exception import InvalidIdError
 from app.exceptions.request_data_exceptions import (AttributeTypeError,
-                                                    FileTypeError,
+                                                    FileTypeError, InvalidLink,
                                                     MissingAttributeError)
 from app.exceptions.user_exceptions import NotLoggedUser
 from app.models.events_model import Events
@@ -86,6 +86,8 @@ def create_event():
         return e.response, e.status_code
     except CategoryTypeError as e:
         return e.response, e.status_code
+    except InvalidLink as e:
+        return e.response, e.status_code
     except ValueError:
         return {"error": "format date must be ex: 'Fri, 13 May 2022 15:21:41 GMT'"}, HTTPStatus.BAD_REQUEST
     except IntegrityError as e:
@@ -93,7 +95,6 @@ def create_event():
             return {"error": "Unauthorized"}, HTTPStatus.UNAUTHORIZED
 
     return jsonify(new_event), HTTPStatus.CREATED
-
 
 def get_events():
     session: Session = db.session

@@ -28,7 +28,14 @@ class AttributeTypeError(Exception):
 
 
 class FileTypeError(Exception):
-    def __init__(self, message="Invalid file", status_code=400):
+    def __init__(self, message="Invalid file", status_code=415):
+        self.message = message
+        self.response = {"error": self.message}
+        self.status_code = status_code
+
+
+class InvalidLink(Exception):
+    def __init__(self, message="This link violates the platform rules", status_code = 400):
         self.message = message
         self.response = {"error": self.message}
         self.status_code = status_code
