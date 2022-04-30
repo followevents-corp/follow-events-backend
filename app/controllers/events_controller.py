@@ -13,6 +13,7 @@ from app.exceptions.request_data_exceptions import (AttributeTypeError,
 from app.exceptions.user_exceptions import NotLoggedUser
 from app.models.events_model import Events
 from app.models.user_model import User
+from app.services.aws_s3 import AWS_S3
 from app.services.categories_services import create_categories
 from app.services.events_services import (get_additonal_information_of_event,
                                           link_categories_to_event)
@@ -199,6 +200,10 @@ def delete_event(event_id):
     session: Session = db.session
 
     event = session.query(Events).filter_by(id=event_id).first()
+
+    key = event.link_banner.split("/")[-1]
+
+    AWS_S3.delete_file(key)
 
     session.delete(event)
     session.commit()
