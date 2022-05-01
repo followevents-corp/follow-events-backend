@@ -18,7 +18,7 @@ def create_categories(categories_names: list):
             session.query(Categories).filter_by(name=category).first()
         )
 
-        if created_category:
+        if not created_category:
             categories_to_add.append(Categories(name=category))
 
     session.add_all(categories_to_add)
