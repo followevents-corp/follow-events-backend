@@ -8,7 +8,7 @@ from app.configs.database import db
 from app.exceptions.category_exceptions import CategoryTypeError
 from app.exceptions.invalid_id_exception import InvalidIdError
 from app.exceptions.request_data_exceptions import (AttributeTypeError,
-                                                    FileTypeError, InvalidLink,
+                                                    FileTypeError, IncorrectKeys, InvalidLink,
                                                     MissingAttributeError)
 from app.exceptions.user_exceptions import NotLoggedUser
 from app.models.events_model import Events
@@ -17,7 +17,7 @@ from app.services.aws_s3 import AWS_S3
 from app.services.categories_services import create_categories
 from app.services.events_services import (get_additonal_information_of_event,
                                           link_categories_to_event)
-from app.services.general_services import (check_id_validation,
+from app.services.general_services import (check_id_validation, check_if_keys_are_valid,
                                            check_if_the_user_owner, check_keys,
                                            check_keys_type, incoming_values,
                                            remove_unnecessary_keys,
@@ -97,6 +97,7 @@ def create_event():
 
     return jsonify(new_event), HTTPStatus.CREATED
 
+
 def get_events():
     session: Session = db.session
 
@@ -125,7 +126,8 @@ def get_events_by_id(user_id):
     if not events:
         return {"error": "Event not found"}, HTTPStatus.NOT_FOUND
 
-    result = [get_additonal_information_of_event(asdict(event)) for event in events]
+    result = [get_additonal_information_of_event(
+        asdict(event)) for event in events]
 
     return jsonify(result), HTTPStatus.OK
 
@@ -134,29 +136,34 @@ def get_events_by_id(user_id):
 def update_event(event_id):
     values = {"name": str, "description": str, "event_date": str,
               "event_link": str, "creator_id": str, "categories": list, "link": FileStorage}
+    keys = ["data", "file"]
 
     try:
         check_id_validation(event_id, Events)
+        session: Session = db.session
+
+        event = session.query(Events).filter_by(id=event_id).first()
+
         data = {}
         if request.form.get("data"):
             data = remove_unnecessary_keys(json.loads(
                 request.form["data"]), [*values.keys()])[0]
 
-            check_if_the_user_owner(Events, event_id)
             check_keys_type(data, values)
 
         if request.files.get("file"):
             file = request.files["file"]
             data["link"] = file
-            
+            key = event.link_banner.split("/")[-1]
+            AWS_S3.delete_file(key)
+
         categories = []
         if data.get("categories"):
             categories = data["categories"]
             create_categories(data["categories"])
 
-        if not data or not file:
-            return {"error": "No data to update"}, HTTPStatus.BAD_REQUEST
-
+        check_if_keys_are_valid(request.form, request.files, keys)
+        check_if_the_user_owner(Events, event_id)
     except InvalidIdError as err:
         return err.response, err.status_code
     except AttributeTypeError as e:
@@ -167,14 +174,11 @@ def update_event(event_id):
         return e.response, e.status_code
     except CategoryTypeError as e:
         return e.response, e.status_code
-
-    session: Session = db.session
-
-    event = session.query(Events).filter_by(id=event_id).first()
+    except IncorrectKeys as e:
+        return e.response, e.status_code
 
     if categories:
         link_categories_to_event(categories, event)
-
 
     for key, value in data.items():
         setattr(event, key, value)
