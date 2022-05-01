@@ -32,7 +32,7 @@ def init(app: Flask):
 
         if search:
             msg = "Missing authorization token"
-            status = 400
+            status = 401
             
         resp = jsonify({
             'error': msg

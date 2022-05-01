@@ -136,13 +136,13 @@ def update_event(event_id):
               "event_link": str, "creator_id": str, "categories": list, "link": FileStorage}
 
     try:
+        check_id_validation(event_id, Events)
         data = {}
         if request.form.get("data"):
             data = remove_unnecessary_keys(json.loads(
                 request.form["data"]), [*values.keys()])[0]
 
             check_if_the_user_owner(Events, event_id)
-            check_id_validation(event_id, Events)
             check_keys_type(data, values)
 
         if request.files.get("file"):
@@ -189,8 +189,8 @@ def update_event(event_id):
 
 def delete_event(event_id):
     try:
-        check_if_the_user_owner(Events, event_id)
         check_id_validation(event_id, Events)
+        check_if_the_user_owner(Events, event_id)
     except InvalidIdError as err:
         return err.response, err.status_code
     except NotLoggedUser as err:
