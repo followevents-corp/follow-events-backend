@@ -5,7 +5,7 @@ from werkzeug.datastructures import FileStorage
 from app.configs.database import db
 from app.exceptions.invalid_id_exception import InvalidIdError
 from app.exceptions.request_data_exceptions import (AttributeTypeError,
-                                                    FileTypeError,
+                                                    FileTypeError, IncorrectKeys,
                                                     MissingAttributeError)
 from app.exceptions.user_exceptions import NotLoggedUser
 from app.models.events_model import Events
@@ -130,3 +130,18 @@ def incoming_values(data):
 
     if "" in values_data:
         return {"error": "Incoming value is empty."}
+
+
+
+def check_if_keys_are_valid(data: dict,data_file ,  keys: list):
+    for key in data.keys():
+            if key not in keys:
+                raise IncorrectKeys([key])
+        
+    for key in data_file.keys():
+        if key not in keys:
+            raise IncorrectKeys([key])
+
+    if not "data" in data.keys() and not "file" in data_file.keys():
+        raise MissingAttributeError(keys)
+    

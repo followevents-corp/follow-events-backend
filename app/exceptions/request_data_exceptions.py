@@ -39,3 +39,9 @@ class InvalidLink(Exception):
         self.message = message
         self.response = {"error": self.message}
         self.status_code = status_code
+
+
+class IncorrectKeys(Exception):
+    def __init__(self, wrong_keys: list, status_code=400):
+        self.response = {"wrong_keys": wrong_keys}
+        self.status_code = status_code
