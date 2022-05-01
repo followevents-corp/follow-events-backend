@@ -110,7 +110,7 @@ def get_events():
     return jsonify(serialized_events), HTTPStatus.OK
 
 
-def get_event_by_id(user_id):
+def get_events_by_id(user_id):
     try:
         check_id_validation(user_id, User)
     except InvalidIdError as err:
@@ -120,14 +120,12 @@ def get_event_by_id(user_id):
 
     session: Session = db.session
 
-    event = session.query(Events).filter_by(creator_id=user_id).first()
+    events = session.query(Events).filter_by(creator_id=user_id).all()
 
-    if not event:
+    if not events:
         return {"error": "Event not found"}, HTTPStatus.NOT_FOUND
 
-    serialized_event = asdict(event)
-
-    result = get_additonal_information_of_event(serialized_event)
+    result = [get_additonal_information_of_event(asdict(event)) for event in events]
 
     return jsonify(result), HTTPStatus.OK
 

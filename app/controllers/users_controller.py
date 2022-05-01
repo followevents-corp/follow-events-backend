@@ -238,7 +238,7 @@ def update_user(user_id: str):
         return {"error": "Username already exists"}, HTTPStatus.CONFLICT
 
     schedule_url = url_for("schedule.get_schedule", user_id=user.id)
-    events_url = url_for("events.get_event_by_id", user_id=user.id)
+    events_url = url_for("events.get_events_by_id", user_id=user.id)
 
     return {
         "id": user.id,
