@@ -8,6 +8,6 @@ class CategoryTypeError(Exception):
 
         for category in categories:
             if type(category) is not str or not category:
-                output.update({category: "must be a valid string"})
+                output.update({f"category {category}": "must be a valid string"})
 
         return output

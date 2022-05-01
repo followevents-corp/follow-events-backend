@@ -4,7 +4,6 @@ from app.configs.database import db
 from app.exceptions.category_exceptions import CategoryTypeError
 from app.models.categories_model import Categories
 
-
 def create_categories(categories_names: list):
     session: Session = db.session
 
@@ -19,7 +18,7 @@ def create_categories(categories_names: list):
             session.query(Categories).filter_by(name=category).first()
         )
 
-        if not created_category:
+        if created_category:
             categories_to_add.append(Categories(name=category))
 
     session.add_all(categories_to_add)
