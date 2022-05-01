@@ -91,7 +91,7 @@ def check_if_the_user_owner(model, id_to_check=""):
     user_id = get_jwt_identity()
     session: Session = db.session
     if model is Events:
-        search = session.query(model).filter_by(creator_id=user_id).first()
+        search = session.query(model).filter_by(creator_id=user_id, id=id_to_check).first()
     elif model is User:
         search = session.query(model).filter_by(id=user_id).first()
     elif model is Giveaway:
