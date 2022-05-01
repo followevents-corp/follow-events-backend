@@ -45,7 +45,11 @@
 
 <br>
 
+<h3>Por meio desta rota é possível criar um novo usuário</h3>
+
 <h3>Todos os campos são obrigatórios.</h3>
+
+<br>
 
 `POST/users - Formato da requisição`
 
@@ -183,7 +187,11 @@
 
 <br>
 
-Todos os campos são obrigatórios.
+<h3>Por meio desta rota é possível realizar o login de um usuário</h3>
+
+<h3>Todos os campos são obrigatórios.</h3>
+
+<br>
 
 `POST/login - Formato da requisição`
 
@@ -274,6 +282,10 @@ Todos os campos são obrigatórios.
 
 <br>
 
+<h3>Por meio dessa rota é possível buscar os dados de um usuário</h3>
+
+<br>
+
 Está rota precisa da autorização do token!
 
 <h3 style="color: yellow">Authorization: Bearer {access_token} </h3>
@@ -326,6 +338,10 @@ Está rota precisa da autorização do token!
 <details>
 
 <summary style ="font-size: 18px"><b>Atualizar os dados de um usuário</b></summary>
+
+<br>
+
+<h3>Por meio dessa rota é possível atualizar os dados do usuário</h3>
 
 <br>
 
@@ -476,6 +492,10 @@ Está rota precisa da autorização do token!
 
 <summary style ="font-size: 18px"><b>Criar um novo evento</b></summary>
 
+<br>
+
+<h3>Por meio dessa rota é possível criar um novo evento</h3>
+
 <h3>Todos os campos são obrigatóriso</h3>
 
 <br>
@@ -603,7 +623,7 @@ Nesta rota terá que passar 2 arquivos multipart:
 
 <br>
 
-Por meio desta rota será possível ter uma lista com todos os eventos cadastrados.
+<h3>Por meio desta rota será possível ter uma lista com todos os eventos cadastrados.</h3>
 
 <br>
 
@@ -677,7 +697,7 @@ Por meio desta rota será possível ter uma lista com todos os eventos cadastrad
 
 <br>
 
-Por meio desta rota será possível listar os eventos de um usuário.
+<h3>Por meio desta rota será possível listar os eventos de um usuário.</h3>
 
 <br>
 
@@ -752,7 +772,7 @@ Por meio desta rota será possível listar os eventos de um usuário.
 
 <br>
 
-Por meio desta rota será possível editar um evento.
+<h3>Por meio desta rota será possível editar um evento.</h3>
 
 <br>
 
@@ -860,6 +880,359 @@ Está rota precisa da autorização do token!
 ```json
 {
   "error": "The id 047f9b6a-b964-4387-87d5-39719cc01028 is not in database."
+}
+```
+
+<br>
+
+</details>
+
+<br>
+
+---
+
+<br>
+
+<h2 align = "center">Rotas de categorias</h2>
+
+<div align = "center">
+
+`Por meio da rota de eventos será possível fazer as seguintes requisições:`
+
+| Método                            | Descrição                         |
+| --------------------------------- | --------------------------------- |
+| `POST/events/<event_id>/comments` | Criar comentário em um evento     |
+| `GET/events/<event_id>/comments`  | Busca os comentários de um evento |
+| `PATCH/comments/<comments_id>`    | Atualizar um comentário           |
+| `DELETE/comments/<comments_id>`   | Deletar um comentário             |
+
+</div>
+
+<br>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Adicionar um comentário ao evento</b></summary>
+
+<br>
+
+<h3>Por meio desta rota será possível adicionar um comentário a um evento.</h3>
+
+<br>
+
+Está rota precisa da autorização do token!
+
+<h3 style="color: yellow">Authorization: Bearer {access_token} </h3>
+
+<br>
+
+`GET/events/<user_id> - Formato da requisição`
+
+```json
+{
+  "comment": "É o melhor evento do ano !!"
+}
+```
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">201 CREATED</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "comment": "É o melhor evento do ano !!"
+}
+```
+
+<br>
+
+<h3>Caso não passe a chave comment</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "missing_keys": ["comment"]
+}
+```
+
+<br>
+
+<h3>Caso não seja passado o token, terá o seguinte retorno</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
+}
+```
+
+<br>
+
+<h3>Caso o evento não seja encontrado, terá o seguinte retorno</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id 4efa7076-d7be-4c33-8e9a-b3c3bb506c is not valid."
+}
+```
+
+<br>
+
+<h3>Caso o token passado seja inválido, terá o seguinte retorno</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Invalid token."
+}
+```
+
+<br>
+
+</details>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Trazer a lista de comentários de um evento</b></summary>
+
+<br>
+
+<h3>Por meio desta rota será possível adicionar um comentário a um evento.</h3>
+
+<br>
+
+`GET/events/<user_id> - Formato da requisição`
+
+**Não há** corpo de requisição.
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">200 OK</span></h3>
+
+`Formato da resposta`
+
+```json
+[
+  {
+    "id": "98542e8d-6adb-4993-8e26-a76cdf637dca",
+    "comment": "É o melhor evento do ano !!",
+    "created_at": "Sun, 01 May 2022 19:16:49 GMT",
+    "user_id": "f0b72181-00fc-4bc0-ad78-b73e31d9b7fc",
+    "username": "joao123",
+    "profile_picture": null
+  },
+  {
+    "id": "795fd221-3f03-4f40-b954-4e9a5d2ff413",
+    "comment": "É o melhor evento do ano !!",
+    "created_at": "Sun, 01 May 2022 19:16:56 GMT",
+    "user_id": "f0b72181-00fc-4bc0-ad78-b73e31d9b7fc",
+    "username": "joao123",
+    "profile_picture": null
+  },
+  {
+    "id": "b395305c-4297-4579-8f89-e8f5199bbb1b",
+    "comment": "É o melhor evento do ano !!",
+    "created_at": "Sun, 01 May 2022 19:16:57 GMT",
+    "user_id": "f0b72181-00fc-4bc0-ad78-b73e31d9b7fc",
+    "username": "joao123",
+    "profile_picture": null
+  }
+]
+```
+
+<br>
+
+</details>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Atualizar um comentário de evento</b></summary>
+
+<br>
+
+<h3>Por meio desta rota será possível atualizar um comentário a um evento.</h3>
+
+<br>
+
+Está rota precisa da autorização do token!
+
+<h3 style="color: yellow">Authorization: Bearer {access_token} </h3>
+
+<br>
+
+`GET/events/<user_id> - Formato da requisição`
+
+```json
+{
+  "comment": "É o melhor evento do ano !!"
+}
+```
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">200 OK</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "id": "98542e8d-6adb-4993-8e26-a76cdf637dca",
+  "comment": "olá",
+  "created_at": "Sun, 01 May 2022 19:16:49 GMT",
+  "user_id": "f0b72181-00fc-4bc0-ad78-b73e31d9b7fc",
+  "username": "joao123",
+  "profile_picture": null
+}
+```
+
+<br>
+
+<h3>Caso fique faltando a chave comments, terá o seguinte retorno</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "missing_keys": ["comment"]
+}
+```
+
+<br>
+
+<h3>Caso não seja passado o token, terá o seguinte retorno</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
+}
+```
+
+<br>
+
+<h3>Caso o token não seja valido, terá o seguinte retorno</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Invalid token."
+}
+```
+
+<br>
+
+</details>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Deletar um comentário de evento</b></summary>
+
+<br>
+
+<h3>Por meio desta rota será possível deletar um comentário a um evento.</h3>
+
+<br>
+
+Está rota precisa da autorização do token!
+
+<h3 style="color: yellow">Authorization: Bearer {access_token} </h3>
+
+<br>
+
+`GET/events/<user_id> - Formato da requisição`
+
+**Não há** corpo de requisição.
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">200 OK</span></h3>
+
+`Formato da resposta`
+
+**Não há** corpo de reposta.
+
+<br>
+
+<h3>Caso não seja passado o token, terá o seguinte retorno</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
+}
+```
+
+<br>
+
+<h3>Caso o id não sejá encontrado, terá o seguinte retorno</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id 98542e8d-6adb-4993-8e26-a76cdf637d is not valid."
+}
+```
+
+<br>
+
+<h3>Caso o token não sejá válido, terá o seguinte retorno</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Invalid token."
 }
 ```
 
