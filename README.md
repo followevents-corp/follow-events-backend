@@ -14,7 +14,7 @@
 
 <br>
 
-<h3 align = "center">URL base da API: <b>"https://follow-events-api.herokuapp.com/"</b></h3>
+<h3 align = "center">URL base da API: <b><a target="_blank" href="https://follow-events-api.herokuapp.com/">https://follow-events-api.herokuapp.com/</a></b></h3>
 
 <br>
 
@@ -516,6 +516,35 @@ Nesta rota terá que passar 2 arquivos multipart:
 <b>file</b> : Será um arquivo do tipo imagem ou vídeo, com um máximo de 10mb.
 
 <b>data</b> : Será um json no formato abaixo.
+
+<details>
+
+<summary style ="font-size: 18px"><b>Modelo de requisição no front end</b></summary>
+
+```js
+let bodyFormData = new FormData();
+bodyFormData.append('data',{"name": "Evento1",
+  "description": "uma descrição para testar",
+  "event_link": "twitch",
+  "event_date": "Fri, 13 May 2022 15:21:41 GMT",
+  "categories": ["Games"]
+});
+bodyFormData.append('file', imageFile);
+
+fetch("https://follow-events-api.herokuapp.com/events", {
+  const response = await axios({
+      method: 'post',
+      url: 'your_api_url',
+      data: bodyFormData,
+      headers: {
+          'Content-Type': `multipart/form-data`,
+      },
+  });
+```
+
+</details>
+
+<br>
 
 ```json
 {
