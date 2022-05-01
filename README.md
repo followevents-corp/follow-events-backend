@@ -1,8 +1,7 @@
 # follow-events-backend
 
 <h1 align="center">
-  <img alt="apiLogo" title="Follow Events" src='./assets/follow_events_logo.svg
-  ' width="100px" />
+  <img alt="apiLogo" title="Follow Events" src='./assets/logo.png' width="100px" />
 </h1>
 ​
 <h1 align="center">
@@ -46,7 +45,7 @@
 
 <br>
 
-Todos os campos são obrigatórios.
+<h3>Todos os campos são obrigatórios.</h3>
 
 `POST/users - Formato da requisição`
 
@@ -67,12 +66,110 @@ Todos os campos são obrigatórios.
 
 ```json
 {
-  "id": "id",
+  "id": "f0b72181-00fc-4bc0-ad78-b73e31d9b7fc",
   "username": "John Doe",
   "name": "johndoe",
   "email": "johndoe@email.com",
   "profile_picture": null,
   "creator": false
+}
+```
+
+<br>
+
+<h3>Caso uma chave não seja encontrada, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "missing_keys": ["name"]
+}
+```
+
+<br>
+
+<h3>Caso passe um email invalido, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Email format not acceptable: joao@, try ex.: your_mail@your_provider.com"
+}
+```
+
+<br>
+
+<h3>Caso uma chave não tenha a tipagem correta, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": {
+    "name": "must be a string"
+  }
+}
+```
+
+<br>
+
+<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
+}
+```
+
+<br>
+
+<h3>Caso o email, já exista, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">409 CONFLICT</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Email already exists."
+}
+```
+
+<br>
+
+<h3>Caso o username já exista, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">409 CONFLICT</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Username already exists."
 }
 ```
 
@@ -105,15 +202,65 @@ Todos os campos são obrigatórios.
 
 ```json
 {
-  "id": "id",
+  "id": "f0b72181-00fc-4bc0-ad78-b73e31d9b7fc",
   "name": "johndoe",
   "username": "John Doe",
   "email": "johndoe@email.com",
   "profile_picture": null,
   "creator": true,
-  "schedule": "http://localhost:5000/users/f0b72181-00fc-4bc0-ad78-b73e31d9b7fc/schedule",
-  "events": "http://localhost:5000/events/f0b72181-00fc-4bc0-ad78-b73e31d9b7fc",
-  "access_token": "acess_token"
+  "schedule": "https://follow-events-api.herokuapp.com/users/f0b72181-00fc-4bc0-ad78-b73e31d9b7fc/schedule",
+  "events": "https://follow-events-api.herokuapp.com//events/f0b72181-00fc-4bc0-ad78-b73e31d9b7fc",
+  "access_token": "access_token"
+}
+```
+
+<br>
+
+<h3>Caso uma chave não seja encontrada, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "missing_keys": ["email"]
+}
+```
+
+<br>
+
+<h3>Caso uma chave não tenha a tipagem correta, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": {
+    "name": "must be a string"
+  }
+}
+```
+
+<br>
+
+<h3>Caso a senha ou email sejam inválidos, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Invalid email or password."
 }
 ```
 
@@ -151,8 +298,24 @@ Está rota precisa da autorização do token!
   "email": "johndoe@email.com",
   "profile_picture": null,
   "creator": true,
-  "schedule": "http://localhost:5000/users/f0b72181-00fc-4bc0-ad78-b73e31d9b7fc/schedule",
-  "events": "http://localhost:5000/events/f0b72181-00fc-4bc0-ad78-b73e31d9b7fc"
+  "schedule": "https://follow-events-api.herokuapp.com/users/f0b72181-00fc-4bc0-ad78-b73e31d9b7fc/schedule",
+  "events": "https://follow-events-api.herokuapp.com/events/f0b72181-00fc-4bc0-ad78-b73e31d9b7fc"
+}
+```
+
+<br>
+
+<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
 }
 ```
 
@@ -194,8 +357,42 @@ Está rota precisa da autorização do token!
   "email": "joao1234@gmail.com",
   "profile_picture": null,
   "creator": true,
-  "schedule": "http://localhost:5000/users/f0b72181-00fc-4bc0-ad78-b73e31d9b7fc/schedule",
-  "events": "http://localhost:5000/events/f0b72181-00fc-4bc0-ad78-b73e31d9b7fc"
+  "schedule": "https://follow-events-api.herokuapp.com/users/f0b72181-00fc-4bc0-ad78-b73e31d9b7fc/schedule",
+  "events": "https://follow-events-api.herokuapp.com/events/f0b72181-00fc-4bc0-ad78-b73e31d9b7fc"
+}
+```
+
+<br>
+
+<h3>Caso uma chave não tenha a tipagem correta, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": {
+    "name": "must be a string"
+  }
+}
+```
+
+<br>
+
+<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
 }
 ```
 
@@ -209,7 +406,9 @@ Está rota precisa da autorização do token!
 
 <br>
 
-Só é possível deletar o usuário caso esteja logado com este usuário!
+<h3>Só é possível deletar o usuário caso esteja logado com este usuário!</h3>
+
+<br>
 
 Está rota precisa da autorização do token!
 
@@ -217,7 +416,7 @@ Está rota precisa da autorização do token!
 
 <br>
 
-`PATCH/users/<user_id> - Formato da requisição`
+`DELETE/users/<user_id> - Formato da requisição`
 
 **Não há** corpo de requisição.
 
@@ -228,5 +427,442 @@ Está rota precisa da autorização do token!
 `Formato da resposta`
 
 **Não há** corpo de resposta.
+
+<br>
+
+<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
+}
+```
+
+<br>
+
+</details>
+
+<br>
+
+---
+
+<br>
+
+<h2 align = "center">Rotas de eventos</h2>
+
+<div align = "center">
+
+`Por meio da rota de eventos será possível fazer as seguintes requisições:`
+
+| Método                     | Descrição                                      |
+| -------------------------- | ---------------------------------------------- |
+| `POST/events`              | Criar um novo evento                           |
+| `GET/events`               | Traz uma lista com todos os eventos            |
+| `GET/events/<user_id>`     | Traz todos os eventos do usuário em especifico |
+| `PATCH/events/<event_id>`  | Editar um evento                               |
+| `DELETE/events/<event_id>` | Deletar um evento                              |
+
+</div>
+
+<br>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Criar um novo evento</b></summary>
+
+<h3>Todos os campos são obrigatóriso</h3>
+
+<br>
+
+Está rota precisa da autorização do token!
+
+<br>
+
+<h3 style="color: yellow">Authorization: Bearer {access_token} </h3>
+<h3 style="color: yellow">Content-type: multipart/form-data</h3>
+
+<br>
+
+`POST/events - Formato da requisição`
+
+Nesta rota terá que passar 2 arquivos multipart:
+
+<b>file</b> : Será um arquivo do tipo imagem ou vídeo, com um máximo de 10mb.
+
+<b>data</b> : Será um json no formato abaixo.
+
+```json
+{
+  "name": "evento",
+  "description": "descrição do evento",
+  "event_link": "plataforma",
+  "event_date": "Fri, 13 May 2022 15:21:41 GMT",
+  "categories": ["Games", "Live"]
+}
+```
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">201 CREATED</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "id": "b9caf35c-02fe-4e84-986a-1ff46c48e562",
+  "name": "Evento12",
+  "description": "uma descrição para testar",
+  "event_date": "Fri, 13 May 2022 15:21:41 GMT",
+  "type_banner": "image",
+  "link_banner": "https://follow-events.s3.amazonaws.com/19b8e308-868d-4d02-b4a4-e567544e2b16.png",
+  "event_link": "twitch",
+  "created_at": "Sun, 01 May 2022 01:16:05 GMT",
+  "creator_id": "f0b72181-00fc-4bc0-ad78-b73e31d9b7fc",
+  "quantity_users": 0,
+  "categories": ["Games"],
+  "comments": "https://follow-events-api.herokuapp.com/events/b9caf35c-02fe-4e84-986a-1ff46c48e562/comments",
+  "giveaway": "https://follow-events-api.herokuapp.com/events/b9caf35c-02fe-4e84-986a-1ff46c48e562/giveaway"
+}
+```
+
+<br>
+
+<h3>Caso uma chave não seja encontrada, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "missing_keys": ["name"]
+}
+```
+
+<br>
+
+<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
+}
+```
+
+<br>
+
+<h3>Caso o usuário não tenha permissão para criar eventos, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Must be a content creator, to create a event."
+}
+```
+
+<br>
+
+<h3>Caso o arquivo não seja uma image ou vídeo, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">415 UNSUPPORTED MEDIA TYPE</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Only image and video files are supported"
+}
+```
+
+</details>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Trazer uma lista com todos os eventos</b></summary>
+
+<br>
+
+Por meio desta rota será possível ter uma lista com todos os eventos cadastrados.
+
+<br>
+
+`GET/events - Formato da requisição`
+
+**Não há** corpo de requisição.
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">200 OK</span></h3>
+
+`Formato da resposta`
+
+```json
+[
+  {
+    "id": "c97820b0-e0d6-45b8-b554-38d3e6dc798d",
+    "name": "Evento1344444666344",
+    "description": "uma descrição",
+    "event_date": "12/12/2023",
+    "type_banner": "image",
+    "link_banner": "https://follow-events.s3.amazonaws.com/2584339d-1df6-40d0-9457-39f2dff24585.png",
+    "event_link": "link",
+    "created_at": "Fri, 29 Apr 2022 02:00:19 GMT",
+    "creator_id": "60762d5d-0946-4702-a213-b8b070e54350",
+    "quantity_users": 0,
+    "categories": ["Games"],
+    "comments": "https://follow-events-api.herokuapp.com/events/c97820b0-e0d6-45b8-b554-38d3e6dc798d/comments",
+    "giveaway": "https://follow-events-api.herokuapp.com/events/c97820b0-e0d6-45b8-b554-38d3e6dc798d/giveaway"
+  },
+  {
+    "id": "44d41135-36e5-432d-8c05-6ce0d66e7ce1",
+    "name": "Evento212121",
+    "description": "Sua descrição",
+    "event_date": "12/12/2023",
+    "type_banner": "video",
+    "link_banner": "https://follow-events.s3.amazonaws.com/51910025-4990-4e75-baf2-f8cb08b57dcf.mp4",
+    "event_link": "link",
+    "created_at": "Fri, 29 Apr 2022 22:59:34 GMT",
+    "creator_id": "60762d5d-0946-4702-a213-b8b070e54350",
+    "quantity_users": 0,
+    "categories": ["Live"],
+    "comments": "https://follow-events-api.herokuapp.com/events/44d41135-36e5-432d-8c05-6ce0d66e7ce1/comments",
+    "giveaway": "https://follow-events-api.herokuapp.com/events/44d41135-36e5-432d-8c05-6ce0d66e7ce1/giveaway"
+  },
+  {
+    "id": "efa50993-b3e5-46ee-a0cf-82864d2502e1",
+    "name": "Evento212121",
+    "description": "coloque seu texto aqui",
+    "event_date": "Fri, 13 May 2022 15:21:41 GMT",
+    "type_banner": "image",
+    "link_banner": "https://follow-events.s3.amazonaws.com/c428e2b2-6aba-40dd-bb9d-2f58e79acc80.png",
+    "event_link": "youtube",
+    "created_at": "Sat, 30 Apr 2022 01:55:48 GMT",
+    "creator_id": "f0b72181-00fc-4bc0-ad78-b73e31d9b7fc",
+    "quantity_users": 0,
+    "categories": ["Sports"],
+    "comments": "https://follow-events-api.herokuapp.com/events/efa50993-b3e5-46ee-a0cf-82864d2502e1/comments",
+    "giveaway": "https://follow-events-api.herokuapp.com/events/efa50993-b3e5-46ee-a0cf-82864d2502e1/giveaway"
+  }
+]
+```
+
+<br>
+
+</details>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Trazer todos eventos de usuário</b></summary>
+
+<br>
+
+Por meio desta rota será possível listar os eventos de um usuário.
+
+<br>
+
+`GET/events/<user_id> - Formato da requisição`
+
+**Não há** corpo de requisição.
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">200 OK</span></h3>
+
+`Formato da resposta`
+
+```json
+[
+  {
+    "id": "efa50993-b3e5-46ee-a0cf-82864d2502e1",
+    "name": "Evento 1",
+    "description": "uma descrição",
+    "event_date": "Fri, 13 May 2022 15:21:41 GMT",
+    "type_banner": "image",
+    "link_banner": "https://follow-events.s3.amazonaws.com/c428e2b2-6aba-40dd-bb9d-2f58e79acc80.png",
+    "event_link": "youtube",
+    "created_at": "Sat, 30 Apr 2022 01:55:48 GMT",
+    "creator_id": "f0b72181-00fc-4bc0-ad78-b73e31d9b7fc",
+    "quantity_users": 0,
+    "categories": ["Games"],
+    "comments": "https://follow-events-api.herokuapp.com/events/efa50993-b3e5-46ee-a0cf-82864d2502e1/comments",
+    "giveaway": "https://follow-events-api.herokuapp.com/events/efa50993-b3e5-46ee-a0cf-82864d2502e1/giveaway"
+  },
+  {
+    "id": "efa50993-b3e5-46ee-a0cf-82864d2502e1",
+    "name": "Evento 2",
+    "description": "descrição do usuário",
+    "event_date": "Fri, 13 May 2022 15:21:41 GMT",
+    "type_banner": "image",
+    "link_banner": "https://follow-events.s3.amazonaws.com/c428e2b2-6aba-40dd-bb9d-2f58e79acc80.png",
+    "event_link": "youtube",
+    "created_at": "Sat, 30 Apr 2022 01:55:48 GMT",
+    "creator_id": "f0b72181-00fc-4bc0-ad78-b73e31d9b7fc",
+    "quantity_users": 0,
+    "categories": ["Music"],
+    "comments": "https://follow-events-api.herokuapp.com/events/efa50993-b3e5-46ee-a0cf-82864d2502e1/comments",
+    "giveaway": "https://follow-events-api.herokuapp.com/events/efa50993-b3e5-46ee-a0cf-82864d2502e1/giveaway"
+  }
+]
+```
+
+<br>
+
+<h3>Caso o id do usuário não seja encontrado, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id f0b72181-00fc-4bc0-ad78-b73e31d9b7 is not valid."
+}
+```
+
+<br>
+
+</details>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Editar um evento</b></summary>
+
+<br>
+
+Por meio desta rota será possível editar um evento.
+
+<br>
+
+Está rota precisa da autorização do token!
+
+<h3 style="color: yellow">Authorization: Bearer {access_token} </h3>
+<h3 style="color: yellow">Content-type: multipart/form-data</h3>
+
+<br>
+
+Nesta rota poderá passar 2 arquivos multipart:
+
+<b>file</b> : Será um arquivo do tipo imagem ou vídeo, com um máximo de 10mb.
+
+<b>data</b> : Será um json com as chaves e valores.
+
+Na edição de um usuário pode se atualizar todas as caracteristicas passadas no exemplo abaixo:
+
+`PATCH/events/<user_id> - Formato da requisição`
+
+```json
+{
+  "name": "Evento 2",
+  "description": "descrição do usuário",
+  "event_date": "Fri, 13 May 2022 15:21:41 GMT",
+  "event_link": "youtube",
+  "categories": ["Music"]
+}
+```
+
+<br>
+
+<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
+}
+```
+
+<br>
+
+</details>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Deletar um evento</b></summary>
+
+<br>
+
+<h3>Por meio desta rota é possível deletar um evento</h3>
+
+<br>
+
+Está rota precisa da autorização do token!
+
+<h3 style="color: yellow">Authorization: Bearer {access_token} </h3>
+
+<br>
+
+`DELETE/users/<user_id> - Formato da requisição`
+
+**Não há** corpo de requisição.
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">200 OK</span></h3>
+
+`Formato da resposta`
+
+**Não há** corpo de resposta.
+
+<br>
+
+<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
+}
+```
+
+<br>
+
+<h3>Caso o id não sejá encontrado, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id 047f9b6a-b964-4387-87d5-39719cc01028 is not in database."
+}
+```
+
+<br>
 
 </details>
