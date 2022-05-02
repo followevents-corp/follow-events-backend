@@ -93,7 +93,10 @@ def check_if_the_user_owner(model, id_to_check=""):
     if model is Events:
         search = session.query(model).filter_by(creator_id=user_id, id=id_to_check).first()
     elif model is User:
-        search = session.query(model).filter_by(id=user_id).first()
+        if id_to_check == user_id:
+            search = session.query(model).filter_by(id=user_id).first()
+        else:
+            search = None
     elif model is Giveaway:
         search = (
             session.query(model)
@@ -107,6 +110,7 @@ def check_if_the_user_owner(model, id_to_check=""):
     
     else:
         search = session.query(model).filter_by(user_id=user_id, id=id_to_check).first()
+
     if not search:
         raise NotLoggedUserError
 
