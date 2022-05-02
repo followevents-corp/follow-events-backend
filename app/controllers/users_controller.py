@@ -108,17 +108,17 @@ def get_user(user_id: str):
 
 @jwt_required()
 def update_user(user_id: str):
-    current_user = get_jwt_identity()
-
     user: Query = (
         session.query(User).select_from(User).filter(User.id == user_id).first()
     )
 
-    if not user:
-        return {"error": "Id not found in database."}, HTTPStatus.NOT_FOUND
-
-    if str(user.id) != current_user:
-        return {"error": "Unauthorized."}, HTTPStatus.UNAUTHORIZED
+    try:
+        check_id_validation(user_id, User)
+        check_if_the_user_owner(User, user_id)
+    except NotLoggedUserError as e:
+        return e.response, e.status_code
+    except InvalidIdError as e:
+        return e.response, e.status_code
 
     data = request.get_json()
 
@@ -141,14 +141,13 @@ def update_user(user_id: str):
             "creator": bool,
         }
         check_keys_type(new_data, type_keys)
+
+        for key, value in new_data.items():
+            setattr(user, key, value)
+
+        session.commit()
     except AttributeTypeError as e:
         return e.response, HTTPStatus.BAD_REQUEST
-
-    for key, value in new_data.items():
-        setattr(user, key, value)
-
-    try:
-        session.commit()
     except IntegrityError as e:
         session.rollback()
         error = str(e)
