@@ -7,7 +7,7 @@ from app.exceptions.request_data_exceptions import (
     AttributeTypeError,
     MissingAttributeError,
 )
-from app.exceptions.user_exceptions import NotLoggedUser
+from app.exceptions.user_exceptions import NotLoggedUserError
 from app.models.events_model import Events
 from app.models.giveaway_model import Giveaway
 
@@ -96,7 +96,7 @@ def update_giveaway(giveaway_id, event_id):
         check_if_the_user_owner(Giveaway, giveaway_id)
     except InvalidIdError as e:
         return e.response, e.status_code
-    except NotLoggedUser as e:
+    except NotLoggedUserError as e:
         return e.response, e.status_code
     except:
         return {"error": "Giveaway not found"}, HTTPStatus.NOT_FOUND
@@ -155,7 +155,7 @@ def delete_giveaway(event_id, giveaway_id):
 
     try:
         check_if_the_user_owner(Events, giveaway_id)
-    except NotLoggedUser as e:
+    except NotLoggedUserError as e:
         return e.response, e.status_code
 
     del_giveaway: Query = (

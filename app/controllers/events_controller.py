@@ -13,7 +13,7 @@ from app.exceptions.request_data_exceptions import (
     InvalidLink,
     MissingAttributeError,
 )
-from app.exceptions.user_exceptions import NotLoggedUser
+from app.exceptions.user_exceptions import NotLoggedUserError
 from app.models.events_model import Events
 from app.models.user_model import User
 from app.services.aws_s3 import AWS_S3
@@ -191,7 +191,7 @@ def update_event(event_id):
         return err.response, err.status_code
     except AttributeTypeError as e:
         return e.response, e.status_code
-    except NotLoggedUser as e:
+    except NotLoggedUserError as e:
         return e.response, e.status_code
     except MissingAttributeError as e:
         return e.response, e.status_code
@@ -220,7 +220,7 @@ def delete_event(event_id):
         check_if_the_user_owner(Events, event_id)
     except InvalidIdError as err:
         return err.response, err.status_code
-    except NotLoggedUser as err:
+    except NotLoggedUserError as err:
         return err.response, err.status_code
     session: Session = db.session
 

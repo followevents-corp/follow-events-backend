@@ -3,7 +3,7 @@ class EmailFormatError(Exception):
         self.message = message
         self.status_code = status_code
 
-class NotLoggedUser(Exception):
+class NotLoggedUserError(Exception):
     def __init__(self, response={"error": "Unauthorized"}, status_code=401):
         self.response = response
         self.status_code = status_code
