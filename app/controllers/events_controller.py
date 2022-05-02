@@ -12,6 +12,7 @@ from app.exceptions.request_data_exceptions import (
     IncorrectKeys,
     InvalidLink,
     MissingAttributeError,
+    PastDateError
 )
 from app.exceptions.user_exceptions import NotLoggedUserError
 from app.models.events_model import Events
@@ -79,7 +80,10 @@ def create_event():
 
         new_data = check_keys(data, [*dict.keys()])
         check_keys_type(new_data, dict, file)
-        dt.strptime(new_data["event_date"], "%a, %d %b %Y %H:%M:%S %Z")
+        
+        formated_event_date = dt.strptime(new_data["event_date"], "%a, %d %b %Y %H:%M:%S %Z")
+        if formated_event_date < dt.utcnow():
+            raise PastDateError
 
         categories = new_data["categories"]
 
@@ -110,6 +114,8 @@ def create_event():
     except CategoryTypeError as e:
         return e.response, e.status_code
     except InvalidLink as e:
+        return e.response, e.status_code
+    except PastDateError as e:
         return e.response, e.status_code
     except ValueError:
         return {
