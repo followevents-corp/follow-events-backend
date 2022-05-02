@@ -7,13 +7,16 @@ from sqlalchemy.orm import Query
 from sqlalchemy.orm.session import Session
 
 from app.configs.database import db
+from app.exceptions.invalid_id_exception import InvalidIdError
 from app.exceptions.request_data_exceptions import (
     AttributeTypeError,
     MissingAttributeError,
 )
-from app.exceptions.user_exceptions import EmailFormatError
+from app.exceptions.user_exceptions import EmailFormatError, NotLoggedUserError
 from app.models.user_model import User
 from app.services.general_services import (
+    check_id_validation,
+    check_if_the_user_owner,
     check_keys,
     check_keys_type,
     incoming_values,
@@ -80,11 +83,13 @@ def get_user(user_id: str):
         session.query(User).select_from(User).filter(User.id == user_id).first()
     )
 
-    if not user:
-        return {"error": "Id not found in database."}, HTTPStatus.NOT_FOUND
-
-    if str(user.id) != current_user:
-        return {"error": "Unauthorized."}, HTTPStatus.UNAUTHORIZED
+    try:
+        check_id_validation(user_id, User)
+        check_if_the_user_owner(User, user_id)
+    except NotLoggedUserError as e:
+        return e.response, e.status_code
+    except InvalidIdError as e:
+        return e.response, e.status_code
 
     schedule_url = url_for("schedule.get_schedule", user_id=user.id)
     events_url = url_for("events.get_events_by_id", user_id=user.id)
