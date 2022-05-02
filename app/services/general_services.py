@@ -1,4 +1,3 @@
-from ipdb import set_trace
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy.orm.session import Session
 from werkzeug.datastructures import FileStorage
