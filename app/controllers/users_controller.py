@@ -146,8 +146,10 @@ def update_user(user_id: str):
             setattr(user, key, value)
 
         session.commit()
+    except EmailFormatError as e:
+        return {'error': e.message}, e.status_code
     except AttributeTypeError as e:
-        return e.response, HTTPStatus.BAD_REQUEST
+        return e.response, e.status_code
     except IntegrityError as e:
         session.rollback()
         error = str(e)
