@@ -154,8 +154,12 @@ def delete_giveaway(event_id, giveaway_id):
     session: Session = db.session
 
     try:
-        check_if_the_user_owner(Events, giveaway_id)
+        check_id_validation(event_id, Events)
+        check_id_validation(giveaway_id, Giveaway)
+        check_if_the_user_owner(Giveaway, giveaway_id)
     except NotLoggedUserError as e:
+        return e.response, e.status_code
+    except InvalidIdError as e:
         return e.response, e.status_code
 
     del_giveaway: Query = (
