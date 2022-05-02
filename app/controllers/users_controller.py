@@ -73,26 +73,24 @@ def create_user():
 
     return jsonify(new_user), HTTPStatus.CREATED
 
+
 @jwt_required()
 def get_user(user_id: str):
 
     current_user = get_jwt_identity()
-    
+
     user: Query = (
-        session.query(User)
-        .select_from(User)
-        .filter(User.id == user_id)
-        .first()
+        session.query(User).select_from(User).filter(User.id == user_id).first()
     )
 
     if not user:
-        return {'error': 'Id not found in database.'}, HTTPStatus.NOT_FOUND
+        return {"error": "Id not found in database."}, HTTPStatus.NOT_FOUND
 
     if str(user.id) != current_user:
-        return {'error': 'Unauthorized.'}, HTTPStatus.UNAUTHORIZED
-    
+        return {"error": "Unauthorized."}, HTTPStatus.UNAUTHORIZED
+
     schedule_url = url_for("schedule.get_schedule", user_id=user.id)
-    events_url = url_for("user.get_event_by_id", user_id=user.id)
+    events_url = url_for("events.get_events_by_id", user_id=user.id)
 
     return {
         "id": user.id,
@@ -111,17 +109,14 @@ def update_user(user_id: str):
     current_user = get_jwt_identity()
 
     user: Query = (
-        session.query(User)
-        .select_from(User)
-        .filter(User.id == user_id)
-        .first()
+        session.query(User).select_from(User).filter(User.id == user_id).first()
     )
 
     if not user:
-        return {'error': 'Id not found in database.'}, HTTPStatus.NOT_FOUND
-    
+        return {"error": "Id not found in database."}, HTTPStatus.NOT_FOUND
+
     if str(user.id) != current_user:
-        return {'error': 'Unauthorized.'}, HTTPStatus.UNAUTHORIZED
+        return {"error": "Unauthorized."}, HTTPStatus.UNAUTHORIZED
 
     data = request.get_json()
 
@@ -129,32 +124,40 @@ def update_user(user_id: str):
     if empty_values:
         return empty_values, HTTPStatus.BAD_REQUEST
 
-    valid_keys = ['username', 'name', 'email', 'password', 'profile_picture', 'creator']
+    valid_keys = ["username", "name", "email", "password", "profile_picture", "creator"]
     new_data, not_used_keys = remove_unnecessary_keys(data, valid_keys)
     if not not_used_keys:
-        return {'error': 'No data to update'}, HTTPStatus.BAD_REQUEST
+        return {"error": "No data to update"}, HTTPStatus.BAD_REQUEST
 
     try:
-        type_keys = {'name': str, 'username': str, 'email': str, 'password': str ,'profile_picture': str, 'creator': bool}
+        type_keys = {
+            "name": str,
+            "username": str,
+            "email": str,
+            "password": str,
+            "profile_picture": str,
+            "creator": bool,
+        }
         check_keys_type(new_data, type_keys)
     except AttributeTypeError as e:
         return e.response, HTTPStatus.BAD_REQUEST
-    
+
     for key, value in new_data.items():
         setattr(user, key, value)
-    
+
     try:
         session.commit()
     except IntegrityError as e:
         session.rollback()
         error = str(e)
 
-        if 'Key (email)' in error:
-            return {'error': 'Email already exists.'}, HTTPStatus.CONFLICT
-        return {'error': 'Username already exists'}, HTTPStatus.CONFLICT
+        if "Key (email)" in error:
+            return {"error": "Email already exists."}, HTTPStatus.CONFLICT
+        return {"error": "Username already exists"}, HTTPStatus.CONFLICT
 
     schedule_url = url_for("schedule.get_schedule", user_id=user.id)
-    events_url = url_for("user.get_event_by_id", user_id=user.id)
+    events_url = url_for("events.get_events_by_id", user_id=user.id)
+
 
 @jwt_required()
 def get_user(user_id: str):
@@ -172,7 +175,7 @@ def get_user(user_id: str):
         return {"error": "Unauthorized."}, HTTPStatus.UNAUTHORIZED
 
     schedule_url = url_for("schedule.get_schedule", user_id=user.id)
-    events_url = url_for("events.get_event_by_id", user_id=user.id)
+    events_url = url_for("events.get_events_by_id", user_id=user.id)
 
     return {
         "id": user.id,
@@ -257,19 +260,16 @@ def delete_user(user_id: str):
     current_user = get_jwt_identity()
 
     user: Query = (
-        session.query(User)
-        .select_from(User)
-        .filter(User.id == user_id)
-        .first()
+        session.query(User).select_from(User).filter(User.id == user_id).first()
     )
 
     if not user:
-        return {'error': 'Id not found in database.'}, HTTPStatus.NOT_FOUND
-    
+        return {"error": "Id not found in database."}, HTTPStatus.NOT_FOUND
+
     if str(user.id) != current_user:
-        return {'error': 'Unauthorized.'}, HTTPStatus.BAD_REQUEST
-    
+        return {"error": "Unauthorized."}, HTTPStatus.BAD_REQUEST
+
     session.delete(user)
     session.commit()
 
-    return '', HTTPStatus.NO_CONTENT
+    return "", HTTPStatus.NO_CONTENT
