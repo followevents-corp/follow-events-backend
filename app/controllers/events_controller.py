@@ -66,8 +66,16 @@ def create_event():
         }
 
         files = request.files
-        file = files["file"]
-        data = json.loads(request.form["data"])
+        file = files.get("file")
+        data = request.form.get("data")
+
+        if data == None:
+            raise MissingAttributeError(["data"])
+
+        if file == None:
+            raise MissingAttributeError(["file"])
+
+        data = json.loads(data)
 
         new_data = check_keys(data, [*dict.keys()])
         check_keys_type(new_data, dict, file)
