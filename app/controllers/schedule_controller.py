@@ -105,22 +105,27 @@ def get_schedule(user_id):
 @jwt_required()
 def delete_schedule(user_id, event_id):
     session: Session = db.session
-    
-    schedule_to_delete = (
-        session.query(Schedule).filter_by(
-            user_id=user_id, event_id=event_id).first()
-    )
-
 
     try:
-        check_id_validation(event_id, Schedule)
         check_id_validation(user_id, User)
         check_id_validation(event_id, Events)
+
+        schedule_to_delete = (
+        session.query(Schedule).filter_by(
+            user_id=user_id, event_id=event_id).first()
+        )  
+
+        if not schedule_to_delete:
+            return {"error": "Schedule not found"}, HTTPStatus.NOT_FOUND
+
+
         check_if_the_user_owner(Schedule, event_id)
     except InvalidIdError as e:
         return e.response, e.status_code
     except NotLoggedUser as e:
         return e.response, e.status_code
+
+
 
     session.delete(schedule_to_delete)
     session.commit()
