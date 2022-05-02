@@ -1626,3 +1626,416 @@ Está rota precisa da autorização do token!
 <br>
 
 ---
+<br>
+
+<h2 align = "center">Rotas de eventos de sorte</h2>
+
+<div align = "center">
+
+`Por meio da rota do calendário será possível fazer as seguintes requisições:`
+
+| Método                   | Descrição                   |
+| ------------------------ | --------------------------- |
+| `POST/events/<event_id>/giveaway`| Criar um novo evento de sorte|
+| `GET/events/<event_id>/giveaway`| Listar todos os eventos de sorte |
+| `PATCH/events/<event_id>/giveaway/<giveaway_id>` | Editar um evento de sorte|
+| `DELETE/events/<event_id>/giveaway/<giveaway_id` | Deletar um evento de sorte|
+
+</div>
+<br>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Criação de um novo evento de sorte</b></summary>
+
+<br>
+
+Está rota precisa da autorização do token!
+
+<h3 style="color: yellow">Authorization: Bearer {access_token} </h3>
+
+<br>
+
+<h3>Campo obrigatório.</h3>
+
+`POST/events/<event_id>/giveaway - Formato da requisição`
+
+```json
+{
+  "name": "Sorteio Hamburgão",
+  "description": "Melhor X-tudo de Colatina-ES",
+  "award": "X-tudão",
+  "award_picture": "https://xtudoreceitas.com/wp-content/uploads/xtudo-480x270.png"
+}
+```
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">201 CREATED</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "id": "8c2a81ea-e82b-46ba-a69f-71718bbcdcae",
+  "name": "Sorteio Hamburgão",
+  "description": "Melhor X-tudo de Colatina-ES",
+  "award": "X-tudão",
+  "award_picture": "https://xtudoreceitas.com/wp-content/uploads/xtudo-480x270.png",
+  "active": true,
+  "created_at": "Mon, 02 May 2022 18:54:03 GMT",
+  "event_id": "af38606a-b45c-417d-99e5-5deb8163d698"
+}
+```
+
+<br>
+
+<br>
+
+<h3>Caso não passe os campos obrigatórios ou passe com erro de sintaxe.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "missing_keys": [
+    "name",
+    "description",
+    "award",
+    "award_picture"
+  ]
+}
+```
+
+<br>
+
+<h3>Caso o id do evento não seja encontrado, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id 'f02c2181-99fc-4bc0-ad78-b73e39d9b7fc' is not in database."
+}
+```
+
+<br>
+
+<h3>Caso o id do evento não seja válido.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id f02c2181-99fc-4bc0-ad78-b73e39d9b7f is not valid."
+}
+```
+
+<br>
+
+<h3>Caso uma chave não tenha a tipagem correta, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": {
+    "name": "must be a string"
+  }
+}
+```
+
+<br>
+
+<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
+}
+```
+
+<br>
+
+
+</details> 
+
+<details>
+
+
+<summary style ="font-size: 18px"><b>Buscar eventos de sorte</b></summary>
+
+<br>
+
+Está rota **NÃO** precisa da autorização do token!
+
+<br>
+
+`GET/events/<event_id>/giveaway - Formato da requisição`
+
+**Não há** corpo de requisição.
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">200 OK</span></h3>
+
+`Formato da resposta`
+
+```json
+[
+  {
+    "id": "8c2a81ea-e82b-46ba-a69f-71718bbcdcae",
+    "name": "Sorteio Hamburgão",
+    "description": "Melhor X-tudo de Colatina-ES",
+    "award": "X-tudão",
+    "award_picture": "https://xtudoreceitas.com/wp-content/uploads/xtudo-480x270.png",
+    "active": true,
+    "created_at": "Mon, 02 May 2022 18:54:03 GMT",
+    "event_id": "af38606a-b45c-417d-99e5-5deb8163d698"
+  }
+]
+```
+
+<br>
+
+<h3>Caso o id do evento não seja encontrado.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id b4e9e4f2-ef98-49d9-a864-03ad432c7aee is not in database."
+}
+```
+
+<br>
+
+</details>
+  
+<details>
+
+
+<summary style ="font-size: 18px"><b>Atualizar um evento de sorte</b></summary>
+
+<br>
+
+<h3>Só é possível atualizar o evento de sorte caso esteja logado e seja o criador do evento!</h3>
+
+<br>
+
+Está rota precisa da autorização do token!
+
+<h3 style="color: yellow">Authorization: Bearer {access_token} </h3>
+
+<br>
+
+`PATCH/events/<event_id>/giveaway/<giveaway_id> - Formato da requisição`
+
+```json
+{
+  "name": "Sk8 Manaus",
+  "description": "Sorteio aos inscritos do canal",
+  "award": "Skate Blacksheep"
+}
+```
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">200 OK</span></h3>
+
+```json
+{
+  "id": "836b5372-f1b4-43d1-b387-7532507c1f74",
+  "name": "Sk8 Manaus",
+  "description": "Sorteio aos inscritos do canal",
+  "award": "Skate Blacksheep",
+  "award_picture": "https://truck.com/wp-content/uploads/sk8-480x270.png",
+  "active": true,
+  "created_at": "Mon, 02 May 2022 19:26:36 GMT",
+  "event_id": "af38606a-b45c-417d-99e5-5deb8163d698"
+}
+```
+
+<br>
+
+<h3>Caso o id do evento de sorte não seja encontrado, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Giveaway not found"
+}
+```
+
+<br>
+
+<h3>Caso o id do evento não seja encontrado.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id af38606a-b45c-417d-99e5-5deb8163d688 is not in database."
+}
+```
+
+<br>
+
+<br>
+
+<h3>Caso o token não seja passado.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
+}
+```
+
+<br>
+
+<br>
+
+<h3>Caso o id passado não seja válido.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id 39761194-1352-426e-aa16-b8e38635b17 is not valid."
+}
+```
+
+<br>
+
+</details>
+
+<details>
+
+
+<summary style ="font-size: 18px"><b>Deletar um evento de sorte</b></summary>
+
+<br>
+
+<h3>Só é possível deletar o evento de sorte caso esteja logado e seja o criador do evento</h3>
+
+<br>
+
+Está rota precisa da autorização do token!
+
+<h3 style="color: yellow">Authorization: Bearer {access_token} </h3>
+
+<br>
+
+`PATCH/events/<event_id>/giveaway/<giveaway_id> - Formato da requisição`
+
+**Não há** corpo de requisição.
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">200 OK</span></h3>
+
+```json
+{
+    "message": "Event deleted from calendar."
+}
+```
+
+<br>
+
+<h3>Caso o id do compromisso não seja encontrado, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Schedule not found"
+}
+```
+
+<br>
+
+<br>
+
+<h3>Caso o token não seja passado.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
+}
+```
+
+<br>
+
+<br>
+
+<h3>Caso o id passado não seja válido.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id 39761194-1352-426e-aa16-b8e38635b17 is not valid."
+}
+```
+  
+</details>
+
