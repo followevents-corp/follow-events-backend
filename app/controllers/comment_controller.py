@@ -83,9 +83,12 @@ def get_comment(event_id: str):
 def update_comment(comment_id: str):
     data = request.get_json()
     try:
-        check_if_the_user_owner(Comment, comment_id)
         check_id_validation(comment_id, Comment)
+        check_if_the_user_owner(Comment, comment_id)
         verified_key = check_keys(data, ['comment'])
+        incoming =  incoming_values(verified_key)
+        if incoming:
+            return jsonify(incoming), HTTPStatus.BAD_REQUEST
         check_keys_type(verified_key, {'comment': str})
 
     except MissingAttributeError as e:
