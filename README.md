@@ -1,9 +1,9 @@
 # follow-events-backend
 
 <h1 align="center">
-  <img alt="apiLogo" title="Follow Events" src='./assets/logo.png' width="100px" />
+  <img alt="apiLogo" title="Follow Events" src='./assets/logo.png' width="150px" />
 </h1>
-​
+
 <h1 align="center">
    Follow Events - API
 </h1>
@@ -1268,3 +1268,361 @@ Está rota precisa da autorização do token!
 <br>
 
 </details>
+  
+ ---
+<br>
+
+<h2 align = "center">Rotas do calendário</h2>
+
+<div align = "center">
+
+`Por meio da rota do calendário será possível fazer as seguintes requisições:`
+
+| Método                   | Descrição                   |
+| ------------------------ | --------------------------- |
+| `POST/users/<user_id>/schedule`| Criar um novo evento no calendário|
+| `GET/users/<user_id>/schedule`| Lista todos os eventos do calendário |
+| `DELETE/users/<user_id>/schedule/<event_id>` | Deletar um evento do calendário|
+
+</div>
+<br>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Criação de um novo evento no calendário</b></summary>
+
+<br>
+
+
+Está rota precisa da autorização do token!
+
+<h3 style="color: yellow">Authorization: Bearer {access_token} </h3>
+
+<br>
+
+<h3>Campo obrigatório.</h3>
+
+`POST/users/<user_id>/schedule - Formato da requisição`
+
+```json
+{
+    "event_id": "f0b72181-00fc-4bc0-ad78-b73e31d9b7fc"
+}
+```
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">201 CREATED</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "message": "Event added to calendar."
+}
+```
+
+<br>
+
+<br>
+
+<h3>Caso o id do evento já tenha sido registrado no calendário.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">409 CONFLICT</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Event already added to user's schedule"
+}
+```
+
+<br>
+
+<h3>Caso o id do evento não seja encontrado, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id 'f02c2181-99fc-4bc0-ad78-b73e39d9b7fc' is not in database."
+}
+```
+
+<br>
+
+<br>
+
+<h3>Caso o id do evento não seja válido.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id f02c2181-99fc-4bc0-ad78-b73e39d9b7f is not valid."
+}
+```
+
+<br>
+
+<h3>Caso passe a chave errada, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "missing_keys": [
+    "event_id"
+  ]
+}
+```
+
+<br>
+
+<h3>Caso uma chave não tenha a tipagem correta, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": {
+    "event_id": "must be a string"
+  }
+}
+```
+
+<br>
+
+<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
+}
+```
+
+<br>
+
+
+
+</details> 
+
+<details>
+
+
+<summary style ="font-size: 18px"><b>Buscar eventos no calendário do usuário</b></summary>
+
+<br>
+
+Está rota precisa da autorização do token!
+
+<h3 style="color: yellow">Authorization: Bearer {access_token} </h3>
+
+<br>
+
+`GET /users/<user_id>/schedule - Formato da requisição`
+
+**Não há** corpo de requisição.
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">200 OK</span></h3>
+
+`Formato da resposta`
+
+```json
+[
+  {
+    "id": "179a35d9-2746-4724-a938-d1ed60265b16",
+    "name": "Live do Stag",
+    "description": "Final da Copa do Mundo",
+    "event_date": "Fri, 13 May 2022 15:21:41 GMT",
+    "type_banner": "image",
+    "link_banner": "https://follow-events.s3.amazonaws.com/712b4496-2600-4ea9-82ce-087941f6bc71.png",
+    "event_link": "www.twitch.tv",
+    "created_at": "Sun, 01 May 2022 19:09:52 GMT",
+    "creator_id": "b4e9e4f2-ef98-49d9-a864-03ad432c7cee",
+    "quantity_users": 1,
+    "categories": [
+      "Futebol"
+    ],
+    "comments": "https://follow-events-api.herokuapp.com/events/179a35d9-2746-4724-a938-d1ed60265b16/comments",
+    "giveaway": "https://follow-events-api.herokuapp.com/events/179a35d9-2746-4724-a938-d1ed60265b16/giveaway"
+  }
+]
+```
+
+<br>
+
+<h3>Caso o id do usuário não seja encontrado.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id b4e9e4f2-ef98-49d9-a864-03ad432c7aee is not in database."
+}
+```
+
+
+<br>
+
+<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Invalid token."
+}
+```
+
+<br>
+
+<br>
+
+<h3>Caso o token não seja passado.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
+}
+```
+
+<br>
+
+</details>
+
+<details>
+
+
+<summary style ="font-size: 18px"><b>Deletar um compromisso do usuário</b></summary>
+
+<br>
+
+<h3>Só é possível deletar o evento do calendário caso esteja logado com este usuário!</h3>
+
+<br>
+
+Está rota precisa da autorização do token!
+
+<h3 style="color: yellow">Authorization: Bearer {access_token} </h3>
+
+<br>
+
+`DELETE/users/<user_id>/schedule/<event_id> - Formato da requisição`
+
+**Não há** corpo de requisição.
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">200 OK</span></h3>
+
+```json
+{
+    "message": "Event deleted from calendar."
+}
+```
+
+<br>
+
+<h3>Caso o id do compromisso não seja encontrado, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Schedule not found"
+}
+```
+
+<br>
+
+<br>
+
+<h3>Caso o token não seja passado.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Missing authorization token"
+}
+```
+
+<br>
+
+<br>
+
+<h3>Caso o id passado não seja válido.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id 39761194-1352-426e-aa16-b8e38635b17 is not valid."
+}
+```
+
+<br>
+
+<br>
+
+
+
+</details>
+
+<br>
+
+---
