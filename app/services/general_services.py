@@ -1,13 +1,17 @@
 from difflib import SequenceMatcher
+
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy.orm.session import Session
 from werkzeug.datastructures import FileStorage
 
 from app.configs.database import db
 from app.exceptions.invalid_id_exception import InvalidIdError
-from app.exceptions.request_data_exceptions import (AttributeTypeError,
-                                                    FileTypeError, IncorrectKeys,
-                                                    MissingAttributeError)
+from app.exceptions.request_data_exceptions import (
+    AttributeTypeError,
+    FileTypeError,
+    IncorrectKeys,
+    MissingAttributeError,
+)
 from app.exceptions.user_exceptions import NotLoggedUserError
 from app.models.events_model import Events
 from app.models.giveaway_model import Giveaway
@@ -92,7 +96,9 @@ def check_if_the_user_owner(model, id_to_check=""):
     user_id = get_jwt_identity()
     session: Session = db.session
     if model is Events:
-        search = session.query(model).filter_by(creator_id=user_id, id=id_to_check).first()
+        search = (
+            session.query(model).filter_by(creator_id=user_id, id=id_to_check).first()
+        )
     elif model is User:
         if id_to_check == user_id:
             search = session.query(model).filter_by(id=user_id).first()
@@ -107,8 +113,12 @@ def check_if_the_user_owner(model, id_to_check=""):
             .first()
         )
     elif model is Schedule:
-        search = session.query(model).filter_by(user_id=user_id, event_id=id_to_check).first()
-    
+        search = (
+            session.query(model)
+            .filter_by(user_id=user_id, event_id=id_to_check)
+            .first()
+        )
+
     else:
         search = session.query(model).filter_by(user_id=user_id, id=id_to_check).first()
 
@@ -125,7 +135,7 @@ def check_id_validation(id: str, model: db.Model = None):
         search = model.query.filter_by(user_id=id).first()
     elif model:
         search = model.query.filter_by(id=id).first()
-        
+
     if not search:
         raise InvalidIdError(message={"error": f"The id {id} is not in database."})
 
@@ -137,11 +147,11 @@ def incoming_values(data):
         return {"error": "Incoming value is empty."}
 
 
-def check_if_keys_are_valid(data: dict,data_file ,  keys: list):
+def check_if_keys_are_valid(data: dict, data_file, keys: list):
     for key in data.keys():
-            if key not in keys:
-                raise IncorrectKeys([key])
-        
+        if key not in keys:
+            raise IncorrectKeys([key])
+
     for key in data_file.keys():
         if key not in keys:
             raise IncorrectKeys([key])
@@ -151,7 +161,7 @@ def check_if_keys_are_valid(data: dict,data_file ,  keys: list):
 
 
 def is_string_similar(s1: str, s2: str, threshold: float = 0.8):
-    return SequenceMatcher(a=s1, b=s2).ratio()>threshold
+    return SequenceMatcher(a=s1, b=s2).ratio() > threshold
 
 
 def similar_keys(data, valid_keys, not_used_keys):
@@ -161,8 +171,8 @@ def similar_keys(data, valid_keys, not_used_keys):
     for key in invalid_keys:
         for not_used in not_used_keys:
             similar = is_string_similar(key, not_used)
-            if similar == True:
+            if similar is True:
                 error_keys.append(key)
-    
+
     if error_keys:
         raise IncorrectKeys(error_keys)
