@@ -7,7 +7,7 @@ from app.exceptions.invalid_id_exception import InvalidIdError
 from app.exceptions.request_data_exceptions import (AttributeTypeError,
                                                     FileTypeError, IncorrectKeys,
                                                     MissingAttributeError)
-from app.exceptions.user_exceptions import NotLoggedUser
+from app.exceptions.user_exceptions import NotLoggedUserError
 from app.models.events_model import Events
 from app.models.giveaway_model import Giveaway
 from app.models.schedule_model import Schedule
@@ -108,7 +108,7 @@ def check_if_the_user_owner(model, id_to_check=""):
     else:
         search = session.query(model).filter_by(user_id=user_id, id=id_to_check).first()
     if not search:
-        raise NotLoggedUser
+        raise NotLoggedUserError
 
 
 def check_id_validation(id: str, model: db.Model = None):

@@ -11,7 +11,7 @@ from app.exceptions.request_data_exceptions import (
     AttributeTypeError,
     MissingAttributeError,
 )
-from app.exceptions.user_exceptions import NotLoggedUser
+from app.exceptions.user_exceptions import NotLoggedUserError
 from app.models.events_model import Events
 from app.models.schedule_model import Schedule
 from app.models.user_model import User
@@ -122,7 +122,7 @@ def delete_schedule(user_id, event_id):
         check_if_the_user_owner(Schedule, event_id)
     except InvalidIdError as e:
         return e.response, e.status_code
-    except NotLoggedUser as e:
+    except NotLoggedUserError as e:
         return e.response, e.status_code
 
 
