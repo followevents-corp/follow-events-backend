@@ -118,4 +118,4 @@ def delete_schedule(user_id, event_id):
     session.delete(schedule_to_delete)
     session.commit()
 
-    return {"message": "Event deleted from calendar."}, HTTPStatus.OK
+    return "", HTTPStatus.NO_CONTENT
