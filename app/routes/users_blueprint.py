@@ -6,7 +6,7 @@ from app.controllers.users_controller import (
     delete_user,
 )
 
-bp = Blueprint("bp_users", __name__, url_prefix="/users")
+bp = Blueprint("users", __name__, url_prefix="/users")
 
 bp.post("")(create_user)
 bp.get("/<user_id>")(get_user)

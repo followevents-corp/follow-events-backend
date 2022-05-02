@@ -6,14 +6,20 @@ import boto3
 from botocore.exceptions import ClientError
 
 dotenv.load_dotenv()
+
+
 class AWS_S3:
     bucket = "follow-events"
     url = "https://follow-events.s3.amazonaws.com/"
-    s3_client = boto3.client("s3", aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY") , aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"))
+    s3_client = boto3.client(
+        "s3",
+        aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
+        aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+    )
 
     @classmethod
     def upload_file(cls, file):
-        
+
         try:
             id = uuid4()
             type_banner = file.content_type.split("/")
@@ -26,4 +32,4 @@ class AWS_S3:
 
     @classmethod
     def delete_file(cls, key):
-        cls.s3_client.delete_object(Bucket = cls.bucket, Key = key)
+        cls.s3_client.delete_object(Bucket=cls.bucket, Key=key)

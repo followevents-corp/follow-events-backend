@@ -58,8 +58,7 @@ def create_giveaway(event_id: str):
 
     session: Session = db.session
     event: Query = (
-        session.query(Events).select_from(
-            Events).filter(Events.id == event_id).first()
+        session.query(Events).select_from(Events).filter(Events.id == event_id).first()
     )
 
     evt_date = dt.strptime(event.event_date, "%a, %d %b %Y %H:%M:%S %Z")
@@ -110,8 +109,7 @@ def update_giveaway(giveaway_id, event_id):
         return jsonify(verified_values), HTTPStatus.BAD_REQUEST
 
     try:
-        valid_keys = ["name", "description",
-                      "award", "award_picture", "active"]
+        valid_keys = ["name", "description", "award", "award_picture", "active"]
 
         valid_key_types = {
             "name": str,
