@@ -15,11 +15,12 @@ def create_categories(categories_names: list):
             raise CategoryTypeError(categories_names)
 
         created_category = (
-            session.query(Categories).filter_by(name=category).first()
+            session.query(Categories).filter_by(name=category.title()).first()
         )
 
         if not created_category:
             categories_to_add.append(Categories(name=category))
 
+    # if categories_to_add:
     session.add_all(categories_to_add)
     session.commit()
