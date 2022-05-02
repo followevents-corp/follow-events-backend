@@ -1,3 +1,4 @@
+from difflib import SequenceMatcher
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy.orm.session import Session
 from werkzeug.datastructures import FileStorage
@@ -136,7 +137,6 @@ def incoming_values(data):
         return {"error": "Incoming value is empty."}
 
 
-
 def check_if_keys_are_valid(data: dict,data_file ,  keys: list):
     for key in data.keys():
             if key not in keys:
@@ -148,4 +148,21 @@ def check_if_keys_are_valid(data: dict,data_file ,  keys: list):
 
     if not "data" in data.keys() and not "file" in data_file.keys():
         raise MissingAttributeError(keys)
+
+
+def is_string_similar(s1: str, s2: str, threshold: float = 0.8):
+    return SequenceMatcher(a=s1, b=s2).ratio()>threshold
+
+
+def similar_keys(data, valid_keys, not_used_keys):
+    invalid_keys = [key for key in data.keys() if key not in valid_keys]
+
+    error_keys = []
+    for key in invalid_keys:
+        for not_used in not_used_keys:
+            similar = is_string_similar(key, not_used)
+            if similar == True:
+                error_keys.append(key)
     
+    if error_keys:
+        raise IncorrectKeys(error_keys)

@@ -10,6 +10,7 @@ from app.configs.database import db
 from app.exceptions.invalid_id_exception import InvalidIdError
 from app.exceptions.request_data_exceptions import (
     AttributeTypeError,
+    IncorrectKeys,
     MissingAttributeError,
 )
 from app.exceptions.user_exceptions import EmailFormatError, NotLoggedUserError
@@ -21,6 +22,7 @@ from app.services.general_services import (
     check_keys_type,
     incoming_values,
     remove_unnecessary_keys,
+    similar_keys,
 )
 
 session: Session = db.session
@@ -128,10 +130,13 @@ def update_user(user_id: str):
 
     valid_keys = ["username", "name", "email", "password", "profile_picture", "creator"]
     new_data, not_used_keys = remove_unnecessary_keys(data, valid_keys)
-    if not not_used_keys:
-        return {"error": "No data to update"}, HTTPStatus.BAD_REQUEST
-
+    
     try:
+        similar_keys(data, valid_keys, not_used_keys)
+
+        if new_data == {}:
+            return {"error": "No data to update"}, HTTPStatus.BAD_REQUEST
+
         type_keys = {
             "name": str,
             "username": str,
@@ -146,6 +151,8 @@ def update_user(user_id: str):
             setattr(user, key, value)
 
         session.commit()
+    except IncorrectKeys as e:
+        return e.response, e.status_code
     except EmailFormatError as e:
         return {'error': e.message}, e.status_code
     except AttributeTypeError as e:
