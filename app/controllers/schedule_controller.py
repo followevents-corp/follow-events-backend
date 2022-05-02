@@ -16,7 +16,7 @@ from app.models.events_model import Events
 from app.models.schedule_model import Schedule
 from app.models.user_model import User
 from app.services.events_services import get_additonal_information_of_event
-from app.services.general_services import check_id_validation, check_if_the_user_owner, check_keys, check_keys_type, incoming_values
+from app.services.general_services import check_id_validation, check_if_the_user_owner, check_keys, check_keys_type, incoming_values, save_changes
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
@@ -24,6 +24,8 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 def create_schedule(user_id):
     key = {'event_id': str}
     data = request.get_json()
+    session: Session = db.session
+
     try:
         verified_key = check_keys(data, ["event_id"])
         check_id_validation(user_id, User)
@@ -31,6 +33,12 @@ def create_schedule(user_id):
         check_id_validation(data["event_id"], Events)
         if not get_jwt_identity() == user_id:
             return {"error": "You are not the owner of this account"}, HTTPStatus.UNAUTHORIZED
+
+        incoming_error = incoming_values(verified_key)
+
+        if incoming_error:
+            return incoming_error, HTTPStatus.BAD_REQUEST
+
     except InvalidIdError as e:
         return e.response, e.status_code
     except MissingAttributeError as e:
@@ -38,23 +46,7 @@ def create_schedule(user_id):
     except AttributeTypeError as e:
         return e.response, e.status_code
 
-    session: Session = db.session
-
-    try:
-        new_data = check_keys(data, ["event_id"])
-        check_keys_type(new_data, {"event_id": str})
-        incoming_error = incoming_values(new_data)
-
-        if incoming_error:
-            return incoming_error, 400
-
-    except MissingAttributeError as e:
-        return e.response, e.status_code
-
-    except AttributeTypeError as e:
-        return e.response, e.status_code
-
-    event_id = new_data.get("event_id")
+    event_id = verified_key.get("event_id")
 
     existing_schedule = (
         session.query(Schedule).filter_by(
@@ -64,11 +56,10 @@ def create_schedule(user_id):
     if existing_schedule:
         return {"error": "Event already added to user's schedule"}, HTTPStatus.CONFLICT
 
-    new_data.update({"user_id": user_id})
-    new_schedule = Schedule(**new_data)
+    verified_key.update({"user_id": user_id})
+    new_schedule = Schedule(**verified_key)
 
-    session.add(new_schedule)
-    session.commit()
+    save_changes(new_schedule)
 
     return (
         {"message": "Event added to calendar."},
@@ -111,21 +102,18 @@ def delete_schedule(user_id, event_id):
         check_id_validation(event_id, Events)
 
         schedule_to_delete = (
-        session.query(Schedule).filter_by(
-            user_id=user_id, event_id=event_id).first()
-        )  
+            session.query(Schedule).filter_by(
+                user_id=user_id, event_id=event_id).first()
+        )
 
         if not schedule_to_delete:
             return {"error": "Schedule not found"}, HTTPStatus.NOT_FOUND
-
 
         check_if_the_user_owner(Schedule, event_id)
     except InvalidIdError as e:
         return e.response, e.status_code
     except NotLoggedUserError as e:
         return e.response, e.status_code
-
-
 
     session.delete(schedule_to_delete)
     session.commit()
