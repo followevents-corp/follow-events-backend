@@ -1,8 +1,9 @@
 import logging
 import os
 from uuid import uuid4
-import dotenv
+
 import boto3
+import dotenv
 from botocore.exceptions import ClientError
 
 dotenv.load_dotenv()

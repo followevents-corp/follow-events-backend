@@ -20,6 +20,7 @@ from app.models.user_model import User
 from app.services.aws_s3 import AWS_S3
 from app.services.categories_services import create_categories
 from app.services.events_services import (
+    delete_link_events_categories,
     get_additonal_information_of_event,
     link_categories_to_event,
 )
@@ -70,10 +71,10 @@ def create_event():
         file = files.get("file")
         data = request.form.get("data")
 
-        if data == None:
+        if data is None:
             raise MissingAttributeError(["data"])
 
-        if file == None:
+        if file is None:
             raise MissingAttributeError(["file"])
 
         data = json.loads(data)
@@ -194,13 +195,16 @@ def update_event(event_id):
             key = event.link_banner.split("/")[-1]
             AWS_S3.delete_file(key)
 
+        check_if_keys_are_valid(request.form, request.files, keys)
+        check_if_the_user_owner(Events, event_id)
+
         categories = []
         if data.get("categories"):
             categories = data["categories"]
             create_categories(data["categories"])
+            delete_link_events_categories(event)
+            link_categories_to_event(categories, event)
 
-        check_if_keys_are_valid(request.form, request.files, keys)
-        check_if_the_user_owner(Events, event_id)
     except InvalidIdError as err:
         return err.response, err.status_code
     except AttributeTypeError as e:
@@ -213,10 +217,7 @@ def update_event(event_id):
         return e.response, e.status_code
     except IncorrectKeys as e:
         return e.response, e.status_code
-   
-    
-    if categories:
-        link_categories_to_event(categories, event)
+
     try:
         for key, value in data.items():
             setattr(event, key, value)

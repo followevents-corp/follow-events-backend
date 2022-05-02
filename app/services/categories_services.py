@@ -4,6 +4,7 @@ from app.configs.database import db
 from app.exceptions.category_exceptions import CategoryTypeError
 from app.models.categories_model import Categories
 
+
 def create_categories(categories_names: list):
     session: Session = db.session
 
