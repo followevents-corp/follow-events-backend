@@ -207,12 +207,15 @@ def update_event(event_id):
         return e.response, e.status_code
     except IncorrectKeys as e:
         return e.response, e.status_code
-
+   
+    
     if categories:
         link_categories_to_event(categories, event)
-
-    for key, value in data.items():
-        setattr(event, key, value)
+    try:
+        for key, value in data.items():
+            setattr(event, key, value)
+    except InvalidLink as e:
+        return {"error": "Invalid link"}, HTTPStatus.BAD_REQUEST
 
     save_changes(event)
 
