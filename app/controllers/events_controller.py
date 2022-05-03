@@ -12,7 +12,7 @@ from app.exceptions.request_data_exceptions import (
     IncorrectKeys,
     InvalidLink,
     MissingAttributeError,
-    PastDateError
+    PastDateError,
 )
 from app.exceptions.user_exceptions import NotLoggedUserError
 from app.models.events_model import Events
@@ -20,6 +20,7 @@ from app.models.user_model import User
 from app.services.aws_s3 import AWS_S3
 from app.services.categories_services import create_categories
 from app.services.events_services import (
+    check_type_of_file,
     delete_link_events_categories,
     get_additonal_information_of_event,
     link_categories_to_event,
@@ -80,9 +81,12 @@ def create_event():
         data = json.loads(data)
 
         new_data = check_keys(data, [*dict.keys()])
-        check_keys_type(new_data, dict, file)
-        
-        formated_event_date = dt.strptime(new_data["event_date"], "%a, %d %b %Y %H:%M:%S %Z")
+        check_keys_type(new_data, dict)
+        check_type_of_file(file)
+
+        formated_event_date = dt.strptime(
+            new_data["event_date"], "%a, %d %b %Y %H:%M:%S %Z"
+        )
         if formated_event_date < dt.utcnow():
             raise PastDateError
 
@@ -186,7 +190,9 @@ def update_event(event_id):
             check_keys_type(data, values)
 
         if data.get("event_date"):
-            formated_event_date = dt.strptime(data["event_date"], "%a, %d %b %Y %H:%M:%S %Z")
+            formated_event_date = dt.strptime(
+                data["event_date"], "%a, %d %b %Y %H:%M:%S %Z"
+            )
             if formated_event_date < dt.utcnow():
                 raise PastDateError
 
@@ -195,6 +201,7 @@ def update_event(event_id):
             data["link"] = file
             key = event.link_banner.split("/")[-1]
             AWS_S3.delete_file(key)
+            check_type_of_file(file)
 
         check_if_keys_are_valid(request.form, request.files, keys)
         check_if_the_user_owner(Events, event_id)
@@ -206,6 +213,8 @@ def update_event(event_id):
             delete_link_events_categories(event)
             link_categories_to_event(categories, event)
 
+    except FileTypeError as e:
+        return e.response, e.status_code
     except InvalidIdError as err:
         return err.response, err.status_code
     except AttributeTypeError as e:
