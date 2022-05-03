@@ -80,6 +80,14 @@ def create_giveaway(event_id: str):
 def get_giveaway(event_id: str):
     session: Session = db.session
 
+    try:
+        check_id_validation(event_id, Events)
+        check_if_the_user_owner(Events,event_id)
+    except InvalidIdError as e:
+        return e.response, e.status_code
+    except NotLoggedUserError as e:
+        return e.response, e.status_code
+
     giveaways: Query = (
         session.query(Giveaway)
         .select_from(Events)
