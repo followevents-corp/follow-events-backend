@@ -2,11 +2,13 @@ from flask import request, url_for
 from sqlalchemy.orm.session import Session
 
 from app.configs.database import db
+from app.exceptions.request_data_exceptions import FileTypeError
 from app.models.categories_events_model import EventsCategories
 from app.models.categories_model import Categories
 from app.models.events_model import Events
 from app.models.schedule_model import Schedule
 from app.services.general_services import save_changes
+from werkzeug.datastructures import FileStorage
 
 
 def get_additonal_information_of_event(data: dict) -> dict:
@@ -50,6 +52,27 @@ def get_additonal_information_of_event(data: dict) -> dict:
 
 def link_categories_to_event(categories: list, event: Events):
     for category in categories:
-        category_uuid = db.session.query(Categories).filter_by(name=category.title()).first().id
-        events_category = EventsCategories(event_id = event.id, category_id = category_uuid)
+        category_uuid = (
+            db.session.query(Categories).filter_by(name=category.title()).first().id
+        )
+        events_category = EventsCategories(event_id=event.id, category_id=category_uuid)
         save_changes(events_category)
+
+
+def delete_link_events_categories(event: Events):
+    session: Session = db.session
+
+    connections = session.query(EventsCategories).filter_by(event_id=event.id).all()
+
+    for connection in connections:
+        session.delete(connection)
+    session.commit()
+
+
+def check_type_of_file(file):
+    if type(file) is not FileStorage:
+        raise FileTypeError
+    else:
+        file_type = file.content_type.split("/")[0]
+        if file_type not in ["image", "video"]:
+            raise FileTypeError(message="Only image and video files are supported")

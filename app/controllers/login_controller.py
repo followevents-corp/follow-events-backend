@@ -1,3 +1,4 @@
+from datetime import timedelta
 from http import HTTPStatus
 
 from flask import request, url_for
@@ -27,11 +28,13 @@ def login_user():
 
     found_user = User.query.filter_by(email=new_data["email"]).first()
     if not found_user or not found_user.check_password(new_data["password"]):
-        return {"error": "Invalid email or password."}, HTTPStatus.NOT_FOUND
+        return {"error": "Invalid email or password."}, HTTPStatus.FORBIDDEN
 
-    access_token = create_access_token(identity=found_user.id)
+    access_token = create_access_token(
+        identity=found_user.id, expires_delta=timedelta(hours=1)
+    )
     schedule_url = url_for("schedule.get_schedule", user_id=found_user.id)
-    events_url = url_for("events.get_event_by_id", user_id=found_user.id)
+    events_url = url_for("events.get_events_by_id", user_id=found_user.id)
 
     return {
         "id": found_user.id,

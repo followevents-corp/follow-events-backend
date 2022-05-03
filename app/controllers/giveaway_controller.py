@@ -7,6 +7,7 @@ from app.exceptions.request_data_exceptions import (
     AttributeTypeError,
     MissingAttributeError,
 )
+from app.exceptions.user_exceptions import NotLoggedUserError
 from app.models.events_model import Events
 from app.models.giveaway_model import Giveaway
 
@@ -25,6 +26,7 @@ from sqlalchemy.orm import Query
 from sqlalchemy.orm.session import Session
 from flask_jwt_extended import jwt_required
 
+
 @jwt_required()
 def create_giveaway(event_id: str):
     data = request.get_json()
@@ -35,7 +37,7 @@ def create_giveaway(event_id: str):
 
     try:
         valid_keys = ["name", "description", "award", "award_picture"]
-
+        check_id_validation(event_id, Events)
         valid_key_types = {
             "name": str,
             "description": str,
@@ -46,10 +48,15 @@ def create_giveaway(event_id: str):
         verified_key = check_keys(data, valid_keys)
 
         check_keys_type(verified_key, valid_key_types)
+        check_if_the_user_owner(Events,event_id)
 
     except MissingAttributeError as e:
         return e.response, e.status_code
     except AttributeTypeError as e:
+        return e.response, e.status_code
+    except InvalidIdError as e:
+        return e.response, e.status_code
+    except NotLoggedUserError as e:
         return e.response, e.status_code
 
     session: Session = db.session
@@ -73,6 +80,14 @@ def create_giveaway(event_id: str):
 def get_giveaway(event_id: str):
     session: Session = db.session
 
+    try:
+        check_id_validation(event_id, Events)
+        check_if_the_user_owner(Events,event_id)
+    except InvalidIdError as e:
+        return e.response, e.status_code
+    except NotLoggedUserError as e:
+        return e.response, e.status_code
+
     giveaways: Query = (
         session.query(Giveaway)
         .select_from(Events)
@@ -83,13 +98,17 @@ def get_giveaway(event_id: str):
 
     return jsonify(giveaways), HTTPStatus.OK
 
+
 @jwt_required()
 def update_giveaway(giveaway_id, event_id):
 
     try:
-        check_if_the_user_owner(Giveaway, giveaway_id)
+        check_id_validation(event_id, Events)
         check_id_validation(giveaway_id, Giveaway)
+        check_if_the_user_owner(Giveaway, giveaway_id)
     except InvalidIdError as e:
+        return e.response, e.status_code
+    except NotLoggedUserError as e:
         return e.response, e.status_code
 
     data = request.get_json()
@@ -127,7 +146,7 @@ def update_giveaway(giveaway_id, event_id):
         session.query(Giveaway)
         .select_from(Events)
         .join(Giveaway)
-        .filter(Events.id == event_id, Giveaway.id == giveaway_id)
+        .filter_by(id=giveaway_id, event_id=event_id)
         .first()
     )
 
@@ -139,13 +158,17 @@ def update_giveaway(giveaway_id, event_id):
 
     return jsonify(giveaway), HTTPStatus.OK
 
+
 @jwt_required()
 def delete_giveaway(event_id, giveaway_id):
     session: Session = db.session
 
     try:
-        check_if_the_user_owner(Giveaway, giveaway_id)
+        check_id_validation(event_id, Events)
         check_id_validation(giveaway_id, Giveaway)
+        check_if_the_user_owner(Giveaway, giveaway_id)
+    except NotLoggedUserError as e:
+        return e.response, e.status_code
     except InvalidIdError as e:
         return e.response, e.status_code
 
@@ -156,6 +179,8 @@ def delete_giveaway(event_id, giveaway_id):
         .filter(Events.id == event_id, Giveaway.id == giveaway_id)
         .first()
     )
+    if not del_giveaway:
+        return {"error": "Giveaway not found"}, HTTPStatus.NOT_FOUND
 
     session.delete(del_giveaway)
     session.commit()
