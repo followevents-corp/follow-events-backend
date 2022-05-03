@@ -65,7 +65,6 @@ def check_keys_type(data: dict, keys_type: dict):
     Args:
         data (dict): corpo da requisição
         keys_type (dict): dicionário contendo os atributos da requisição como chaves e seus respectivos tipos
-        file (optional): arquivo enviado pelo multipart form
 
     Raises:
         AttributeTypeError: erro levantado caso algum atributo não seja do tipo que deveria
