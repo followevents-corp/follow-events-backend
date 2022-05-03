@@ -28,7 +28,7 @@ def login_user():
 
     found_user = User.query.filter_by(email=new_data["email"]).first()
     if not found_user or not found_user.check_password(new_data["password"]):
-        return {"error": "Invalid email or password."}, HTTPStatus.NOT_FOUND
+        return {"error": "Invalid email or password."}, HTTPStatus.FORBIDDEN
 
     access_token = create_access_token(
         identity=found_user.id, expires_delta=timedelta(hours=1)
