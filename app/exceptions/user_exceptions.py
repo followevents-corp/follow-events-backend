@@ -8,3 +8,7 @@ class NotLoggedUserError(Exception):
         self.response = response
         self.status_code = status_code
 
+class NameFormatError(Exception):
+    def __init__(self, response={"error": "Provide a valid Name."}, status_code=400):
+        self.response = response
+        self.status_code = status_code

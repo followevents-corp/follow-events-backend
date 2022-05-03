@@ -13,7 +13,7 @@ from app.exceptions.request_data_exceptions import (
     IncorrectKeys,
     MissingAttributeError,
 )
-from app.exceptions.user_exceptions import EmailFormatError, NotLoggedUserError
+from app.exceptions.user_exceptions import EmailFormatError, NameFormatError, NotLoggedUserError
 from app.models.user_model import User
 from app.services.general_services import (
     check_id_validation,
@@ -50,14 +50,14 @@ def create_user():
 
     try:
         new_user = User(**new_data)
+        session.add(new_user)
+        session.commit()
+    except NameFormatError as e:
+        return e.response, e.status_code
     except EmailFormatError:
         return {
             "error": f'Email format not acceptable: {new_data["email"]}, try ex.: your_mail@your_provider.com'
         }, HTTPStatus.BAD_REQUEST
-
-    try:
-        session.add(new_user)
-        session.commit()
     except IntegrityError as e:
         session.rollback()
         error = str(e)
@@ -152,6 +152,8 @@ def update_user(user_id: str):
 
         session.commit()
     except IncorrectKeys as e:
+        return e.response, e.status_code
+    except NameFormatError as e:
         return e.response, e.status_code
     except EmailFormatError as e:
         return {'error': e.message}, e.status_code
