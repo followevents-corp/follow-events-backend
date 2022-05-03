@@ -2,13 +2,11 @@ from difflib import SequenceMatcher
 
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from sqlalchemy.orm.session import Session
-from werkzeug.datastructures import FileStorage
 
 from app.configs.database import db
 from app.exceptions.invalid_id_exception import InvalidIdError
 from app.exceptions.request_data_exceptions import (
     AttributeTypeError,
-    FileTypeError,
     IncorrectKeys,
     MissingAttributeError,
 )
@@ -61,7 +59,7 @@ def check_keys(data: dict, mandatory_keys: list):
     return new_data
 
 
-def check_keys_type(data: dict, keys_type: dict, file=None):
+def check_keys_type(data: dict, keys_type: dict):
     """
 
     Args:
@@ -72,13 +70,6 @@ def check_keys_type(data: dict, keys_type: dict, file=None):
     Raises:
         AttributeTypeError: erro levantado caso algum atributo não seja do tipo que deveria
     """
-    if file:
-        if type(file) is not FileStorage:
-            raise FileTypeError
-        else:
-            file_type = file.content_type.split("/")[0]
-            if file_type not in ["image", "video"]:
-                raise FileTypeError(message="Only image and video files are supported")
 
     for key, value in data.items():
         if type(value) is not keys_type[key]:
