@@ -48,12 +48,15 @@ def create_giveaway(event_id: str):
         verified_key = check_keys(data, valid_keys)
 
         check_keys_type(verified_key, valid_key_types)
+        check_if_the_user_owner(Events,event_id)
 
     except MissingAttributeError as e:
         return e.response, e.status_code
     except AttributeTypeError as e:
         return e.response, e.status_code
     except InvalidIdError as e:
+        return e.response, e.status_code
+    except NotLoggedUserError as e:
         return e.response, e.status_code
 
     session: Session = db.session
@@ -77,6 +80,14 @@ def create_giveaway(event_id: str):
 def get_giveaway(event_id: str):
     session: Session = db.session
 
+    try:
+        check_id_validation(event_id, Events)
+        check_if_the_user_owner(Events,event_id)
+    except InvalidIdError as e:
+        return e.response, e.status_code
+    except NotLoggedUserError as e:
+        return e.response, e.status_code
+
     giveaways: Query = (
         session.query(Giveaway)
         .select_from(Events)
@@ -93,13 +104,12 @@ def update_giveaway(giveaway_id, event_id):
 
     try:
         check_id_validation(event_id, Events)
+        check_id_validation(giveaway_id, Giveaway)
         check_if_the_user_owner(Giveaway, giveaway_id)
     except InvalidIdError as e:
         return e.response, e.status_code
     except NotLoggedUserError as e:
         return e.response, e.status_code
-    except:
-        return {"error": "Giveaway not found"}, HTTPStatus.NOT_FOUND
 
     data = request.get_json()
 
