@@ -48,12 +48,15 @@ def create_giveaway(event_id: str):
         verified_key = check_keys(data, valid_keys)
 
         check_keys_type(verified_key, valid_key_types)
+        check_if_the_user_owner(Events,event_id)
 
     except MissingAttributeError as e:
         return e.response, e.status_code
     except AttributeTypeError as e:
         return e.response, e.status_code
     except InvalidIdError as e:
+        return e.response, e.status_code
+    except NotLoggedUserError as e:
         return e.response, e.status_code
 
     session: Session = db.session
