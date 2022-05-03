@@ -27,7 +27,6 @@ from app.services.events_services import (
 )
 from app.services.general_services import (
     check_id_validation,
-    check_if_keys_are_valid,
     check_if_the_user_owner,
     check_keys,
     check_keys_type,
@@ -46,21 +45,27 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 @jwt_required()
 def create_event():
-    session: Session = db.session
-
-    current_user = get_jwt_identity()
-
-    user: Query = (
-        session.query(User).select_from(User).filter(
-            User.id == current_user).first()
-    )
-
-    if user.creator is False:
-        return {
-            "error": "Must be a content creator, to create a event."
-        }, HTTPStatus.UNAUTHORIZED
 
     try:
+        session: Session = db.session
+
+        current_user = get_jwt_identity()
+
+        user: Query = (
+            session.query(User).select_from(User).filter(
+                User.id == current_user).first()
+        )
+        
+        files = request.files
+        file = files.get("file")
+        data = request.form.get("data")
+
+        if user.creator is False:
+            return {
+                "error": "Must be a content creator, to create a event."
+        }, HTTPStatus.UNAUTHORIZED
+        
+        
         dict = {
             "name": str,
             "description": str,
@@ -69,16 +74,13 @@ def create_event():
             "categories": list,
         }
 
-        files = request.files
-        file = files.get("file")
-        data = request.form.get("data")
-
         request_body = {"data": data, "file": file}
         if data is None:
             request_body.pop("data")
 
         if file is None:
             request_body.pop("file")
+
 
         check_keys(request_body, ["data", "file"])
 
@@ -106,7 +108,7 @@ def create_event():
         create_categories(categories)
 
         new_data["creator_id"] = current_user
-
+        
         event = Events(**new_data, link=file)
         save_changes(event)
 
