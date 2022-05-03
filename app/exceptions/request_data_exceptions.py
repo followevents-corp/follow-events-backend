@@ -47,7 +47,7 @@ class IncorrectKeys(Exception):
         self.status_code = status_code
 
 class PastDateError(Exception):
-    def __init__(self, message="Date must not be in the past", status_code = 400):
+    def __init__(self, message="Date must be in the future", status_code = 400):
         self.message = message
         self.response = {"error": self.message}
         self.status_code = status_code

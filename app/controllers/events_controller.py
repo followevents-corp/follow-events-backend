@@ -117,11 +117,7 @@ def create_event():
     except InvalidLink as e:
         return e.response, e.status_code
     except PastDateError as e:
-        return e.response, e.status_code
-    except ValueError:
-        return {
-            "error": "format date must be ex: 'Fri, 13 May 2022 15:21:41 GMT'"
-        }, HTTPStatus.BAD_REQUEST
+        return {"error": "Event must be in the future"}, e.status_code
     except IntegrityError as e:
         if type(e.orig) is ForeignKeyViolation:
             return {"error": "Unauthorized"}, HTTPStatus.UNAUTHORIZED
@@ -189,6 +185,11 @@ def update_event(event_id):
 
             check_keys_type(data, values)
 
+        if data.get("event_date"):
+            formated_event_date = dt.strptime(data["event_date"], "%a, %d %b %Y %H:%M:%S %Z")
+            if formated_event_date < dt.utcnow():
+                raise PastDateError
+
         if request.files.get("file"):
             file = request.files["file"]
             data["link"] = file
@@ -217,6 +218,8 @@ def update_event(event_id):
         return e.response, e.status_code
     except IncorrectKeys as e:
         return e.response, e.status_code
+    except PastDateError as e:
+        return {"error": "Event must be in the future"}, e.status_code
 
     try:
         for key, value in data.items():
