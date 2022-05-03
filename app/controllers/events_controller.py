@@ -181,13 +181,15 @@ def update_event(event_id):
 
         event = session.query(Events).filter_by(id=event_id).first()
 
-        data = {}
-        if request.form.get("data"):
+        data = request.form.get("data")
+        if data:
             data = remove_unnecessary_keys(
-                json.loads(request.form["data"]), [*values.keys()]
+                json.loads(data), [*values.keys()]
             )[0]
-
             check_keys_type(data, values)
+            if not data:
+                raise MissingAttributeError([*values.keys()])
+
 
         if data.get("event_date"):
             formated_event_date = dt.strptime(
