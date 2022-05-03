@@ -51,7 +51,8 @@ def create_event():
     current_user = get_jwt_identity()
 
     user: Query = (
-        session.query(User).select_from(User).filter(User.id == current_user).first()
+        session.query(User).select_from(User).filter(
+            User.id == current_user).first()
     )
 
     if user.creator is False:
@@ -72,15 +73,18 @@ def create_event():
         file = files.get("file")
         data = request.form.get("data")
 
+        request_body = {"data": data, "file": file}
         if data is None:
-            raise MissingAttributeError(["data"])
+            request_body.pop("data")
 
         if file is None:
-            raise MissingAttributeError(["file"])
+            request_body.pop("file")
+
+        check_keys(request_body, ["data", "file"])
 
         data = json.loads(data)
-
         new_data = check_keys(data, [*dict.keys()])
+
         check_keys_type(new_data, dict)
         check_type_of_file(file)
 
@@ -157,7 +161,8 @@ def get_events_by_id(user_id):
     if not events:
         return {"error": "Event not found"}, HTTPStatus.NOT_FOUND
 
-    result = [get_additonal_information_of_event(asdict(event)) for event in events]
+    result = [get_additonal_information_of_event(
+        asdict(event)) for event in events]
 
     return jsonify(result), HTTPStatus.OK
 
@@ -173,7 +178,6 @@ def update_event(event_id):
         "categories": list,
         "link": FileStorage,
     }
-    keys = ["data", "file"]
 
     try:
         check_id_validation(event_id, Events)
@@ -181,7 +185,7 @@ def update_event(event_id):
 
         event = session.query(Events).filter_by(id=event_id).first()
 
-        data = request.form.get("data")
+        data = request.form.get("data") or {}
         if data:
             data = remove_unnecessary_keys(
                 json.loads(data), [*values.keys()]
@@ -190,6 +194,18 @@ def update_event(event_id):
             if not data:
                 raise MissingAttributeError([*values.keys()])
 
+        
+        file = request.files.get("file")
+        if request.files.get("file"):
+            data["link"] = file
+            key = event.link_banner.split("/")[-1]
+            AWS_S3.delete_file(key)
+            check_type_of_file(file)
+
+        if not data and not file:
+            return {"error": "No data to update"}, HTTPStatus.BAD_REQUEST
+        
+        check_if_the_user_owner(Events, event_id)
 
         if data.get("event_date"):
             formated_event_date = dt.strptime(
@@ -197,16 +213,6 @@ def update_event(event_id):
             )
             if formated_event_date < dt.utcnow():
                 raise PastDateError
-
-        if request.files.get("file"):
-            file = request.files["file"]
-            data["link"] = file
-            key = event.link_banner.split("/")[-1]
-            AWS_S3.delete_file(key)
-            check_type_of_file(file)
-
-        check_if_keys_are_valid(request.form, request.files, keys)
-        check_if_the_user_owner(Events, event_id)
 
         categories = []
         if data.get("categories"):
