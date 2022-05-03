@@ -96,13 +96,12 @@ def update_giveaway(giveaway_id, event_id):
 
     try:
         check_id_validation(event_id, Events)
+        check_id_validation(giveaway_id, Giveaway)
         check_if_the_user_owner(Giveaway, giveaway_id)
     except InvalidIdError as e:
         return e.response, e.status_code
     except NotLoggedUserError as e:
         return e.response, e.status_code
-    except:
-        return {"error": "Giveaway not found"}, HTTPStatus.NOT_FOUND
 
     data = request.get_json()
 
