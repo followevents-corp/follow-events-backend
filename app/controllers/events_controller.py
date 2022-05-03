@@ -12,6 +12,7 @@ from app.exceptions.request_data_exceptions import (
     IncorrectKeys,
     InvalidLink,
     MissingAttributeError,
+    PastDateError
 )
 from app.exceptions.user_exceptions import NotLoggedUserError
 from app.models.events_model import Events
@@ -80,7 +81,10 @@ def create_event():
 
         new_data = check_keys(data, [*dict.keys()])
         check_keys_type(new_data, dict, file)
-        dt.strptime(new_data["event_date"], "%a, %d %b %Y %H:%M:%S %Z")
+        
+        formated_event_date = dt.strptime(new_data["event_date"], "%a, %d %b %Y %H:%M:%S %Z")
+        if formated_event_date < dt.utcnow():
+            raise PastDateError
 
         categories = new_data["categories"]
 
@@ -112,10 +116,8 @@ def create_event():
         return e.response, e.status_code
     except InvalidLink as e:
         return e.response, e.status_code
-    except ValueError:
-        return {
-            "error": "format date must be ex: 'Fri, 13 May 2022 15:21:41 GMT'"
-        }, HTTPStatus.BAD_REQUEST
+    except PastDateError as e:
+        return {"error": "Event must be in the future"}, e.status_code
     except IntegrityError as e:
         if type(e.orig) is ForeignKeyViolation:
             return {"error": "Unauthorized"}, HTTPStatus.UNAUTHORIZED
@@ -183,6 +185,11 @@ def update_event(event_id):
 
             check_keys_type(data, values)
 
+        if data.get("event_date"):
+            formated_event_date = dt.strptime(data["event_date"], "%a, %d %b %Y %H:%M:%S %Z")
+            if formated_event_date < dt.utcnow():
+                raise PastDateError
+
         if request.files.get("file"):
             file = request.files["file"]
             data["link"] = file
@@ -211,6 +218,8 @@ def update_event(event_id):
         return e.response, e.status_code
     except IncorrectKeys as e:
         return e.response, e.status_code
+    except PastDateError as e:
+        return {"error": "Event must be in the future"}, e.status_code
 
     try:
         for key, value in data.items():
