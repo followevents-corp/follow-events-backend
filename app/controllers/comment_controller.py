@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from app.exceptions.invalid_id_exception import InvalidIdError
 from app.exceptions.request_data_exceptions import AttributeTypeError, MissingAttributeError
-from app.exceptions.user_exceptions import NotLoggedUser
+from app.exceptions.user_exceptions import NotLoggedUserError
 from app.models.comment_model import Comment
 from app.models.user_model import User
 from flask import jsonify, request
@@ -83,9 +83,12 @@ def get_comment(event_id: str):
 def update_comment(comment_id: str):
     data = request.get_json()
     try:
-        check_if_the_user_owner(Comment, comment_id)
         check_id_validation(comment_id, Comment)
+        check_if_the_user_owner(Comment, comment_id)
         verified_key = check_keys(data, ['comment'])
+        incoming =  incoming_values(verified_key)
+        if incoming:
+            return jsonify(incoming), HTTPStatus.BAD_REQUEST
         check_keys_type(verified_key, {'comment': str})
 
     except MissingAttributeError as e:
@@ -94,7 +97,7 @@ def update_comment(comment_id: str):
         return e.response, e.status_code
     except InvalidIdError as e:
         return e.response, e.status_code
-    except NotLoggedUser as e:
+    except NotLoggedUserError as e:
         return e.response, e.status_code
 
     comment = Comment.query.filter_by(id=comment_id).first()
@@ -123,7 +126,7 @@ def delete_comment(comment_id: str):
         check_if_the_user_owner(Comment, comment_id)
     except InvalidIdError as e:
         return e.response, e.status_code
-    except NotLoggedUser as e:
+    except NotLoggedUserError as e:
         return e.response, e.status_code
     
     comment = Comment.query.filter_by(id=comment_id).first()

@@ -7,7 +7,7 @@ from app.exceptions.request_data_exceptions import (
     AttributeTypeError,
     MissingAttributeError,
 )
-from app.exceptions.user_exceptions import NotLoggedUser
+from app.exceptions.user_exceptions import NotLoggedUserError
 from app.models.events_model import Events
 from app.models.giveaway_model import Giveaway
 
@@ -58,8 +58,7 @@ def create_giveaway(event_id: str):
 
     session: Session = db.session
     event: Query = (
-        session.query(Events).select_from(
-            Events).filter(Events.id == event_id).first()
+        session.query(Events).select_from(Events).filter(Events.id == event_id).first()
     )
 
     evt_date = dt.strptime(event.event_date, "%a, %d %b %Y %H:%M:%S %Z")
@@ -97,7 +96,7 @@ def update_giveaway(giveaway_id, event_id):
         check_if_the_user_owner(Giveaway, giveaway_id)
     except InvalidIdError as e:
         return e.response, e.status_code
-    except NotLoggedUser as e:
+    except NotLoggedUserError as e:
         return e.response, e.status_code
     except:
         return {"error": "Giveaway not found"}, HTTPStatus.NOT_FOUND
@@ -110,8 +109,7 @@ def update_giveaway(giveaway_id, event_id):
         return jsonify(verified_values), HTTPStatus.BAD_REQUEST
 
     try:
-        valid_keys = ["name", "description",
-                      "award", "award_picture", "active"]
+        valid_keys = ["name", "description", "award", "award_picture", "active"]
 
         valid_key_types = {
             "name": str,
@@ -156,8 +154,12 @@ def delete_giveaway(event_id, giveaway_id):
     session: Session = db.session
 
     try:
-        check_if_the_user_owner(Events, giveaway_id)
-    except NotLoggedUser as e:
+        check_id_validation(event_id, Events)
+        check_id_validation(giveaway_id, Giveaway)
+        check_if_the_user_owner(Giveaway, giveaway_id)
+    except NotLoggedUserError as e:
+        return e.response, e.status_code
+    except InvalidIdError as e:
         return e.response, e.status_code
 
     del_giveaway: Query = (
