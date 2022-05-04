@@ -27,11 +27,11 @@ from app.services.events_services import (
 )
 from app.services.general_services import (
     check_id_validation,
-    check_if_keys_are_valid,
     check_if_the_user_owner,
     check_keys,
     check_keys_type,
     incoming_values,
+    require_jwt,
     remove_unnecessary_keys,
     save_changes,
 )
@@ -44,23 +44,29 @@ from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
-@jwt_required()
+
 def create_event():
-    session: Session = db.session
-
-    current_user = get_jwt_identity()
-
-    user: Query = (
-        session.query(User).select_from(User).filter(
-            User.id == current_user).first()
-    )
-
-    if user.creator is False:
-        return {
-            "error": "Must be a content creator, to create a event."
-        }, HTTPStatus.UNAUTHORIZED
 
     try:
+        files = request.files
+        file = files.get("file")
+        data = request.form.get("data")
+        session: Session = db.session
+        
+        require_jwt()
+        
+        current_user = get_jwt_identity()
+
+        user: Query = (
+            session.query(User).select_from(User).filter(
+                User.id == current_user).first()
+        )
+
+        if user.creator is False:
+            return {
+                "error": "Must be a content creator, to create a event."
+            }, HTTPStatus.UNAUTHORIZED
+
         dict = {
             "name": str,
             "description": str,
@@ -68,10 +74,6 @@ def create_event():
             "event_link": str,
             "categories": list,
         }
-
-        files = request.files
-        file = files.get("file")
-        data = request.form.get("data")
 
         request_body = {"data": data, "file": file}
         if data is None:
@@ -167,7 +169,6 @@ def get_events_by_id(user_id):
     return jsonify(result), HTTPStatus.OK
 
 
-@jwt_required()
 def update_event(event_id):
     values = {
         "name": str,
@@ -178,14 +179,17 @@ def update_event(event_id):
         "categories": list,
         "link": FileStorage,
     }
-
     try:
+        data = request.form.get("data") or {}
+        file = request.files.get("file")
         check_id_validation(event_id, Events)
+
+        check_if_the_user_owner(Events, event_id)
+
         session: Session = db.session
 
         event = session.query(Events).filter_by(id=event_id).first()
 
-        data = request.form.get("data") or {}
         if data:
             data = remove_unnecessary_keys(
                 json.loads(data), [*values.keys()]
@@ -193,19 +197,14 @@ def update_event(event_id):
             check_keys_type(data, values)
             if not data:
                 raise MissingAttributeError([*values.keys()])
-
-        
-        file = request.files.get("file")
-        if request.files.get("file"):
+        key = ""
+        if file:
             data["link"] = file
             key = event.link_banner.split("/")[-1]
-            AWS_S3.delete_file(key)
             check_type_of_file(file)
 
         if not data and not file:
             return {"error": "No data to update"}, HTTPStatus.BAD_REQUEST
-        
-        check_if_the_user_owner(Events, event_id)
 
         if data.get("event_date"):
             formated_event_date = dt.strptime(
@@ -243,8 +242,10 @@ def update_event(event_id):
             setattr(event, key, value)
     except InvalidLink as e:
         return {"error": "Invalid link"}, HTTPStatus.BAD_REQUEST
-
+    
     save_changes(event)
+    if key:
+        AWS_S3.delete_file(key)
 
     serialized_event = asdict(event)
     event = get_additonal_information_of_event(serialized_event)
