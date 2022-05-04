@@ -44,7 +44,6 @@ from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
-
 def create_event():
 
     try:
@@ -52,14 +51,16 @@ def create_event():
         file = files.get("file")
         data = request.form.get("data")
         session: Session = db.session
-        
+
         require_jwt()
-        
+
         current_user = get_jwt_identity()
 
         user: Query = (
-            session.query(User).select_from(User).filter(
-                User.id == current_user).first()
+            session.query(User)
+            .select_from(User)
+            .filter(User.id == current_user)
+            .first()
         )
 
         if user.creator is False:
@@ -163,8 +164,7 @@ def get_events_by_id(user_id):
     if not events:
         return {"error": "Event not found"}, HTTPStatus.NOT_FOUND
 
-    result = [get_additonal_information_of_event(
-        asdict(event)) for event in events]
+    result = [get_additonal_information_of_event(asdict(event)) for event in events]
 
     return jsonify(result), HTTPStatus.OK
 
@@ -191,9 +191,7 @@ def update_event(event_id):
         event = session.query(Events).filter_by(id=event_id).first()
 
         if data:
-            data = remove_unnecessary_keys(
-                json.loads(data), [*values.keys()]
-            )[0]
+            data = remove_unnecessary_keys(json.loads(data), [*values.keys()])[0]
             check_keys_type(data, values)
             if not data:
                 raise MissingAttributeError([*values.keys()])
@@ -213,13 +211,6 @@ def update_event(event_id):
             if formated_event_date < dt.utcnow():
                 raise PastDateError
 
-        categories = []
-        if data.get("categories"):
-            categories = data["categories"]
-            create_categories(data["categories"])
-            delete_link_events_categories(event)
-            link_categories_to_event(categories, event)
-
     except FileTypeError as e:
         return e.response, e.status_code
     except InvalidIdError as err:
@@ -230,8 +221,6 @@ def update_event(event_id):
         return e.response, e.status_code
     except MissingAttributeError as e:
         return e.response, e.status_code
-    except CategoryTypeError as e:
-        return e.response, e.status_code
     except IncorrectKeys as e:
         return e.response, e.status_code
     except PastDateError as e:
@@ -240,9 +229,19 @@ def update_event(event_id):
     try:
         for key, value in data.items():
             setattr(event, key, value)
+
+        categories = []
+        if data.get("categories"):
+            categories = data["categories"]
+            create_categories(data["categories"])
+            delete_link_events_categories(event)
+            link_categories_to_event(categories, event)
+
     except InvalidLink as e:
         return {"error": "Invalid link"}, HTTPStatus.BAD_REQUEST
-    
+    except CategoryTypeError as e:
+        return e.response, e.status_code
+
     save_changes(event)
     if key:
         AWS_S3.delete_file(key)
