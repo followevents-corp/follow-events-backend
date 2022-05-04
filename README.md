@@ -922,7 +922,7 @@ Está rota precisa da autorização do token!
 
 <br>
 
-<h2 align = "center">Rotas de categorias</h2>
+<h2 align = "center">Rotas de comentários</h2>
 
 <div align = "center">
 
@@ -1278,11 +1278,11 @@ Está rota precisa da autorização do token!
 
 `Por meio da rota do calendário será possível fazer as seguintes requisições:`
 
-| Método                   | Descrição                   |
-| ------------------------ | --------------------------- |
-| `POST/users/<user_id>/schedule`| Criar um novo evento no calendário|
-| `GET/users/<user_id>/schedule`| Lista todos os eventos do calendário |
-| `DELETE/users/<user_id>/schedule/<event_id>` | Deletar um evento do calendário|
+| Método                                       | Descrição                            |
+| -------------------------------------------- | ------------------------------------ |
+| `POST/users/<user_id>/schedule`              | Criar um novo evento no calendário   |
+| `GET/users/<user_id>/schedule`               | Lista todos os eventos do calendário |
+| `DELETE/users/<user_id>/schedule/<event_id>` | Deletar um evento do calendário      |
 
 </div>
 <br>
@@ -1292,7 +1292,6 @@ Está rota precisa da autorização do token!
 <summary style ="font-size: 18px"><b>Criação de um novo evento no calendário</b></summary>
 
 <br>
-
 
 Está rota precisa da autorização do token!
 
@@ -1306,7 +1305,7 @@ Está rota precisa da autorização do token!
 
 ```json
 {
-    "event_id": "f0b72181-00fc-4bc0-ad78-b73e31d9b7fc"
+  "event_id": "f0b72181-00fc-4bc0-ad78-b73e31d9b7fc"
 }
 ```
 
@@ -1386,9 +1385,7 @@ Está rota precisa da autorização do token!
 
 ```json
 {
-  "missing_keys": [
-    "event_id"
-  ]
+  "missing_keys": ["event_id"]
 }
 ```
 
@@ -1428,12 +1425,9 @@ Está rota precisa da autorização do token!
 
 <br>
 
-
-
-</details> 
+</details>
 
 <details>
-
 
 <summary style ="font-size: 18px"><b>Buscar eventos no calendário do usuário</b></summary>
 
@@ -1468,9 +1462,7 @@ Está rota precisa da autorização do token!
     "created_at": "Sun, 01 May 2022 19:09:52 GMT",
     "creator_id": "b4e9e4f2-ef98-49d9-a864-03ad432c7cee",
     "quantity_users": 1,
-    "categories": [
-      "Futebol"
-    ],
+    "categories": ["Futebol"],
     "comments": "https://follow-events-api.herokuapp.com/events/179a35d9-2746-4724-a938-d1ed60265b16/comments",
     "giveaway": "https://follow-events-api.herokuapp.com/events/179a35d9-2746-4724-a938-d1ed60265b16/giveaway"
   }
@@ -1492,7 +1484,6 @@ Está rota precisa da autorização do token!
   "error": "The id b4e9e4f2-ef98-49d9-a864-03ad432c7aee is not in database."
 }
 ```
-
 
 <br>
 
@@ -1534,7 +1525,6 @@ Está rota precisa da autorização do token!
 
 <details>
 
-
 <summary style ="font-size: 18px"><b>Deletar um compromisso do usuário</b></summary>
 
 <br>
@@ -1559,7 +1549,7 @@ Está rota precisa da autorização do token!
 
 ```json
 {
-    "message": "Event deleted from calendar."
+  "message": "Event deleted from calendar."
 }
 ```
 
@@ -1619,13 +1609,12 @@ Está rota precisa da autorização do token!
 
 <br>
 
-
-
 </details>
 
 <br>
 
 ---
+
 <br>
 
 <h2 align = "center">Rotas de eventos de sorte</h2>
@@ -1634,12 +1623,12 @@ Está rota precisa da autorização do token!
 
 `Por meio da rota do calendário será possível fazer as seguintes requisições:`
 
-| Método                   | Descrição                   |
-| ------------------------ | --------------------------- |
-| `POST/events/<event_id>/giveaway`| Criar um novo evento de sorte|
-| `GET/events/<event_id>/giveaway`| Listar todos os eventos de sorte |
-| `PATCH/events/<event_id>/giveaway/<giveaway_id>` | Editar um evento de sorte|
-| `DELETE/events/<event_id>/giveaway/<giveaway_id` | Deletar um evento de sorte|
+| Método                                           | Descrição                        |
+| ------------------------------------------------ | -------------------------------- |
+| `POST/events/<event_id>/giveaway`                | Criar um novo evento de sorte    |
+| `GET/events/<event_id>/giveaway`                 | Listar todos os eventos de sorte |
+| `PATCH/events/<event_id>/giveaway/<giveaway_id>` | Editar um evento de sorte        |
+| `DELETE/events/<event_id>/giveaway/<giveaway_id` | Deletar um evento de sorte       |
 
 </div>
 <br>
@@ -1702,12 +1691,7 @@ Está rota precisa da autorização do token!
 
 ```json
 {
-  "missing_keys": [
-    "name",
-    "description",
-    "award",
-    "award_picture"
-  ]
+  "missing_keys": ["name", "description", "award", "award_picture"]
 }
 ```
 
@@ -1779,11 +1763,9 @@ Está rota precisa da autorização do token!
 
 <br>
 
-
-</details> 
+</details>
 
 <details>
-
 
 <summary style ="font-size: 18px"><b>Buscar eventos de sorte</b></summary>
 
@@ -1839,7 +1821,6 @@ Está rota **NÃO** precisa da autorização do token!
 </details>
   
 <details>
-
 
 <summary style ="font-size: 18px"><b>Atualizar um evento de sorte</b></summary>
 
@@ -1956,7 +1937,6 @@ Está rota precisa da autorização do token!
 
 <details>
 
-
 <summary style ="font-size: 18px"><b>Deletar um evento de sorte</b></summary>
 
 <br>
@@ -1981,7 +1961,7 @@ Está rota precisa da autorização do token!
 
 ```json
 {
-    "message": "Event deleted from calendar."
+  "message": "Event deleted from calendar."
 }
 ```
 
@@ -2036,6 +2016,5 @@ Está rota precisa da autorização do token!
   "error": "The id 39761194-1352-426e-aa16-b8e38635b17 is not valid."
 }
 ```
-  
-</details>
 
+</details>
