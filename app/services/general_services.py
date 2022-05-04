@@ -166,3 +166,7 @@ def similar_keys(data, valid_keys, not_used_keys):
 
     if error_keys:
         raise IncorrectKeys(error_keys)
+
+@jwt_required()
+def require_jwt():
+    ...
