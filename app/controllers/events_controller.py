@@ -31,6 +31,7 @@ from app.services.general_services import (
     check_keys,
     check_keys_type,
     incoming_values,
+    require_jwt,
     remove_unnecessary_keys,
     save_changes,
 )
@@ -43,22 +44,23 @@ from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
-@jwt_required()
+
 def create_event():
 
     try:
+        files = request.files
+        file = files.get("file")
+        data = request.form.get("data")
         session: Session = db.session
-
+        
+        require_jwt()
+        
         current_user = get_jwt_identity()
 
         user: Query = (
             session.query(User).select_from(User).filter(
                 User.id == current_user).first()
         )
-
-        files = request.files
-        file = files.get("file")
-        data = request.form.get("data")
 
         if user.creator is False:
             return {
