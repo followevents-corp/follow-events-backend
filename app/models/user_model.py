@@ -8,7 +8,7 @@ from sqlalchemy.orm import validates
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app.configs.database import db
-from app.exceptions.user_exceptions import EmailFormatError
+from app.exceptions.user_exceptions import EmailFormatError, NameFormatError
 
 
 @dataclass
@@ -52,7 +52,12 @@ class User(db.Model):
 
     @validates("name")
     def normalize_name(self, key, name_to_be_normalized: str):
-        return name_to_be_normalized.title()
+        regex = r"^[a-zA-Z-0-9\s\w+]*$"
+
+        if re.fullmatch(regex, name_to_be_normalized):
+            return name_to_be_normalized.title()
+        else:
+            raise NameFormatError
 
     @validates("username")
     def normalize_username(self, key, username_to_be_normalized: str):

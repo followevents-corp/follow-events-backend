@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from flask import jsonify, request, url_for
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import DataError, IntegrityError
 from sqlalchemy.orm import Query
 from sqlalchemy.orm.session import Session
@@ -13,7 +13,11 @@ from app.exceptions.request_data_exceptions import (
     IncorrectKeys,
     MissingAttributeError,
 )
-from app.exceptions.user_exceptions import EmailFormatError, NotLoggedUserError
+from app.exceptions.user_exceptions import (
+    EmailFormatError,
+    NameFormatError,
+    NotLoggedUserError,
+)
 from app.models.user_model import User
 from app.services.general_services import (
     check_id_validation,
@@ -50,14 +54,14 @@ def create_user():
 
     try:
         new_user = User(**new_data)
+        session.add(new_user)
+        session.commit()
+    except NameFormatError as e:
+        return e.response, e.status_code
     except EmailFormatError:
         return {
             "error": f'Email format not acceptable: {new_data["email"]}, try ex.: your_mail@your_provider.com'
         }, HTTPStatus.BAD_REQUEST
-
-    try:
-        session.add(new_user)
-        session.commit()
     except IntegrityError as e:
         session.rollback()
         error = str(e)
@@ -81,9 +85,6 @@ def create_user():
 
 @jwt_required()
 def get_user(user_id: str):
-    user: Query = (
-        session.query(User).select_from(User).filter(User.id == user_id).first()
-    )
 
     try:
         check_id_validation(user_id, User)
@@ -92,6 +93,10 @@ def get_user(user_id: str):
         return e.response, e.status_code
     except InvalidIdError as e:
         return e.response, e.status_code
+
+    user: Query = (
+        session.query(User).select_from(User).filter(User.id == user_id).first()
+    )
 
     schedule_url = url_for("schedule.get_schedule", user_id=user.id)
     events_url = url_for("events.get_events_by_id", user_id=user.id)
@@ -110,10 +115,6 @@ def get_user(user_id: str):
 
 @jwt_required()
 def update_user(user_id: str):
-    user: Query = (
-        session.query(User).select_from(User).filter(User.id == user_id).first()
-    )
-
     try:
         check_id_validation(user_id, User)
         check_if_the_user_owner(User, user_id)
@@ -121,6 +122,10 @@ def update_user(user_id: str):
         return e.response, e.status_code
     except InvalidIdError as e:
         return e.response, e.status_code
+
+    user: Query = (
+        session.query(User).select_from(User).filter(User.id == user_id).first()
+    )
 
     data = request.get_json()
 
@@ -130,7 +135,7 @@ def update_user(user_id: str):
 
     valid_keys = ["username", "name", "email", "password", "profile_picture", "creator"]
     new_data, not_used_keys = remove_unnecessary_keys(data, valid_keys)
-    
+
     try:
         similar_keys(data, valid_keys, not_used_keys)
 
@@ -153,8 +158,10 @@ def update_user(user_id: str):
         session.commit()
     except IncorrectKeys as e:
         return e.response, e.status_code
+    except NameFormatError as e:
+        return e.response, e.status_code
     except EmailFormatError as e:
-        return {'error': e.message}, e.status_code
+        return {"error": e.message}, e.status_code
     except AttributeTypeError as e:
         return e.response, e.status_code
     except IntegrityError as e:
@@ -182,9 +189,6 @@ def update_user(user_id: str):
 
 @jwt_required()
 def delete_user(user_id: str):
-    user: Query = (
-        session.query(User).select_from(User).filter(User.id == user_id).first()
-    )
 
     try:
         check_id_validation(user_id, User)
@@ -193,6 +197,10 @@ def delete_user(user_id: str):
         return e.response, e.status_code
     except InvalidIdError as e:
         return e.response, e.status_code
+
+    user: Query = (
+        session.query(User).select_from(User).filter(User.id == user_id).first()
+    )
 
     session.delete(user)
     session.commit()

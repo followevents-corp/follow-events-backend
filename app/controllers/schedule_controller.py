@@ -32,7 +32,7 @@ def create_schedule(user_id):
         check_keys_type(verified_key, key)
         check_id_validation(data["event_id"], Events)
         if not get_jwt_identity() == user_id:
-            return {"error": "You are not the owner of this account"}, HTTPStatus.UNAUTHORIZED
+            return {"error": "Unauthorized"}, HTTPStatus.UNAUTHORIZED
 
         incoming_error = incoming_values(verified_key)
 
@@ -73,7 +73,7 @@ def get_schedule(user_id):
     try:
         check_id_validation(user_id, Schedule)
         if not get_jwt_identity() == user_id:
-            return {"error": "You are not the owner of this account"}, HTTPStatus.UNAUTHORIZED
+            return {"error": "Unauthorized"}, HTTPStatus.UNAUTHORIZED
     except InvalidIdError as e:
         return e.response, e.status_code
 

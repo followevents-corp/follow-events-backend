@@ -12,7 +12,7 @@ from app.exceptions.request_data_exceptions import (
     IncorrectKeys,
     InvalidLink,
     MissingAttributeError,
-    PastDateError
+    PastDateError,
 )
 from app.exceptions.user_exceptions import NotLoggedUserError
 from app.models.events_model import Events
@@ -20,17 +20,18 @@ from app.models.user_model import User
 from app.services.aws_s3 import AWS_S3
 from app.services.categories_services import create_categories
 from app.services.events_services import (
+    check_type_of_file,
     delete_link_events_categories,
     get_additonal_information_of_event,
     link_categories_to_event,
 )
 from app.services.general_services import (
     check_id_validation,
-    check_if_keys_are_valid,
     check_if_the_user_owner,
     check_keys,
     check_keys_type,
     incoming_values,
+    require_jwt,
     remove_unnecessary_keys,
     save_changes,
 )
@@ -43,22 +44,29 @@ from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
-@jwt_required()
+
 def create_event():
-    session: Session = db.session
-
-    current_user = get_jwt_identity()
-
-    user: Query = (
-        session.query(User).select_from(User).filter(User.id == current_user).first()
-    )
-
-    if user.creator is False:
-        return {
-            "error": "Must be a content creator, to create a event."
-        }, HTTPStatus.UNAUTHORIZED
 
     try:
+        files = request.files
+        file = files.get("file")
+        data = request.form.get("data")
+        session: Session = db.session
+        
+        require_jwt()
+        
+        current_user = get_jwt_identity()
+
+        user: Query = (
+            session.query(User).select_from(User).filter(
+                User.id == current_user).first()
+        )
+
+        if user.creator is False:
+            return {
+                "error": "Must be a content creator, to create a event."
+            }, HTTPStatus.UNAUTHORIZED
+
         dict = {
             "name": str,
             "description": str,
@@ -67,22 +75,24 @@ def create_event():
             "categories": list,
         }
 
-        files = request.files
-        file = files.get("file")
-        data = request.form.get("data")
-
+        request_body = {"data": data, "file": file}
         if data is None:
-            raise MissingAttributeError(["data"])
+            request_body.pop("data")
 
         if file is None:
-            raise MissingAttributeError(["file"])
+            request_body.pop("file")
+
+        check_keys(request_body, ["data", "file"])
 
         data = json.loads(data)
-
         new_data = check_keys(data, [*dict.keys()])
-        check_keys_type(new_data, dict, file)
-        
-        formated_event_date = dt.strptime(new_data["event_date"], "%a, %d %b %Y %H:%M:%S %Z")
+
+        check_keys_type(new_data, dict)
+        check_type_of_file(file)
+
+        formated_event_date = dt.strptime(
+            new_data["event_date"], "%a, %d %b %Y %H:%M:%S %Z"
+        )
         if formated_event_date < dt.utcnow():
             raise PastDateError
 
@@ -153,12 +163,12 @@ def get_events_by_id(user_id):
     if not events:
         return {"error": "Event not found"}, HTTPStatus.NOT_FOUND
 
-    result = [get_additonal_information_of_event(asdict(event)) for event in events]
+    result = [get_additonal_information_of_event(
+        asdict(event)) for event in events]
 
     return jsonify(result), HTTPStatus.OK
 
 
-@jwt_required()
 def update_event(event_id):
     values = {
         "name": str,
@@ -169,35 +179,39 @@ def update_event(event_id):
         "categories": list,
         "link": FileStorage,
     }
-    keys = ["data", "file"]
-
     try:
+        data = request.form.get("data") or {}
+        file = request.files.get("file")
         check_id_validation(event_id, Events)
+
+        check_if_the_user_owner(Events, event_id)
+
         session: Session = db.session
 
         event = session.query(Events).filter_by(id=event_id).first()
 
-        data = {}
-        if request.form.get("data"):
+        if data:
             data = remove_unnecessary_keys(
-                json.loads(request.form["data"]), [*values.keys()]
+                json.loads(data), [*values.keys()]
             )[0]
-
             check_keys_type(data, values)
-
-        if data.get("event_date"):
-            formated_event_date = dt.strptime(data["event_date"], "%a, %d %b %Y %H:%M:%S %Z")
-            if formated_event_date < dt.utcnow():
-                raise PastDateError
-
-        if request.files.get("file"):
-            file = request.files["file"]
+            if not data:
+                raise MissingAttributeError([*values.keys()])
+        key = ""
+        if file:
             data["link"] = file
             key = event.link_banner.split("/")[-1]
-            AWS_S3.delete_file(key)
+            check_type_of_file(file)
 
-        check_if_keys_are_valid(request.form, request.files, keys)
-        check_if_the_user_owner(Events, event_id)
+        if not data and not file:
+            return {"error": "No data to update"}, HTTPStatus.BAD_REQUEST
+
+        if data.get("event_date"):
+            formated_event_date = dt.strptime(
+                data["event_date"], "%a, %d %b %Y %H:%M:%S %Z"
+            )
+            if formated_event_date < dt.utcnow():
+                raise PastDateError
 
         categories = []
         if data.get("categories"):
@@ -206,6 +220,8 @@ def update_event(event_id):
             delete_link_events_categories(event)
             link_categories_to_event(categories, event)
 
+    except FileTypeError as e:
+        return e.response, e.status_code
     except InvalidIdError as err:
         return err.response, err.status_code
     except AttributeTypeError as e:
@@ -226,8 +242,10 @@ def update_event(event_id):
             setattr(event, key, value)
     except InvalidLink as e:
         return {"error": "Invalid link"}, HTTPStatus.BAD_REQUEST
-
+    
     save_changes(event)
+    if key:
+        AWS_S3.delete_file(key)
 
     serialized_event = asdict(event)
     event = get_additonal_information_of_event(serialized_event)
