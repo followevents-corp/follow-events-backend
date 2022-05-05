@@ -131,6 +131,54 @@
 
 <br>
 
+<h3>Caso alguma chave tenha valores nulos, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Incoming value is empty."
+}
+```
+
+<br>
+
+<h3>Caso o name tenha mais que 100 caracteres, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Name has to be less than 100 characters. If your name is greater than that, try abbreviate it. :D"
+}
+```
+
+<br>
+
+<h3>Caso o username tenha menos de 6 caracteres ou mais de 30, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Username has to be 6 to 30 characters."
+}
+```
+
+<br>
+
 <h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
 
 <br>
@@ -328,6 +376,70 @@ Está rota precisa da autorização do token!
 ```json
 {
   "error": "Missing authorization token"
+}
+```
+
+<br>
+
+<h3>Caso tente usar um token de outro usuário, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Unauthorized"
+}
+```
+
+<br>
+
+<h3>Caso o token tenha expirado, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The token has expired"
+}
+```
+
+<br>
+
+<h3>Caso o id não seja valido, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">404 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id 23b15222c13e-23b1-4f31-a021-8455f1cbdae3 is not valid."
+}
+```
+
+<br>
+
+<h3>Caso o id não seja encontrado, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">404 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id 5222c13e-23b1-4f31-a021-8455f1cbdae3 is not in database."
 }
 ```
 
