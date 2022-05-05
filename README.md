@@ -514,13 +514,13 @@ Está rota precisa da autorização do token!
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
 
 `Formato da resposta`
 
 ```json
 {
-  "error": "Missing authorization token"
+  "error": "Invalid token."
 }
 ```
 
@@ -562,13 +562,13 @@ Está rota precisa da autorização do token!
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
 
 `Formato da resposta`
 
 ```json
 {
-  "error": "Missing authorization token"
+  "error": "Invalid token."
 }
 ```
 
@@ -694,6 +694,23 @@ fetch("https://follow-events-api.herokuapp.com/events", {
 
 <br>
 
+<h3>Caso a data do evento já tenha passado, o retorno será:</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Event must be in the future"
+}
+```
+
+<br>
+
+
 <h3>Caso uma chave não seja encontrada, terá o seguinte retorno.</h3>
 
 <br>
@@ -714,13 +731,13 @@ fetch("https://follow-events-api.herokuapp.com/events", {
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
 
 `Formato da resposta`
 
 ```json
 {
-  "error": "Missing authorization token"
+  "error": "Invalid token."
 }
 ```
 
@@ -950,13 +967,13 @@ Na edição de um usuário pode se atualizar todas as caracteristicas passadas n
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
 
 `Formato da resposta`
 
 ```json
 {
-  "error": "Missing authorization token"
+  "error": "Invalid token."
 }
 ```
 
@@ -998,13 +1015,13 @@ Está rota precisa da autorização do token!
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
 
 `Formato da resposta`
 
 ```json
 {
-  "error": "Missing authorization token"
+  "error": "Invalid token."
 }
 ```
 
@@ -1044,8 +1061,8 @@ Está rota precisa da autorização do token!
 | --------------------------------- | --------------------------------- |
 | `POST/events/<event_id>/comments` | Criar comentário em um evento     |
 | `GET/events/<event_id>/comments`  | Busca os comentários de um evento |
-| `PATCH/comments/<comments_id>`    | Atualizar um comentário           |
-| `DELETE/comments/<comments_id>`   | Deletar um comentário             |
+| `PATCH/comments/<comment_id>`    | Atualizar um comentário           |
+| `DELETE/comments/<comment_id>`   | Deletar um comentário             |
 
 </div>
 
@@ -1067,7 +1084,7 @@ Está rota precisa da autorização do token!
 
 <br>
 
-`GET/events/<user_id> - Formato da requisição`
+`POST/events/<event_id>/comments - Formato da requisição`
 
 ```json
 {
@@ -1161,11 +1178,11 @@ Está rota precisa da autorização do token!
 
 <br>
 
-<h3>Por meio desta rota será possível adicionar um comentário a um evento.</h3>
+<h3>Por meio desta rota será buscar os comentários</h3>
 
 <br>
 
-`GET/events/<user_id> - Formato da requisição`
+`GET/events/<event_id>/comments - Formato da requisição`
 
 **Não há** corpo de requisição.
 
@@ -1214,7 +1231,7 @@ Está rota precisa da autorização do token!
 
 <br>
 
-<h3>Por meio desta rota será possível atualizar um comentário a um evento.</h3>
+<h3>Por meio desta rota será possível atualizar um comentário.</h3>
 
 <br>
 
@@ -1224,7 +1241,7 @@ Está rota precisa da autorização do token!
 
 <br>
 
-`GET/events/<user_id> - Formato da requisição`
+`PATCH/comments/<comment_id> - Formato da requisição`
 
 ```json
 {
@@ -1271,7 +1288,7 @@ Está rota precisa da autorização do token!
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
 
 `Formato da resposta`
 
@@ -1317,13 +1334,13 @@ Está rota precisa da autorização do token!
 
 <br>
 
-`GET/events/<user_id> - Formato da requisição`
+`DELETE/comments/<comment_id> - Formato da requisição`
 
 **Não há** corpo de requisição.
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: #40916c">200 OK</span></h3>
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">204 NO CONTENT</span></h3>
 
 `Formato da resposta`
 
@@ -1335,7 +1352,7 @@ Está rota precisa da autorização do token!
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
 
 `Formato da resposta`
 
@@ -1345,23 +1362,7 @@ Está rota precisa da autorização do token!
 }
 ```
 
-<br>
 
-<h3>Caso o id não sejá encontrado, terá o seguinte retorno</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id 98542e8d-6adb-4993-8e26-a76cdf637d is not valid."
-}
-```
-
-<br>
 
 <h3>Caso o token não sejá válido, terá o seguinte retorno</h3>
 
@@ -1374,6 +1375,24 @@ Está rota precisa da autorização do token!
 ```json
 {
   "error": "Invalid token."
+}
+```
+
+<br>
+
+<br>
+
+<h3>Caso o id do comentário seja inválido, terá o seguinte retorno</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id 23b15222c13e-23b1-4f31-a021-8455f1cbdae3 is not valid."
 }
 ```
 
@@ -1392,9 +1411,9 @@ Está rota precisa da autorização do token!
 
 | Método                                       | Descrição                            |
 | -------------------------------------------- | ------------------------------------ |
-| `POST/users/<user_id>/schedule`              | Criar um novo evento no calendário   |
-| `GET/users/<user_id>/schedule`               | Lista todos os eventos do calendário |
-| `DELETE/users/<user_id>/schedule/<event_id>` | Deletar um evento do calendário      |
+| `POST/users/<user_id>/schedule`              | Criar um novo evento no calendário pessoal  |
+| `GET/users/<user_id>/schedule`               | Lista todos os eventos do calendário pessoal|
+| `DELETE/users/<user_id>/schedule/<event_id>` | Deletar um evento do calendário do calendário pessoal    |
 
 </div>
 <br>
@@ -1467,7 +1486,6 @@ Está rota precisa da autorização do token!
 }
 ```
 
-<br>
 
 <br>
 
@@ -1525,13 +1543,29 @@ Está rota precisa da autorização do token!
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
 
 `Formato da resposta`
 
 ```json
 {
-  "error": "Missing authorization token"
+  "error": "Invalid token."
+}
+```
+
+<br>
+
+<h3>Caso o token seja de outro usuário, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Unauthorized"
 }
 ```
 
@@ -1637,7 +1671,7 @@ Está rota precisa da autorização do token!
 
 <details>
 
-<summary style ="font-size: 18px"><b>Deletar um compromisso do usuário</b></summary>
+<summary style ="font-size: 18px"><b>Deletar um evento do calendário pessoal</b></summary>
 
 <br>
 
@@ -1657,13 +1691,9 @@ Está rota precisa da autorização do token!
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: #40916c">200 OK</span></h3>
+<h3>Resposta Status Code &nbsp <span style="color: #40916c">204 NO CONTENT</span></h3>
 
-```json
-{
-  "message": "Event deleted from calendar."
-}
-```
+**Não há** retorno.
 
 <br>
 
@@ -1677,7 +1707,7 @@ Está rota precisa da autorização do token!
 
 ```json
 {
-  "error": "Schedule not found"
+  "error": "The id 5222c13e-23b1-4f31-a021-8455f1cbdae3 is not in database."
 }
 ```
 
@@ -1689,7 +1719,7 @@ Está rota precisa da autorização do token!
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
 
 `Formato da resposta`
 
@@ -1791,7 +1821,22 @@ Está rota precisa da autorização do token!
 
 <br>
 
+<h3>Caso o evento ao qual será relacionado o evento de sorte já tenha acontecido, o retorno será.</h3>
+
 <br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "Error": "Event live CS final already happened"
+}
+```
+
+<br>
+
 
 <h3>Caso não passe os campos obrigatórios ou passe com erro de sintaxe.</h3>
 
@@ -1863,13 +1908,13 @@ Está rota precisa da autorização do token!
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
 
 `Formato da resposta`
 
 ```json
 {
-  "error": "Missing authorization token"
+  "error": "Invalid token."
 }
 ```
 
@@ -2015,7 +2060,7 @@ Está rota precisa da autorização do token!
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
 
 `Formato da resposta`
 
@@ -2101,7 +2146,7 @@ Está rota precisa da autorização do token!
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
 
 `Formato da resposta`
 
