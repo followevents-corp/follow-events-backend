@@ -10,6 +10,7 @@
 
 <p align = "center">
     <b>Está é a documentação para o uso da API do Follow Events.</b>
+    Folllow events é uma plataforma de agendamento de eventos voltada ao mercado de Live Stream, facilitando ao usuário encontrar o que deseja e o produtor de conteúdo a destacar seus eventos e criar seus eventos de sorte pra atrair ou recompensar a audiência.
 </p>
 
 <br>
@@ -79,154 +80,6 @@
 }
 ```
 
-<br>
-
-<h3>Caso uma chave não seja encontrada, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "missing_keys": ["name"]
-}
-```
-
-<br>
-
-<h3>Caso passe um email invalido, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Email format not acceptable: joao@, try ex.: your_mail@your_provider.com"
-}
-```
-
-<br>
-
-<h3>Caso uma chave não tenha a tipagem correta, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": {
-    "name": "must be a string"
-  }
-}
-```
-
-<br>
-
-<h3>Caso alguma chave tenha valores nulos, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Incoming value is empty."
-}
-```
-
-<br>
-
-<h3>Caso o name tenha mais que 100 caracteres, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Name has to be less than 100 characters. If your name is greater than that, try abbreviate it. :D"
-}
-```
-
-<br>
-
-<h3>Caso o username tenha menos de 6 caracteres ou mais de 30, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Username has to be 6 to 30 characters."
-}
-```
-
-<br>
-
-<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Missing authorization token"
-}
-```
-
-<br>
-
-<h3>Caso o email, já exista, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">409 CONFLICT</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Email already exists."
-}
-```
-
-<br>
-
-<h3>Caso o username já exista, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">409 CONFLICT</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Username already exists."
-}
-```
-
-<br>
-
 </details>
 
 <details>
@@ -270,58 +123,6 @@
 }
 ```
 
-<br>
-
-<h3>Caso uma chave não seja encontrada, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "missing_keys": ["email"]
-}
-```
-
-<br>
-
-<h3>Caso uma chave não tenha a tipagem correta, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": {
-    "name": "must be a string"
-  }
-}
-```
-
-<br>
-
-<h3>Caso a senha ou email sejam inválidos, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Invalid email or password."
-}
-```
-
-<br>
-
 </details>
 
 <details>
@@ -362,88 +163,6 @@ Está rota precisa da autorização do token!
   "events": "https://follow-events-api.herokuapp.com/events/f0b72181-00fc-4bc0-ad78-b73e31d9b7fc"
 }
 ```
-
-<br>
-
-<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Missing authorization token"
-}
-```
-
-<br>
-
-<h3>Caso tente usar um token de outro usuário, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Unauthorized"
-}
-```
-
-<br>
-
-<h3>Caso o token tenha expirado, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The token has expired"
-}
-```
-
-<br>
-
-<h3>Caso o id não seja valido, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">404 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id 23b15222c13e-23b1-4f31-a021-8455f1cbdae3 is not valid."
-}
-```
-
-<br>
-
-<h3>Caso o id não seja encontrado, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">404 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id 5222c13e-23b1-4f31-a021-8455f1cbdae3 is not in database."
-}
-```
-
-<br>
 
 </details>
 
@@ -490,42 +209,6 @@ Está rota precisa da autorização do token!
 }
 ```
 
-<br>
-
-<h3>Caso uma chave não tenha a tipagem correta, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": {
-    "name": "must be a string"
-  }
-}
-```
-
-<br>
-
-<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Invalid token."
-}
-```
-
-<br>
-
 </details>
 
 <details>
@@ -555,22 +238,6 @@ Está rota precisa da autorização do token!
 `Formato da resposta`
 
 **Não há** corpo de resposta.
-
-<br>
-
-<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Invalid token."
-}
-```
 
 <br>
 
@@ -629,35 +296,6 @@ Nesta rota terá que passar 2 arquivos multipart:
 
 <b>data</b> : Será um json no formato abaixo.
 
-<details>
-
-<summary style ="font-size: 18px"><b>Modelo de requisição no front end</b></summary>
-
-```js
-let bodyFormData = new FormData();
-bodyFormData.append('data',{"name": "Evento1",
-  "description": "uma descrição para testar",
-  "event_link": "twitch",
-  "event_date": "Fri, 13 May 2022 15:21:41 GMT",
-  "categories": ["Games"]
-});
-bodyFormData.append('file', imageFile);
-
-fetch("https://follow-events-api.herokuapp.com/events", {
-  const response = await axios({
-      method: 'post',
-      url: 'your_api_url',
-      data: bodyFormData,
-      headers: {
-          'Content-Type': `multipart/form-data`,
-      },
-  });
-```
-
-</details>
-
-<br>
-
 ```json
 {
   "name": "evento",
@@ -689,87 +327,6 @@ fetch("https://follow-events-api.herokuapp.com/events", {
   "categories": ["Games"],
   "comments": "https://follow-events-api.herokuapp.com/events/b9caf35c-02fe-4e84-986a-1ff46c48e562/comments",
   "giveaway": "https://follow-events-api.herokuapp.com/events/b9caf35c-02fe-4e84-986a-1ff46c48e562/giveaway"
-}
-```
-
-<br>
-
-<h3>Caso a data do evento já tenha passado, o retorno será:</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Event must be in the future"
-}
-```
-
-<br>
-
-
-<h3>Caso uma chave não seja encontrada, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "missing_keys": ["name"]
-}
-```
-
-<br>
-
-<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Invalid token."
-}
-```
-
-<br>
-
-<h3>Caso o usuário não tenha permissão para criar eventos, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Must be a content creator, to create a event."
-}
-```
-
-<br>
-
-<h3>Caso o arquivo não seja uma image ou vídeo, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">415 UNSUPPORTED MEDIA TYPE</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Only image and video files are supported"
 }
 ```
 
@@ -904,24 +461,6 @@ fetch("https://follow-events-api.herokuapp.com/events", {
 ]
 ```
 
-<br>
-
-<h3>Caso o id do usuário não seja encontrado, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id f0b72181-00fc-4bc0-ad78-b73e31d9b7 is not valid."
-}
-```
-
-<br>
-
 </details>
 
 <details>
@@ -961,24 +500,6 @@ Na edição de um usuário pode se atualizar todas as caracteristicas passadas n
 }
 ```
 
-<br>
-
-<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Invalid token."
-}
-```
-
-<br>
-
 </details>
 
 <details>
@@ -1009,40 +530,6 @@ Está rota precisa da autorização do token!
 
 **Não há** corpo de resposta.
 
-<br>
-
-<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Invalid token."
-}
-```
-
-<br>
-
-<h3>Caso o id não sejá encontrado, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id 047f9b6a-b964-4387-87d5-39719cc01028 is not in database."
-}
-```
-
-<br>
-
 </details>
 
 <br>
@@ -1061,8 +548,8 @@ Está rota precisa da autorização do token!
 | --------------------------------- | --------------------------------- |
 | `POST/events/<event_id>/comments` | Criar comentário em um evento     |
 | `GET/events/<event_id>/comments`  | Busca os comentários de um evento |
-| `PATCH/comments/<comment_id>`    | Atualizar um comentário           |
-| `DELETE/comments/<comment_id>`   | Deletar um comentário             |
+| `PATCH/comments/<comment_id>`     | Atualizar um comentário           |
+| `DELETE/comments/<comment_id>`    | Deletar um comentário             |
 
 </div>
 
@@ -1103,72 +590,6 @@ Está rota precisa da autorização do token!
   "comment": "É o melhor evento do ano !!"
 }
 ```
-
-<br>
-
-<h3>Caso não passe a chave comment</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "missing_keys": ["comment"]
-}
-```
-
-<br>
-
-<h3>Caso não seja passado o token, terá o seguinte retorno</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Missing authorization token"
-}
-```
-
-<br>
-
-<h3>Caso o evento não seja encontrado, terá o seguinte retorno</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id 4efa7076-d7be-4c33-8e9a-b3c3bb506c is not valid."
-}
-```
-
-<br>
-
-<h3>Caso o token passado seja inválido, terá o seguinte retorno</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Invalid token."
-}
-```
-
-<br>
 
 </details>
 
@@ -1221,8 +642,6 @@ Está rota precisa da autorização do token!
 ]
 ```
 
-<br>
-
 </details>
 
 <details>
@@ -1266,56 +685,6 @@ Está rota precisa da autorização do token!
 }
 ```
 
-<br>
-
-<h3>Caso fique faltando a chave comments, terá o seguinte retorno</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "missing_keys": ["comment"]
-}
-```
-
-<br>
-
-<h3>Caso não seja passado o token, terá o seguinte retorno</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Missing authorization token"
-}
-```
-
-<br>
-
-<h3>Caso o token não seja valido, terá o seguinte retorno</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Invalid token."
-}
-```
-
-<br>
-
 </details>
 
 <details>
@@ -1346,58 +715,6 @@ Está rota precisa da autorização do token!
 
 **Não há** corpo de reposta.
 
-<br>
-
-<h3>Caso não seja passado o token, terá o seguinte retorno</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Missing authorization token"
-}
-```
-
-
-
-<h3>Caso o token não sejá válido, terá o seguinte retorno</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Invalid token."
-}
-```
-
-<br>
-
-<br>
-
-<h3>Caso o id do comentário seja inválido, terá o seguinte retorno</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id 23b15222c13e-23b1-4f31-a021-8455f1cbdae3 is not valid."
-}
-```
-
-<br>
-
 </details>
   
  ---
@@ -1409,11 +726,11 @@ Está rota precisa da autorização do token!
 
 `Por meio da rota do calendário será possível fazer as seguintes requisições:`
 
-| Método                                       | Descrição                            |
-| -------------------------------------------- | ------------------------------------ |
-| `POST/users/<user_id>/schedule`              | Criar um novo evento no calendário pessoal  |
-| `GET/users/<user_id>/schedule`               | Lista todos os eventos do calendário pessoal|
-| `DELETE/users/<user_id>/schedule/<event_id>` | Deletar um evento do calendário do calendário pessoal    |
+| Método                                       | Descrição                                             |
+| -------------------------------------------- | ----------------------------------------------------- |
+| `POST/users/<user_id>/schedule`              | Criar um novo evento no calendário pessoal            |
+| `GET/users/<user_id>/schedule`               | Lista todos os eventos do calendário pessoal          |
+| `DELETE/users/<user_id>/schedule/<event_id>` | Deletar um evento do calendário do calendário pessoal |
 
 </div>
 <br>
@@ -1451,125 +768,6 @@ Está rota precisa da autorização do token!
   "message": "Event added to calendar."
 }
 ```
-
-<br>
-
-<br>
-
-<h3>Caso o id do evento já tenha sido registrado no calendário.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">409 CONFLICT</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Event already added to user's schedule"
-}
-```
-
-<br>
-
-<h3>Caso o id do evento não seja encontrado, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id 'f02c2181-99fc-4bc0-ad78-b73e39d9b7fc' is not in database."
-}
-```
-
-
-<br>
-
-<h3>Caso o id do evento não seja válido.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id f02c2181-99fc-4bc0-ad78-b73e39d9b7f is not valid."
-}
-```
-
-<br>
-
-<h3>Caso passe a chave errada, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "missing_keys": ["event_id"]
-}
-```
-
-<br>
-
-<h3>Caso uma chave não tenha a tipagem correta, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": {
-    "event_id": "must be a string"
-  }
-}
-```
-
-<br>
-
-<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Invalid token."
-}
-```
-
-<br>
-
-<h3>Caso o token seja de outro usuário, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Unauthorized"
-}
-```
-
-<br>
 
 </details>
 
@@ -1615,58 +813,6 @@ Está rota precisa da autorização do token!
 ]
 ```
 
-<br>
-
-<h3>Caso o id do usuário não seja encontrado.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id b4e9e4f2-ef98-49d9-a864-03ad432c7aee is not in database."
-}
-```
-
-<br>
-
-<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Invalid token."
-}
-```
-
-<br>
-
-<br>
-
-<h3>Caso o token não seja passado.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Missing authorization token"
-}
-```
-
-<br>
-
 </details>
 
 <details>
@@ -1694,62 +840,6 @@ Está rota precisa da autorização do token!
 <h3>Resposta Status Code &nbsp <span style="color: #40916c">204 NO CONTENT</span></h3>
 
 **Não há** retorno.
-
-<br>
-
-<h3>Caso o id do compromisso não seja encontrado, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id 5222c13e-23b1-4f31-a021-8455f1cbdae3 is not in database."
-}
-```
-
-<br>
-
-<br>
-
-<h3>Caso o token não seja passado.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Missing authorization token"
-}
-```
-
-<br>
-
-<br>
-
-<h3>Caso o id passado não seja válido.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id 39761194-1352-426e-aa16-b8e38635b17 is not valid."
-}
-```
-
-<br>
-
-<br>
 
 </details>
 
@@ -1819,107 +909,6 @@ Está rota precisa da autorização do token!
 }
 ```
 
-<br>
-
-<h3>Caso o evento ao qual será relacionado o evento de sorte já tenha acontecido, o retorno será.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "Error": "Event live CS final already happened"
-}
-```
-
-<br>
-
-
-<h3>Caso não passe os campos obrigatórios ou passe com erro de sintaxe.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "missing_keys": ["name", "description", "award", "award_picture"]
-}
-```
-
-<br>
-
-<h3>Caso o id do evento não seja encontrado, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id 'f02c2181-99fc-4bc0-ad78-b73e39d9b7fc' is not in database."
-}
-```
-
-<br>
-
-<h3>Caso o id do evento não seja válido.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id f02c2181-99fc-4bc0-ad78-b73e39d9b7f is not valid."
-}
-```
-
-<br>
-
-<h3>Caso uma chave não tenha a tipagem correta, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": {
-    "name": "must be a string"
-  }
-}
-```
-
-<br>
-
-<h3>Caso o token seja inválido ou esteja incorreto, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Invalid token."
-}
-```
-
-<br>
-
 </details>
 
 <details>
@@ -1956,24 +945,6 @@ Está rota **NÃO** precisa da autorização do token!
   }
 ]
 ```
-
-<br>
-
-<h3>Caso o id do evento não seja encontrado.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id b4e9e4f2-ef98-49d9-a864-03ad432c7aee is not in database."
-}
-```
-
-<br>
 
 </details>
   
@@ -2020,76 +991,6 @@ Está rota precisa da autorização do token!
 }
 ```
 
-<br>
-
-<h3>Caso o id do evento de sorte não seja encontrado, terá o seguinte retorno.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Giveaway not found"
-}
-```
-
-<br>
-
-<h3>Caso o id do evento não seja encontrado.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id af38606a-b45c-417d-99e5-5deb8163d688 is not in database."
-}
-```
-
-<br>
-
-<br>
-
-<h3>Caso o token não seja passado.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "Missing authorization token"
-}
-```
-
-<br>
-
-<br>
-
-<h3>Caso o id passado não seja válido.</h3>
-
-<br>
-
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
-
-`Formato da resposta`
-
-```json
-{
-  "error": "The id 39761194-1352-426e-aa16-b8e38635b17 is not valid."
-}
-```
-
-<br>
-
 </details>
 
 <details>
@@ -2122,27 +1023,197 @@ Está rota precisa da autorização do token!
 }
 ```
 
+</details>
+
+---
+
 <br>
 
-<h3>Caso o id do compromisso não seja encontrado, terá o seguinte retorno.</h3>
+<h2 align = "center">Possíveis erros nas requisições</h2>
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
+<details>
+
+<summary style ="font-size: 18px"><b>Possíveis erros nas requisições 400 BAD REQUEST</b></summary>
+
+<br>
+
+<h3>Caso uma chave não seja encontrada, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
 
 `Formato da resposta`
 
 ```json
 {
-  "error": "Schedule not found"
+  "missing_keys": ["name"]
 }
 ```
 
 <br>
 
+<h3>Caso passe um email no formato incorreto terá o seguinte retorno.</h3>
+
 <br>
 
-<h3>Caso o token não seja passado.</h3>
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Email format not acceptable: joao@, try ex.: your_mail@your_provider.com"
+}
+```
+
+<br>
+
+<h3>Caso uma chave não tenha a tipagem correta, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": {
+    "name": "must be a string"
+  }
+}
+```
+
+<br>
+
+<h3>Caso alguma chave tenha valores nulos, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Incoming value is empty."
+}
+```
+
+<br>
+
+<h3>Caso o name tenha mais que 100 caracteres, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Name has to be less than 100 characters. If your name is greater than that, try abbreviate it. :D"
+}
+```
+
+<br>
+
+<h3>Caso o username tenha menos de 6 caracteres ou mais de 30, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Username has to be 6 to 30 characters."
+}
+```
+
+<br>
+
+<h3>Caso o evento não esteja em uma data no futuro, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Event must be in the future"
+}
+```
+
+<br>
+
+<h3>Caso o id seja inválido, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id 23b15222c13e-23b1-4f31-a021-8455f1cbdae3 is not valid."
+}
+```
+
+<br>
+
+<h3>Caso o link do evento seja inválido, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "This link violates the platform rules"
+}
+```
+
+<br>
+
+<h3>Categoria do tipo incorreto, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": {
+    "category 5": "must be a valid string",
+    "category True": "must be a valid string",
+    "category 4.6": "must be a valid string"
+  }
+}
+```
+
+<br>
+
+</details>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Possíveis erros nas requisições 401 UNAUTHORIZED</b></summary>
+
+<br>
+
+<h3>Caso não tenha passado nenhum token, terá o seguinte retorno.</h3>
 
 <br>
 
@@ -2158,20 +1229,194 @@ Está rota precisa da autorização do token!
 
 <br>
 
-<br>
-
-<h3>Caso o id passado não seja válido.</h3>
+<h3>Caso passe um token de outro usuário, terá o seguinte retorno.</h3>
 
 <br>
 
-<h3>Resposta Status Code &nbsp <span style="color: yellow">400 BAD REQUEST</span></h3>
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
 
 `Formato da resposta`
 
 ```json
 {
-  "error": "The id 39761194-1352-426e-aa16-b8e38635b17 is not valid."
+  "error": "Unauthorized"
 }
 ```
 
+<br>
+
+<h3>Caso o token tenha expirado, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The token has expired"
+}
+```
+
+<br>
+
+<h3>Caso o token seja inválido, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">401 UNAUTHORIZED</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Invalid token."
+}
+```
+
+<br>
+
 </details>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Possíveis erros nas requisições 403 FORBIDDEN</b></summary>
+
+<br>
+
+<h3>Caso o email ou a senha sejam inválidos, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">403 FORBIDDEN</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Invalid email or password."
+}
+```
+
+<br>
+
+</details>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Possíveis erros nas requisições 404 NOT FOUND</b></summary>
+
+<br>
+
+<h3>Caso o id não seja encontrado, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">404 NOT FOUND</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The id 5222c13e-23b1-4f31-a021-8455f1cbdae3 is not in database."
+}
+```
+
+<br>
+
+</details>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Possíveis erros nas requisições 409 CONFLICT</b></summary>
+
+<br>
+
+<h3>Caso o username já existam, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">409 CONFLICT</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Username already exists"
+}
+```
+
+<br>
+
+<h3>Caso o email já existam, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">409 CONFLICT</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Email already exists"
+}
+```
+
+<br>
+
+</details>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Possíveis erros nas requisições 413 REQUEST ENTITY TOO LARGE</b></summary>
+
+<br>
+
+<h3>Caso o arquivo seja maior que 10mb, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">413 REQUEST ENTITY TOO LARGE</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "The suported file is until 10MB"
+}
+```
+
+<br>
+
+</details>
+
+<details>
+
+<summary style ="font-size: 18px"><b>Possíveis erros nas requisições 415 UNSUPPORTED MEDIA TYPE</b></summary>
+
+<br>
+
+<h3>Caso o arquivo seja diferente de um vídeo ou image, terá o seguinte retorno.</h3>
+
+<br>
+
+<h3>Resposta Status Code &nbsp <span style="color: yellow">415 UNSUPPORTED MEDIA TYPE</span></h3>
+
+`Formato da resposta`
+
+```json
+{
+  "error": "Only image and video files are supported"
+}
+```
+
+<br>
+
+</details>
+
+<br>
+
+<br>
+
+Copyright (c) Follow Events, Inc. and its affiliates.
