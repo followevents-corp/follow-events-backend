@@ -9,6 +9,7 @@ from app.exceptions.invalid_id_exception import InvalidIdError
 from app.exceptions.request_data_exceptions import (
     AttributeTypeError,
     FileTypeError,
+    FormatDateError,
     IncorrectKeys,
     InvalidLink,
     MissingAttributeError,
@@ -20,6 +21,7 @@ from app.models.user_model import User
 from app.services.aws_s3 import AWS_S3
 from app.services.categories_services import create_categories
 from app.services.events_services import (
+    check_format_date,
     check_type_of_file,
     delete_link_events_categories,
     get_additonal_information_of_event,
@@ -91,6 +93,8 @@ def create_event():
         check_keys_type(new_data, dict)
         check_type_of_file(file)
 
+        # check_format_date(new_data["event_date"])
+
         formated_event_date = dt.strptime(
             new_data["event_date"], "%a, %d %b %Y %H:%M:%S %Z"
         )
@@ -132,6 +136,8 @@ def create_event():
     except IntegrityError as e:
         if type(e.orig) is ForeignKeyViolation:
             return {"error": "Unauthorized"}, HTTPStatus.UNAUTHORIZED
+    except ValueError as e:
+        return {"erro":'generico'}
 
     return jsonify(new_event), HTTPStatus.CREATED
 

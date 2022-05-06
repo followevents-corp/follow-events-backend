@@ -2,13 +2,14 @@ from flask import request, url_for
 from sqlalchemy.orm.session import Session
 
 from app.configs.database import db
-from app.exceptions.request_data_exceptions import FileTypeError
+from app.exceptions.request_data_exceptions import FileTypeError, FormatDateError
 from app.models.categories_events_model import EventsCategories
 from app.models.categories_model import Categories
 from app.models.events_model import Events
 from app.models.schedule_model import Schedule
 from app.services.general_services import save_changes
 from werkzeug.datastructures import FileStorage
+from datetime import datetime as dt
 
 
 def get_additonal_information_of_event(data: dict) -> dict:
@@ -76,3 +77,8 @@ def check_type_of_file(file):
         file_type = file.content_type.split("/")[0]
         if file_type not in ["image", "video"]:
             raise FileTypeError(message="Only image and video files are supported")
+
+def check_format_date(date):
+    if not dt.strptime(date, "%a, %d %b %Y %H:%M:%S %Z"):
+        raise FormatDateError
+
