@@ -79,6 +79,8 @@ def check_type_of_file(file):
             raise FileTypeError(message="Only image and video files are supported")
 
 def check_format_date(date):
-    if not dt.strptime(date, "%a, %d %b %Y %H:%M:%S %Z"):
+    try:
+        dt.strptime(date, "%a, %d %b %Y %H:%M:%S %Z")
+    except ValueError:
         raise FormatDateError
 

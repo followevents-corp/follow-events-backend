@@ -93,7 +93,7 @@ def create_event():
         check_keys_type(new_data, dict)
         check_type_of_file(file)
 
-        # check_format_date(new_data["event_date"])
+        check_format_date(new_data["event_date"])
 
         formated_event_date = dt.strptime(
             new_data["event_date"], "%a, %d %b %Y %H:%M:%S %Z"
@@ -136,8 +136,8 @@ def create_event():
     except IntegrityError as e:
         if type(e.orig) is ForeignKeyViolation:
             return {"error": "Unauthorized"}, HTTPStatus.UNAUTHORIZED
-    except ValueError as e:
-        return {"erro":'generico'}
+    except FormatDateError as e:
+        return e.response, e.status_code
 
     return jsonify(new_event), HTTPStatus.CREATED
 
@@ -209,8 +209,9 @@ def update_event(event_id):
 
         if not data and not file:
             return {"error": "No data to update"}, HTTPStatus.BAD_REQUEST
-
+        
         if data.get("event_date"):
+            check_format_date(data["event_date"])
             formated_event_date = dt.strptime(
                 data["event_date"], "%a, %d %b %Y %H:%M:%S %Z"
             )
@@ -231,6 +232,8 @@ def update_event(event_id):
         return e.response, e.status_code
     except PastDateError as e:
         return {"error": "Event must be in the future"}, e.status_code
+    except FormatDateError as e:
+        return e.response, e.status_code
 
     try:
         for key, value in data.items():
