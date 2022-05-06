@@ -51,3 +51,9 @@ class PastDateError(Exception):
         self.message = message
         self.response = {"error": self.message}
         self.status_code = status_code
+
+class FormatDateError(Exception):
+    def __init__(self, message="format date must be ex: 'Fri, 13 May 2022 15:21:41 GMT'", status_code = 400):
+        self.message = message
+        self.response = {"error": self.message}
+        self.status_code = status_code
